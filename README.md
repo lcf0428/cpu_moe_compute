@@ -1,8 +1,9 @@
 # CPU MoE Compute
 
-26 服务器 `/mnt/share/y50063808/vllm-ascend-workspace/cpu_moe` 的核心源码、运行脚本与配置备份，以及 profiler 合成参考。核心备份位于 [cpu_moe](cpu_moe/)，共 1621 个文件，22,337,873 字节。权重、动态库、构建产物和运行日志不上传。
+26 服务器 `/mnt/share/y50063808/vllm-ascend-workspace/cpu_moe` 的核心源码、运行脚本与配置备份，以及 profiler 合成参考。核心备份位于 [cpu_moe](cpu_moe/)，共 1621 个文件，22,337,873 字节。核心源码备份排除权重、动态库、构建产物和运行日志；另按用户要求在 `examples/` 保留一份完整 trace 参考。
 
 - [profile 合成指南](docs/01_profile_merge_guide.md)
+- [可下载的 CPU 向 NPU 传输权重 trace 样例](examples/traces/first_miss_cpu2npu_weight/README.md)
 - [脚本设计与 NUMA 绑核](docs/02_script_design.md)
 - [参数设置建议](docs/03_parameters.md)
 

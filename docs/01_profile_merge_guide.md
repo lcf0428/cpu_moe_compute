@@ -4,6 +4,8 @@
 
 ![原始展示效果参考](profile_reference.png)
 
+可下载查看的完整样例：[first_miss CPU 向 NPU 传输权重的合成 trace](../examples/traces/first_miss_cpu2npu_weight/README.md)。这是用户提供的历史效果参考，文件保持原样，未用本仓库新增校时流程重新验证。
+
 原始文件现已完整备份到 `cpu_moe/`。原始参考入口：`/mnt/share/y50063808/vllm-ascend-workspace/cpu_moe/merge_cpu_compute_latest.sh`。本仓库 `scripts/` 保存加入校时和 T 标签的参考版本，原始包装器保存在 `reference/merge_cpu_compute_latest.original.sh`。新包装器要求显式给出同次 trace、CPU 日志和校时锚点，避免 latest 指向其他运行。
 
 ## 合成日志必须满足的最低配置
