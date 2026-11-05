@@ -78,7 +78,7 @@
 | `balance_cpu_expert_us`、`balance_copy_us` | **建议按目标环境实测后设置，不要把 70/450 微秒当通用常数。** | 当前比例公式为 `floor(M*t_cpu/(t_cpu+t_copy))`；提高 CPU 成本估计会增加迁入比例，提高 copy 成本估计会降低迁入比例。 |
 | `KT_MOE_COMPLETION_SPIN_US` | **按延迟和 CPU 占用权衡，参考值 3000 微秒。** | 更长热轮询可减少休眠唤醒，但会持续占用 CPU。 |
 | speculative config | **按模型与实验目的设置，首次基线可先不启用推测解码。** | dspark 和 7 个候选 token 是原实验设置，会改变额外计算量和批次形态。 |
-| compilation config | **建议先验证 eager，再测试目标图模式。** | `FULL_DECODE_ONLY` 和 capture sizes 应适配实际批次；捕获更多尺寸会增加启动时间与内存。 |
+| compilation config | **此前测试均使用图模式，建议沿用图模式。** | 参考配置为 `FULL_DECODE_ONLY`；capture sizes 按实际批次设置，捕获更多尺寸会增加启动时间与内存。 |
 | 并行规模、批次及 KV 配置 | **按模型、HBM 和后端支持设置。** | 不必照抄原服务配置；改变 TP、DP、PP 后要重新核对当前 CPU 后端与卸载路径支持。 |
 
 ## 当前路径无需调节的兼容项
