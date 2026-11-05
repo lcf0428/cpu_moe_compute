@@ -1,0 +1,125 @@
+import json
+import os
+import urllib
+from typing import Dict, Optional, Union
+
+from ais_bench.benchmark.registry import MODELS
+from ais_bench.benchmark.utils.prompt import PromptList
+from ais_bench.benchmark.models import BaseAPIModel, LMTemplateParser
+from ais_bench.benchmark.models.output import Output
+
+PromptType = Union[PromptList, str]
+
+
+@MODELS.register_module()
+class MindieStreamApi(BaseAPIModel):
+    """Minde original stream api
+
+    Args:
+        path (str, optional): Model path or identifier for the specific API model. Defaults to empty string.
+        stream (bool, optional): Whether to enable streaming output. Defaults to False.
+        max_out_len (int, optional): Maximum output length, controlling the maximum number of tokens for generated text. Defaults to 4096.
+        retry (int, optional): Number of retry attempts when request fails. Defaults to 2.
+        api_key (str, optional): API key for the API service. Defaults to empty string.
+        host_ip (str, optional): Host IP address of the API service. Defaults to "localhost".
+        host_port (int, optional): Port number of the API service. Defaults to 8080.
+        url (str, optional): Complete URL address of the API service. Defaults to empty string.
+        trust_remote_code (bool, optional): Whether to trust remote code when loading tokenizer. Defaults to False.
+        generation_kwargs (Dict, optional): Generation parameters configuration, additional parameters passed to the API service. Defaults to None.
+        meta_template (Dict, optional): Meta template configuration for the model, used to define conversation format and roles. Defaults to None.
+        enable_ssl (bool, optional): Whether to enable SSL connection. Defaults to False.
+        verbose (bool, optional): Whether to enable verbose logging output. Defaults to False.
+    """
+
+    is_api: bool = True
+
+    def __init__(
+        self,
+        path: str = "",
+        stream: bool = True,
+        max_out_len: int = 4096,
+        retry: int = 2,
+        api_key: str = "",
+        host_ip: str = "localhost",
+        host_port: int = 8080,
+        url: str = "",
+        trust_remote_code: bool = False,
+        generation_kwargs: Optional[Dict] = None,
+        meta_template: Optional[Dict] = None,
+        enable_ssl: bool = False,
+        verbose: bool = False,
+    ):
+        super().__init__(
+            path=path,
+            stream=stream,
+            max_out_len=max_out_len,
+            retry=retry,
+            api_key=api_key,
+            host_ip=host_ip,
+            host_port=host_port,
+            url=url,
+            generation_kwargs=generation_kwargs,
+            meta_template=meta_template,
+            enable_ssl=enable_ssl,
+            verbose=verbose,
+        )
+        self.url = self._get_url()
+        self.template_parser = LMTemplateParser(meta_template)
+        # For non-chat APIs, the actual prompt is passed as a plain string (just like with offline models), so LMTemplateParser is used.
+        # Multi-LoRA: load data_id -> lora adapter name map from generation_kwargs (optional).
+        self.lora_data_map = self._load_lora_data_map(generation_kwargs)
+
+    def _get_url(self) -> str:
+        endpoint = "infer"
+        url = urllib.parse.urljoin(self.base_url, endpoint)
+        self.logger.debug(f"Request url: {url}")
+        return url
+
+    @staticmethod
+    def _load_lora_data_map(generation_kwargs):
+        """Load data_id -> LoRA adapter name mapping JSON file."""
+        if not generation_kwargs:
+            return None
+        lora_data_map_file = generation_kwargs.get("lora_data_map_file")
+        if not (isinstance(lora_data_map_file, str) and lora_data_map_file):
+            return None
+        file_path = os.path.abspath(lora_data_map_file)
+        if not os.path.exists(file_path):
+            return None
+        try:
+            with open(file_path, "r") as f:
+                return json.load(f)
+        except Exception:
+            return None
+
+    def _resolve_lora_model_name(self, output: Output):
+        """Look up LoRA adapter name for the current sample's data_id."""
+        if not self.lora_data_map:
+            return None
+        data_id = getattr(output, "data_id", None)
+        if data_id is None:
+            return None
+        return self.lora_data_map.get(f"{data_id}")
+
+    async def get_request_body(
+        self, input_data: PromptType, max_out_len: int, output: Output, **args
+    ):
+        output.input = input_data
+        generation_kwargs = self.generation_kwargs.copy()
+        generation_kwargs.update({"max_new_tokens": max_out_len})
+        # Multi-LoRA: MindIE native API uses ``parameters.adapter_id`` for LoRA selection.
+        lora_model_name = self._resolve_lora_model_name(output)
+        if lora_model_name:
+            generation_kwargs["adapter_id"] = lora_model_name
+        # Debug: log LoRA routing decision for observability.
+        self.logger.debug(
+            f"[Multi-LoRA] data_id={getattr(output, 'data_id', None)} "
+            f"lora_model_name={lora_model_name} "
+            f"adapter_id_in_request_body={lora_model_name}"
+        )
+        request_body = dict(inputs=input_data, stream=True, parameters=generation_kwargs)
+        return request_body
+
+    async def parse_stream_response(self, api_response: dict, output: Output):
+        generated_text = api_response.get("generated_text", "")
+        output.content = generated_text

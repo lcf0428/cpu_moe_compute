@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.so
+*.gguf
+*.safetensors
+*.pt
+*.pth
+*.log
+.env*
+.vscode/

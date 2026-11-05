@@ -1,0 +1,97 @@
+# English Translation
+name: 🔧 Bug & Error & Exception Report
+description: Submit bugs or exceptions in the program
+title: "[Bug] "
+labels: ["bug", "Pending"]
+assignees: []  # Optional: Add default assignees (e.g., ["user1"])
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 👉 Check Here First If You Encounter Issues
+        ### 🌟 First Time Using the Tool and Facing Problems?
+        Following the [🚀 Quick Start](https://ais-bench-benchmark.readthedocs.io/en/latest/get_started/quick_start.html) guide can resolve 90% of basic tool usage issues!
+
+        ### 🧭 Try Searching the FAQ for Solutions to Common Issues
+        Search the [📑 FAQ](https://ais-bench-benchmark.readthedocs.io/en/latest/faqs/faq.html) — currently, the FAQ can resolve 0% of common issues.
+
+        ### ❓ Search Historical Issues for Rare Similar Problems
+        Search for similar historical issues in [🔖 Issues](https://github.com/AISBench/benchmark/issues)
+  - type: input
+    id: os_and_version
+    attributes:
+      label: Operating System and Version
+      placeholder: E.g., Ubuntu 20.04, etc.
+    validations:
+      required: true
+  - type: dropdown
+    id: python_env
+    attributes:
+      label: Python Environment for Tool Installation
+      options:
+        - "Python virtual environment created with Anaconda/Miniconda"
+        - "Default Python environment on physical machine/virtual machine"
+        - "Python environment in Docker container"
+        - "Others"
+    validations:
+      required: true
+  - type: dropdown
+    id: python_version
+    attributes:
+      label: Python Version
+      options:
+        - "3.10"
+        - "3.11"
+        - "Others"
+    validations:
+      required: true
+  - type: input
+    id: tool_version
+    attributes:
+      label: AISBench Tool Version
+      description: Please provide the tool version text
+      placeholder: E.g., 3.0.20250814 (Check via the command `pip3 show ais_bench_benchmark`)
+    validations:
+      required: true
+  - type: input
+    id: input_cmd
+    attributes:
+      label: AISBench Execution Command
+      description: Please provide the full execution command text
+      placeholder: E.g., `ais_bench --models vllm_api_stream_chat --datasets synthetic_gen --mode perf`
+    validations:
+      required: true
+  - type: textarea
+    id: cfg_content
+    attributes:
+      label: Model Configuration File or Custom Configuration File Content
+      description: Please provide the full content of the configuration file
+      placeholder: E.g., Execute `ais_bench --models vllm_api_stream_chat --search` to locate the configuration file for the `vllm_api_stream_chat` model task
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+    validations:
+      required: false
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: Attach the error log text (If using screenshots, ensure they are fully uploaded!)
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Pre-Checks
+      options:
+        - label: I have read the Quick Start section in the homepage documentation and cannot resolve the issue
+          required: true
+        - label: I have searched the FAQ and found no duplicate issues
+          required: true
+        - label: I have searched existing Issues and found no duplicate issues
+          required: true
+        - label: I have updated to the latest version, and the issue still persists
+          required: false

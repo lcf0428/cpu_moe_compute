@@ -1,0 +1,53 @@
+name: 🗺️ Roadmap
+description: 提出项目路线图、阶段性目标或长期规划的建议
+title: "[Roadmap] "
+labels: ["roadmap", "规划讨论"]
+body:
+  - type: textarea
+    id: current_status
+    attributes:
+      label: 当前状态分析 | Current Status Analysis
+      description: 请分析项目当前的发展阶段和现状 | Please analyze the current development stage and status of the project
+      placeholder: 例：当前项目已完成基础功能开发，下一阶段适合重点关注性能优化和生态建设
+    validations:
+      required: true
+  - type: textarea
+    id: roadmap_vision
+    attributes:
+      label: 路线图愿景 | Roadmap Vision
+      description: 请描述您设想的项目发展方向和目标 | Please describe the envisioned project development direction and goals
+      placeholder: 例：成为行业领先的AI基准测试工具，支持更多模型类型和测试场景
+    validations:
+      required: true
+  - type: textarea
+    id: phases
+    attributes:
+      label: 阶段性目标 | Phased Goals
+      description: 请列出您建议的阶段性目标和时间节点 | Please list the phased goals and time nodes you suggest
+      placeholder: |
+        第一阶段（1-3个月）：完成核心功能完善和性能优化
+        第二阶段（3-6个月）：扩展模型支持和测试场景
+        第三阶段（6-12个月）：构建生态系统和社区建设
+    validations:
+      required: true
+  - type: textarea
+    id: key_tasks
+    attributes:
+      label: 关键任务 | Key Tasks
+      description: 请列出实现路线图的关键任务和里程碑 | Please list the key tasks and milestones to implement the roadmap
+      placeholder: |
+        - 开发新的测试指标和评估方法
+        - 支持更多类型的AI模型
+        - 优化用户界面和使用体验
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: 补充说明 | Additional Notes
+      description: 以下内容将自动包含在您的issue中 | The following content will be automatically included in your issue
+      value: |
+        👉 如果您想要的特性不在路线图中，欢迎在此主题中发表评论或者提交[功能需求issue](https://github.com/AISBench/benchmark/issues/new?template=4_feature.yml)
+         | If any of the features you want are not in the roadmap, please feel free to comment or submit a [feature request issue](https://github.com/AISBench/benchmark/issues/new?template=8_feature_en.yml)
+    validations:
+      required: false

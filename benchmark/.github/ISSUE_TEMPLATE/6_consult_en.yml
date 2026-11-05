@@ -1,0 +1,31 @@
+name: ❓ Tool Usage Inquiry
+description: Inquire about issues encountered during tool usage
+title: "[Question] "
+labels: ["question", "Pending Reply"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 👉 Check Here First If You Have Questions
+        ### 🌟 First Time Using the Tool and Have Questions?
+        Following the [🚀 Quick Start](https://ais-bench-benchmark.readthedocs.io/en/latest/get_started/quick_start.html) guide can resolve 90% of basic tool usage issues!
+
+        ### 🧭 Try Searching the FAQ for Solutions to Common Issues
+        Search the [📑 FAQ](https://ais-bench-benchmark.readthedocs.io/en/latest/faqs/faq.html) — currently, the FAQ can resolve 0% of common issues.
+
+        ### ❓ Search Historical Issues for Rare Similar Problems
+        Search for similar historical issues in [🔖 Issues](https://github.com/AISBench/benchmark/issues)
+  - type: textarea
+    id: current-content
+    attributes:
+      label: Inquiry Description
+      description: Describe the questions encountered while using the tool
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Pre-Checks
+      options:
+        - label: I have read the Quick Start section in the homepage documentation and it cannot answer my question
+          required: true

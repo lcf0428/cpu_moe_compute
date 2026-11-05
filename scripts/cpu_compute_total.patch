@@ -1,0 +1,68 @@
+--- a/cpu_backend/cpu_compute_trace.h
++++ b/cpu_backend/cpu_compute_trace.h
+@@ -13,6 +13,7 @@
+ #include <time.h>
+ #include <unistd.h>
+ #include <sys/syscall.h>
++#include <string>
+ #include <sched.h>
+ 
+ namespace kt::cpu_trace {
+@@ -23,6 +24,7 @@
+ }
+ struct Record {
+   uint64_t wall_ns = 0, duration_ns = 0, coordinator_cpu_ns = 0;
++  bool compute_total = false;
+   int transfer_count = 0;
+   int layer = 0, part = 0, tokens = 0, count = 0, tid = 0;
+   uint64_t task_id = 0, mono_ns = 0, raw_ns = 0;
+@@ -71,7 +73,8 @@
+           ++written_; continue;
+         }
+         fprintf(file_, "");
+-        fprintf(file_, "{\"event\":\"cpu_moe.compute\",\"pid\":%d,\"tid\":%d,\"layer\":%d,\"part\":%d,\"tokens\":%d,\"wall_ns\":%llu,\"duration_ns\":%llu,\"mono_raw_ns\":%llu,\"coordinator_cpu_ns\":%llu,\"task_id\":%llu,\"transfer_count\":%d,\"expert_count\":%d,\"expert_route_count\":%llu,\"expert_ids_truncated\":%s,\"expert_ids\":[",
++        fprintf(file_, "{\"event\":\"%s\",\"pid\":%d,\"tid\":%d,\"layer\":%d,\"part\":%d,\"tokens\":%d,\"wall_ns\":%llu,\"duration_ns\":%llu,\"mono_raw_ns\":%llu,\"coordinator_cpu_ns\":%llu,\"task_id\":%llu,\"transfer_count\":%d,\"expert_count\":%d,\"expert_route_count\":%llu,\"expert_ids_truncated\":%s,\"expert_ids\":[",
++            r.compute_total ? "cpu_moe.compute_total" : "cpu_moe.compute",
+             int(getpid()), r.tid, r.layer, r.part, r.tokens,
+             (unsigned long long)r.wall_ns, (unsigned long long)r.duration_ns, (unsigned long long)r.raw_ns,
+             (unsigned long long)r.coordinator_cpu_ns, (unsigned long long)r.task_id, r.transfer_count, r.count, (unsigned long long)r.expert_route_count, r.truncated ? "true" : "false");
+@@ -140,7 +143,11 @@
+   uint64_t start_ = 0, cpu_ = 0;
+  public:
+   template <typename Skip>
+-  Span(int layer, int part, int tokens, int k, const int64_t* ids, Skip skip) {
++  Span(int layer, int part, int tokens, int k, const int64_t* ids, Skip skip, bool total = false) {
++    const char* mode = std::getenv("KT_MOE_CPU_TRACE_KIND");
++    const bool total_mode = mode && std::string(mode) == "total";
++    if (total != total_mode) return;
++    record_.compute_total = total;
+     auto& w = writer();
+     if (!w.enabled() || tokens <= 0) return;
+     writer_ = &w; record_.task_id=context.id; mark("compute_begin"); record_.layer = layer; record_.part = part; record_.tokens = tokens;
+--- a/operators/moe-tp.hpp
++++ b/operators/moe-tp.hpp
+@@ -1,3 +1,4 @@
++#include "../cpu_backend/cpu_compute_trace.h"
+ #ifndef CPUINFER_OPERATOR_MOE_HPP
+ #define CPUINFER_OPERATOR_MOE_HPP
+ 
+@@ -190,6 +191,11 @@
+     auto start = std::chrono::high_resolution_clock::now();
+ #endif
+     int qlen = *qlen_ptr;
++    {
++    // Full backend compute, including NUMA dispatch/join and merge/dtype conversion.
++    // Dedicated event avoids confusing this interval with per-part compute.
++    kt::cpu_trace::Span total_trace(config.layer_idx, -1, qlen, k, expert_ids,
++        [this](int64_t id) { return config.should_skip_expert(id); }, true);
+ 
+     auto pool = config.pool;
+     pool->dispense_backend()->do_numa_job([this, pool, qlen, k, expert_ids, input, weights](int numa_id) {
+@@ -197,6 +203,7 @@
+     });
+ 
+     merge_results(qlen, output, incremental);
++    } // End compute_total before optional FORWARD_TIME_REPORT logging.
+ #ifdef FORWARD_TIME_REPORT
+     auto end = std::chrono::high_resolution_clock::now();
+     auto forward_time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();

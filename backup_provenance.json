@@ -1,0 +1,15 @@
+{
+  "capture_date": "2026-11-05",
+  "source_server": "141.61.141.22",
+  "source_directory": "/mnt/share/y50063808/vllm-ascend-workspace/benchmark",
+  "source_head": "29c363e38e9d1560e6f19eff582f6117943b6a77",
+  "includes_working_tree_changes": true,
+  "files": 2637,
+  "bytes": 62784026,
+  "max_file_bytes": 5242880,
+  "archive_sha256": "6b7d5177266110ad5f962426a5607e4075b732665febdb8b21498e4540b1936d",
+  "archive_verified_against_source": true,
+  "all_extracted_file_bytes_verified": true,
+  "server_source_modified": false,
+  "new_npu_capture_verified": false
+}

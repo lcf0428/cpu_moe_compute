@@ -1,0 +1,13 @@
+__pycache__
+.vscode
+**/build
+**/dist
+test_reports
+.venv
+.eggs
+ais_bench_benchmark.egg-info
+
+# Ignore downloaded dataset data files (keep Python source modules)
+ais_bench/datasets/**
+!ais_bench/datasets/**/
+!ais_bench/datasets/**/*.py

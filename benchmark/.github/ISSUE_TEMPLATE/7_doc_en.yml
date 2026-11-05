@@ -1,0 +1,34 @@
+name: 📃 Documentation Issue
+description: Report errors in the documentation or content that needs supplementation
+title: "[Documentation] "
+labels: ["documentation", "Pending Update"]
+body:
+  - type: input
+    id: location
+    attributes:
+      label: Documentation Location (Multiple document links can be specified)
+      placeholder: E.g., https://ais-bench-benchmark.readthedocs.io/en/latest/get_started/install.html
+    validations:
+      required: true
+  - type: textarea
+    id: current-content
+    attributes:
+      label: Current Content Description
+      description: Quote the original text or describe the problematic paragraph
+    validations:
+      required: true
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Modification Suggestion
+      description: Provide corrected content or supplementary explanations (Markdown is supported)
+      placeholder: "Error description: `Users need to enter an ID` → Should be changed to: `Users need to enter a UUID`"
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Information
+      description: Relevant code/screenshots/user feedback, etc. (Drag and drop to upload images)
+    validations:
+      required: false

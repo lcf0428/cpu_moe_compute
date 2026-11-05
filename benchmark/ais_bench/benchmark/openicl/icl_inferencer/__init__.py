@@ -1,0 +1,7 @@
+from ais_bench.benchmark.openicl.icl_inferencer.icl_base_api_inferencer import BaseApiInferencer
+from ais_bench.benchmark.openicl.icl_inferencer.icl_base_local_inferencer import BaseLocalInferencer
+from ais_bench.benchmark.openicl.icl_inferencer.icl_gen_inferencer import GenInferencer  # noqa
+from ais_bench.benchmark.openicl.icl_inferencer.icl_multiturn_inferencer import MultiTurnGenInferencer
+from ais_bench.benchmark.openicl.icl_inferencer.icl_bfcl_v3_inferencer import BFCLV3FunctionCallInferencer
+from ais_bench.benchmark.openicl.icl_inferencer.icl_base_inferencer import BaseInferencer
+from ais_bench.benchmark.openicl.icl_inferencer.ppl_inferencer import PPLInferencer  # noqa
