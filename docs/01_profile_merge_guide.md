@@ -97,7 +97,7 @@ bash scripts/merge_cpu_compute_latest.sh \
   "$TRACE" "$CPU_LOG" "$CLOCK_ANCHORS" "$OUT"
 ```
 
-输出 `trace_view_cpu_compute.json`、`cpu_compute_stats.json`、`cpu_compute_report.txt`。也可以直接运行核心合成器，参数见 `--help`；多个 CPU 日志需要在校时 JSONL 中包含各 PID 的锚点。原始输入不要覆盖。使用 Perfetto 或兼容 Chrome trace 的查看器打开合成结果。
+输出 `trace_view_cpu_compute.json`、`cpu_compute_stats.json`、`cpu_compute_report.txt`。也可以直接运行核心合成器，参数见 `--help`；多个 CPU 日志需要在校时 JSONL 中包含各 PID 的锚点。原始输入不要覆盖。使用 MindStudio 打开合成结果。
 
 ## 标签含义
 
