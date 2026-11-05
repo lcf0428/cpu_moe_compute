@@ -43,6 +43,12 @@ cat /sys/bus/pci/devices/<BDF>/local_cpulist
 
 启动后检查具体 worker PID 的 `ps -L -p <PID> -o pid,tid,psr,comm` 和 `/proc/<PID>/task/<TID>/status` 中 `Cpus_allowed_list`，并用 `numastat -p <PID>` 检查内存落点。`psr` 只是当时所在核，允许核集合才是绑定依据。需要进程级约束时可以按核对后的节点使用 `numactl --cpunodebind=<NODE> --membind=<NODE> bash <script>`，但外层集合必须容纳后端全部线程，不能再把整个进程固定到某一个计算核。
 
+## 权重固定与 CPU 后端批量
+
+**当前权重传输方案必须显式设置 `KT_MOE_PIN_WEIGHTS=1`。** 按现有环境实测，未设为 1 时吞吐明显下降。这个设置服务于正常传输路径，不是仅采集时才开的诊断项。
+
+`cpu_moe.max_num_tokens` **建议先固定为 32**。现有环境尝试调大没有明显收益，这是当前计算后端需要进一步处理的问题，不能简单把它当成提高吞吐的旋钮。若实际输入确实需要更大容量，应核对后端实现后再验证。
+
 ## 计算与传输调度
 
 `transfer_policy=load_balance` 使用 CPU 计算和 H2D 权重传输的成本估计来选择本次迁入的专家；设备空间不足时由淘汰策略选择可用槽。当前参考实现按 `floor(M * t_cpu / (t_cpu + t_copy))` 计算迁入数量，再受可用槽和 `balance_max_transfers` 限制，M 为本次路由缺失专家数。70 和 450 微秒是配置估计，不能当成实测常数。

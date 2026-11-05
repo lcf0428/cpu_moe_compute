@@ -14,6 +14,7 @@
 | `cpuinfer_threads`、`numa_nodes`、`KT_MOE_CORE_OFFSET` | **必须按目标机器重新设置并检查实际绑核。** | 参考的 32 线程、NUMA 1、160–191 核只适用于原环境。线程数、允许核集合、内存落点和 NPU 亲和性必须一起对齐，具体方法见脚本设计说明。 |
 | `KT_MOE_POLL_CPU`、`KT_MOE_COMPLETION_CPU` | **使用当前 poll/completion 路径时必须选取实际可用核。** | 不能照抄 158/159。应避开计算工作核，并保证这些核包含在容器 cpuset 中。 |
 | `KT_BUILD`、`PYTHONPATH`、自定义算子及动态库路径 | **必须按目标环境准备并修改。** | 仓库中的绝对路径属于原机器。路径存在也不代表代码版本或动态库 ABI 匹配，见下文动态库准备要求。 |
+| `KT_MOE_PIN_WEIGHTS` | **当前方案必须显式设置为 `1`。** | 固定主存权重，供当前权重传输路径使用。按现有环境实测，未设为 1 会使吞吐明显下降；不是可随意关闭的诊断项。迁移后仍应检查实际生效情况。 |
 
 ## 专家预取建议先关闭
 
@@ -60,7 +61,6 @@
 | `cache_policy_enabled` | **复现当前缓存方案建议保持 `true`。** | 关闭会改变专家驻留和迁入行为，应作为单独实验。 |
 | `KT_MOE_POLL_SUBMIT` | **当前异步参考路径建议保持 `1`。** | 依赖匹配的 poll 库和绑核配置；其他提交方式需按当前实现重新验证。 |
 | `KT_MOE_MATCH_NPU_MXFP8` | **当前 MXFP8 路径建议保持 `1`。** | 用于匹配 CPU/NPU 激活计算约定；不能代替跨设备精度验证。 |
-| `KT_MOE_PIN_WEIGHTS` | **当前权重传输方案建议保持 `1`，并检查主存余量。** | 固定主存权重以支持对应传输路径，会占用主存资源。 |
 | `KT_MOE_COMPLETION_RT_PRIORITY` | **建议保持 `0`。** | 先避免实时线程带来的 RT throttling 问题。 |
 | `KT_MOE_RT_PRIORITY` | **建议不设置。** | 不建议直接沿用持续 FIFO 实时优先级设置。 |
 | `CPU_MOE_ASYNC_RESULT`、`CPU_MOE_ASYNC_VALIDATE_OUTPUTS` | **建议不设置。** | 当前参考未启用的实验性分支，不建议在首次复现时混入。 |
@@ -72,7 +72,7 @@
 |---|---|---|
 | `num_device_experts` | **按 HBM 容量、命中率和传输量设置，不必固定为 `[84]`。** | 单值广播各 MoE 层；逐层列表需要对齐注册顺序。增加容量会占用更多 HBM，但可能减少缺失专家传输。 |
 | `num_device_layers` | **建议先保持 `2`；需要调整时检查当前缓冲池实现。** | 它是卸载设备层缓冲参数，不能直接按模型层数填写。 |
-| `cpu_moe.max_num_tokens` | **必须覆盖当前 CPU 路径实际可能收到的批量，参考值为 32。** | 与服务端的 token 调度预算不同；调大可能增加缓冲占用。 |
+| `cpu_moe.max_num_tokens` | **当前计算后端建议先固定为 `32`，不要为提高吞吐盲目调大。** | 这是 CPU 计算后端的批量容量设置，不是服务端的 token 调度预算。现有环境已尝试调大，没有明显收益；后续确需更大批量时，应先检查后端实现及实际输入容量，再单独验证。 |
 | `transfer_policy`、`transfer_scheduler` | **复现当前方案保持 `load_balance`、`npu`。** | 更换策略属于另一套调度实验，需要重新核对图模式和动态库。 |
 | `balance_max_transfers` | **按可用槽与带宽设置，参考值 32。** | 限制单次迁入专家数，仍受可用槽位限制。 |
 | `balance_cpu_expert_us`、`balance_copy_us` | **建议按目标环境实测后设置，不要把 70/450 微秒当通用常数。** | 当前比例公式为 `floor(M*t_cpu/(t_cpu+t_copy))`；提高 CPU 成本估计会增加迁入比例，提高 copy 成本估计会降低迁入比例。 |
@@ -91,7 +91,7 @@
 
 | 参数 | 建议怎么设置 | 说明 |
 |---|---|---|
-| `CPU_MOE_PHASE_TRACE` / `KT_MOE_CPU_TRACE` | **只在采集合成图时开启；正常性能基线建议关闭。** | 前者是脚本条件开关，后者指定最小 CPU 日志路径，保留 `%p` 区分 PID。现有记录是 part compute，不包含上层结果归并。 |
+| `CPU_MOE_PHASE_TRACE` / `KT_MOE_CPU_TRACE` | **要合成图，必须在启动前设 `CPU_MOE_PHASE_TRACE=1`，并在 worker 环境中设 `KT_MOE_CPU_TRACE="$PROF_RAW_DIR/cpu_compute_%p.jsonl"`。** | 原脚本用前者决定是否导出后者。除此之外还必须采集同次 NPU trace 和校时锚点；完整最低配置见合成指南。不开内部 phase/lifecycle 细分开关。现有记录为 part compute，包含最终结果归并的 total 模式另需补丁。正常无采集运行可关闭这两个日志开关，但必须保留 `KT_MOE_PIN_WEIGHTS=1`。 |
 | `CPU_MOE_CLOCK_ANCHORS`、`--clock-alignment` | **使用本仓库校时方案合成时必须启用并提供。** | 先应用 profiler 接入补丁，再采集同次配对锚点；缺锚点不能直接混合 CPU/NPU 时间。依赖 Ascend exporter 已完成原始 host/device 对齐。 |
 | `CPU_MOE_CLOCK_CALIBRATION` | **本仓库新校时流程不依赖它，可关闭。** | 旧 Event 包围记录不能单独建立本合成器需要的时钟映射。 |
 | `KT_MOE_CPU_TRACE_KIND` | **仅在需要完整 CPU 计算结果归并口径时设 `total`。** | 需要先应用可选 C++ 补丁并重编；默认 part 与 total 不应混加。完整扩展和模型仍待验证。 |

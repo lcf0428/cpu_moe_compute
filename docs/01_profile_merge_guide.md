@@ -6,19 +6,71 @@
 
 原始文件现已完整备份到 `cpu_moe/`。原始参考入口：`/mnt/share/y50063808/vllm-ascend-workspace/cpu_moe/merge_cpu_compute_latest.sh`。本仓库 `scripts/` 保存加入校时和 T 标签的参考版本，原始包装器保存在 `reference/merge_cpu_compute_latest.original.sh`。新包装器要求显式给出同次 trace、CPU 日志和校时锚点，避免 latest 指向其他运行。
 
-## 最小 CPU 计算采集
+## 合成日志必须满足的最低配置
 
-`run_dpark_26.sh` 中的 shell 条件开关是 `CPU_MOE_PHASE_TRACE=1`，它实际设置：
+要得到本仓库合成器可接受的结果，**CPU 计算 JSONL、同次 NPU profiler trace、同 worker PID 的校时锚点三者缺一不可**。只设置 `CPU_MOE_PHASE_TRACE=1` 不够；`CPU_MOE_CLOCK_CALIBRATION=1` 也不能代替新校时锚点。
+
+### 先接入校时补丁
+
+26 服务器当前原始 `vllm-ascend` 源码尚未接入 `CPU_MOE_CLOCK_ANCHORS` 钩子。先在隔离源码副本中应用 `scripts/clock_anchor_profiler.patch`，再把 `scripts/clock_anchor_helper.py` 复制到实际运行的 `vllm_ascend/expert_offload/cpu_backend/`。应用、启动和停止的完整方法见 [校时实现说明](../reference/CLOCK_ALIGNMENT_IMPLEMENTATION.md)。**未接入补丁时，只 export `CPU_MOE_CLOCK_ANCHORS=1` 不会自动产生所需锚点。**
+
+### 启动脚本中必须保留这些设置
+
+下面是应写入启动脚本的配置片段。用任务独立目录替换原脚本的 profiler 目录设置；环境变量段放在 `PROF_RAW_DIR` 确定之后、`vllm serve` 之前，避免后面的旧配置覆盖它。
 
 ```bash
-export KT_MOE_CPU_TRACE="$CAPTURE/cpu_compute_%p.jsonl"
-export CPU_MOE_CLOCK_CALIBRATION=1
+PROFILE_ROOT=/mnt/share/y50063808/codex_logs/cpu_moe_profile
+RUN_STAMP=$(date +%Y%m%d-%H%M%S)
+PROF_RAW_DIR="$PROFILE_ROOT/$RUN_STAMP"
+mkdir -p "$PROF_RAW_DIR"
+
+# 当前权重传输方案必须开启；未设为 1 的吞吐明显下降。
+export KT_MOE_PIN_WEIGHTS=1
+
+# CPU 最小计算日志：两个都显式设置，%p 按 worker PID 展开。
+export CPU_MOE_PHASE_TRACE=1
+export KT_MOE_CPU_TRACE="$PROF_RAW_DIR/cpu_compute_%p.jsonl"
+
+# 必须先接入上述 profiler 钩子；记录 start/stop 配对锚点。
+export CPU_MOE_CLOCK_ANCHORS=1
+export VLLM_TORCH_PROFILER_DIR="$PROF_RAW_DIR"
+export VLLM_SERVER_DEV_MODE=1
+
+# 最小合成不需要内部耗时诊断。
 unset KT_MOE_LIFECYCLE_TRACE KT_MOE_LIFECYCLE_WORKERS KT_MOE_PHASE_TIMING
 unset KT_MOE_TASK_TRACE KT_MOE_PAGE_TRACE KT_MOE_POLL_TRACE
 unset VLLM_ASCEND_CPU_MOE_TRACE VLLM_ASCEND_PROFILE_DIAG_LOG
+# 旧校准记录不是本合成器输入，可关闭。
+unset CPU_MOE_CLOCK_CALIBRATION
 ```
 
-`CAPTURE` 使用本次任务专属目录，例如 `/mnt/share/y50063808/codex_logs/cpu_moe_profile/<时间>/`。该最小日志以 C++ CPU compute scope 的起止记录耗时，不开内部 worker、page、phase 细分诊断。它是作用域经过时间，包含该作用域内的等待，不是所有线程 CPU 用时之和，也不是 NPU 等待 CPU 的完整 roundtrip。实际边界是每个 part 的 forward_impl() 到返回；上层 merge_results() 的归约和输出类型转换、completion 通知、Python 返回与 H2D 不在该 span 内。完整 CPU 返回耗时需要额外外层计时，详见实施说明。
+同时，启动脚本传给 `--profiler-config` 的 JSON 建议先改成以下内容；`$PROF_RAW_DIR` 由脚本构造 JSON 时展开：
+
+```json
+{
+  "profiler": "torch",
+  "torch_profiler_dir": "$PROF_RAW_DIR",
+  "torch_profiler_with_stack": false,
+  "ignore_frontend": true,
+  "delay_iterations": 0,
+  "max_iterations": 0
+}
+```
+
+这里的 `max_iterations=0` 按当前实现表示由 `/start_profile` 与 `/stop_profile` 手动控制。先 warmup，再 start，运行一次有限请求，等待全部响应结束后 stop；随后等待 Ascend 解析完成。必须采集实际计算 worker 的 CPU/NPU activities，而不是只记录 API 前端。`additional_config.enable_cpu_binding=false`、`cpu_moe.max_num_tokens=32`、`expert_prefetch_enabled=false` 分别用于避免重复绑核、沿用当前后端批量设置及建立无预取基线。
+
+### 合成前确认三个输入都存在
+
+- 本次 `<ascend_pt>/ASCEND_PROFILER_OUTPUT/trace_view.json`。
+- 本次 worker 的 `cpu_compute_<PID>.jsonl`，包含 `cpu_moe.compute` 记录。
+- 同 PID 的 `cpu_clock_anchors_<PID>.jsonl`，且两个唯一 start/stop host marker 都在本次 trace 中。
+
+```bash
+bash scripts/merge_cpu_compute_latest.sh \
+  "$TRACE" "$CPU_LOG" "$CLOCK_ANCHORS" "$OUT"
+```
+
+这是默认 part compute 的最低流程。现有 C++ 区间到每个 part 的 `forward_impl()` 返回为止，不包含上层 `merge_results()` 的归并和 dtype 转换，也不含 completion 通知、Python 返回和 H2D。若要统计 CPU 计算起点到最终 CPU 输出写出的整个区间，还必须应用本指南末尾的 total 计时补丁、重编后端，并显式选择 total 事件；不能只改环境变量就假定旧二进制已有该能力。
 
 ## 必须先对齐时钟
 
