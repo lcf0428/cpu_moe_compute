@@ -4,7 +4,7 @@ CPU MoE 核心源码、运行脚本与配置备份，以及 profiler 合成参�
 
 - [GGUF 权重生成：给 agent 原始权重和输出路径](docs/04_gguf_generation.md)
 - [日志合成流程：给 agent 本次文件路径](docs/01_profile_merge_guide.md#日志合成直接交给-agent)
-- [可下载的 CPU 向 NPU 传输权重 trace 样例](examples/traces/first_miss_cpu2npu_weight/README.md)
+- [可下载的 NPU memcpy trace 样例](examples/traces/first_miss_npu_memcopy/README.md)
 - [脚本设计与 NUMA 绑核](docs/02_script_design.md)
 - [参数设置建议](docs/03_parameters.md)
 

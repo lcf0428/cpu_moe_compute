@@ -1,6 +1,6 @@
-# CPU 向 NPU 传输权重的 trace 参考
+# NPU memcpy trace 参考
 
-这份 `first_miss/cpu2npu_weight` 采集由用户提供，用于参考 CPU 计算、权重传输及 NPU 事件在合成时间线中的展示效果。文件按原始内容保存，未重新合成或修改时间戳。
+这份 `first_miss/npu_memcopy` 采集由用户提供，用于参考合成时间线的展示效果，替换此前的 `first_miss/cpu2npu_weight` 样例。文件保持原样，未重新合成或修改时间戳。
 
 [下载 trace_view_cpu_compute.json](trace_view_cpu_compute.json?raw=true)，使用 MindStudio 打开。
 
