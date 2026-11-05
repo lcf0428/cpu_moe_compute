@@ -10,7 +10,7 @@
 
 ## 必须由后端绑定 CPU 核
 
-`additional_config` 必须保留：
+**必须在 `additional_config` 中显式设置 `enable_cpu_binding=false`，不要省略后依赖默认值。**
 
 ```json
 {"enable_cpu_binding": false}
@@ -49,7 +49,15 @@ cat /sys/bus/pci/devices/<BDF>/local_cpulist
 
 `transfer_scheduler=npu` 与自定义 copy 库必须和对应代码、CANN、图捕获流程配套。CPU 计算、权重 H2D、设备计算和结果完成通知是不同阶段；图中重叠关系必须经过时钟校准才能解释。
 
-原脚本顶部写着 next-layer prefetch disabled，但 JSON 实际设置 `expert_prefetch_enabled=true`。解释和复现应以实际配置及代码分支为准，需要关闭预取时显式改为 false 并另行验证，不能沿用顶部注释。`T` 的按需迁入计数也不自动包含独立预取。
+**建议首次复现和迁移时显式设置 `expert_prefetch_enabled=false`。** 先在无预取基线验证计算结果、图模式和时序，再单独试开预取。开启后会增加权重传输、缓存槽竞争和异步依赖，当前分支可能出现正确性、同步或性能问题，不应直接当作稳定优化启用。
+
+原始脚本顶部写着 next-layer prefetch disabled，但 JSON 实际为 true；它是历史快照，迁移时应主动改成上述建议值。只有试开预取时才需要调整 `expert_prefetch_num`，建议从 1 开始。`hot_expert_preload` 是独立的热专家预加载开关，没有匹配的热专家统计文件时建议关闭。`T` 的按需迁入计数不自动包含独立预取。
+
+## 动态库需要在目标环境准备
+
+**原脚本中的 `.so` 路径不能直接照搬到另一台机器。** 本仓库不提供完整后端与这些二进制，使用者必须按目标 CPU 架构、Python、CANN、torch/torch_npu、编译器和对应源码版本准备或重新编译，再改成实际产物路径。相同 CPU 架构也不代表动态库 ABI 和运行时依赖一定兼容。
+
+`KT_MOE_POLL_LIBRARY` 指向的 `libkt_ready_poll.so`、`transfer_copy_library` 指向的 `libnpu_expert_copy_dispatch.so`、kt_kernel 扩展和自定义 CANN 算子都要分别核对。使用对应 poll 或 NPU transfer 路径时，缺少匹配库不能靠保留原路径、创建同名文件或随意删掉配置解决。应依据各源码版本的构建说明编译，检查实际加载位置与依赖，并做小规模运行验证。
 
 ## 迁移步骤
 
