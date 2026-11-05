@@ -22,21 +22,32 @@
 
 ## NUMA 与 NPU 亲和性需要分别核对
 
-首先确认计算线程及权重内存放在哪个 NUMA 节点，然后确认选中的物理 NPU 与该节点的 PCIe 或平台互联距离。只设置 `numa_nodes` 不足以证明 NPU 亲和性正确；只选择 NPU 最近节点也不足以证明线程数和 CPU 集合正确。
+**每台服务器的 NUMA 拓扑、CPU 编号、NPU 连接关系和容器可用核都可能不同。必须根据本次实际使用的 NPU card 确定亲和性和绑核方案，不能直接照抄本参考的 NUMA 1、160–191、158/159；同一台服务器换一张 NPU card，也必须重新确认。**
 
-在目标宿主机及容器中核对：
+大致流程如下：
+
+1. **先确定实际使用的 NPU card。** 核对宿主机设备编号、芯片/设备映射及容器内可见设备。进程内的逻辑卡 0 可能对应宿主机另一张物理卡，不能拿逻辑编号直接套用亲和性结论。
+2. **查询这张 NPU 对应的 CPU/NUMA 亲和性。** 根据该服务器的 NPU 拓扑工具、PCIe BDF 和系统报告，确定关联的 NUMA 节点及 CPU 集合；不能只凭卡号推断 NUMA 编号。多张卡要逐张核对，不能默认共用一套绑核。
+3. **核对该节点实际可用的核。** 将节点 CPU 列表与容器 cpuset、进程允许集合及现有资源占用对照，在允许范围内安排 CPU MoE 计算线程；同时考虑权重和计算内存的 NUMA 落点。
+4. **为计算与握手线程分别选核。** 据此设置 `numa_nodes`、`cpuinfer_threads`、`KT_MOE_CORE_OFFSET`，再为 poll 和 completion 选择独立可用核。参考后端若按 offset 分配连续工作核，就必须确认该整段 CPU 都属于目标节点并在允许集合内；不能跨到别的节点或超出 cpuset。
+5. **关闭上层重复绑核。** 显式设置 `enable_cpu_binding=false`，由 kt 后端执行计算线程绑核。需要外层 NUMA 内存约束时，约束范围必须容纳全部计算及握手线程，不能与后端安排冲突。
+6. **启动后验证实际结果。** 检查每类线程的实际允许核集合和内存落点，并在使用目标 NPU 的实际请求中验证。配置文件里的核号、启动 echo 或某一时刻运行所在核，都不能单独证明绑核正确。
+
+这里要同时解决两件事：**CPU 计算线程和内存如何落在合适的 NUMA 节点，以及该节点与实际 NPU card 是否亲近。** 只填 `numa_nodes` 或只挑空闲 CPU，都不足以完成这项配置。因此仓库提供流程与参考脚本，由使用者或 agent 按目标服务器重新对齐，不提供一套适用于所有服务器的固定核号。
+
+在目标宿主机及容器中核对。下面的 `NODE` 和 `BDF` 必须使用上述查询得到的值：
 
 ```bash
 numactl --hardware
 lscpu -e=CPU,NODE,SOCKET,CORE,ONLINE
-cat /sys/devices/system/node/node1/cpulist
+cat "/sys/devices/system/node/node${NODE}/cpulist"
 grep Cpus_allowed_list /proc/self/status
 npu-smi info
 npu-smi info -t topo
 # 若当前 npu-smi 不支持 topo，使用该版本帮助及 PCIe BDF 对应关系查询
 # 已确认 NPU 对应的 PCIe BDF 后：
-cat /sys/bus/pci/devices/<BDF>/numa_node
-cat /sys/bus/pci/devices/<BDF>/local_cpulist
+cat "/sys/bus/pci/devices/${BDF}/numa_node"
+cat "/sys/bus/pci/devices/${BDF}/local_cpulist"
 ```
 
 `numa_node=-1` 代表内核未报告，不等于节点 0。`ASCEND_RT_VISIBLE_DEVICES=7` 是可见物理卡选择，进程内逻辑卡号可能变为 0，要结合实际映射核对。容器 cpuset 必须包含计算、poll 和 completion 所需核，32 个计算线程应对应允许的 32 个工作核，握手线程放在独立可用核。
@@ -67,6 +78,6 @@ cat /sys/bus/pci/devices/<BDF>/local_cpulist
 
 ## 迁移步骤
 
-先对齐代码和依赖，再确认两份权重与自定义动态库，随后检查 NPU 和 CPU 亲和性、实际绑核及内存落点。先验证 eager 基线和模型结果，再验证图模式，最后采集同次 CPU 与 NPU profiler。不要为了复现截图而移动时间区间，也不能根据截图证明模型正确或性能提升。
+先对齐代码和依赖，再确认两份权重与自定义动态库，随后检查 NPU 和 CPU 亲和性、实际绑核及内存落点。此前测试均使用图模式，建议沿用图模式并验证模型结果，最后采集同次 CPU 与 NPU profiler。不要为了复现截图而移动时间区间，也不能根据截图证明模型正确或性能提升。
 
 新任务的运行日志、临时采集及校时输出统一放 `/mnt/share/y50063808/codex_logs/<任务名>/`。原参考脚本的 `/mnt/sdc/...` 和 latest 链接属于历史环境，执行前应改成当前任务目录；不要直接执行原样快照。
