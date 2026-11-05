@@ -306,7 +306,7 @@
   },
   {
     "path": "dependencies/ktransformers-AK/tools",
-    "reason": "non-core ktransformers directory",
+    "reason": "Non-core tools excluded except five GGUF conversion/verification files explicitly restored; see manifest",
     "kind": "directory"
   },
   {

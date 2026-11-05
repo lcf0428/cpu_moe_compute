@@ -9724,5 +9724,35 @@
     "bytes": 3217,
     "sha256": "90d6986b833e40b80acee71679dfbfc9660ad403021e18f641daff82075fe692",
     "mode": "0o644"
+  },
+  {
+    "path": "cpu_moe/dependencies/ktransformers-AK/tools/batch_convert_mxfp4_layers_mp.py",
+    "bytes": 7954,
+    "sha256": "7b591ad7a8c7a0077e26d66e8837a7c08d8a8f62ddc620743cdf0e4eef47f81d",
+    "mode": "0o644"
+  },
+  {
+    "path": "cpu_moe/dependencies/ktransformers-AK/tools/convert_mxfp4_layer_to_gguf.py",
+    "bytes": 11085,
+    "sha256": "c2b335a9cf9d3c023232fff8f46b998a6c7aa5fad9fec7cbcfa3c95ec295534c",
+    "mode": "0o644"
+  },
+  {
+    "path": "cpu_moe/dependencies/ktransformers-AK/tools/verify_mxfp4_gguf_set.py",
+    "bytes": 8057,
+    "sha256": "33752a0dc166a913758216e36f592f5ebab41215fc0089b7bdd9481ae5c50b76",
+    "mode": "0o644"
+  },
+  {
+    "path": "cpu_moe/dependencies/ktransformers-AK/tools/verify_mxfp4_layer.py",
+    "bytes": 8302,
+    "sha256": "011820a6f79f79027acf52bcad5b12d22a20f8e850a1f48769406fdafa219a57",
+    "mode": "0o644"
+  },
+  {
+    "path": "cpu_moe/dependencies/ktransformers-AK/tools/mxfp4_gguf_sha256.txt",
+    "bytes": 3860,
+    "sha256": "4df64c3f169833291892a1595021f72ad4bee4c0021d1b909c48c79fa47e2285",
+    "mode": "0o644"
   }
 ]

@@ -10,3 +10,5 @@
 两个补丁通过隔离副本 git apply --check；total header 在 22 服务器以 g++ 标准库 fixture 验证默认 part/total 互斥与 T/E/C 字段。
 
 未运行模型或重新编译完整 C++ 扩展，未启动或停止现有服务，没有新 NPU profiler 采集。校时接入补丁仍需隔离环境中的实际采集验证，并确认 Ascend exporter 的 host/device 时域映射。测试结果不等于精度正确或性能提升。
+
+补齐 GGUF 工具：从 26 服务器补传5个转换/校验文件并逐一比对源 SHA256，核心备份现共1626个文件。此次仅核对源码和文档中的参数，未重新转换整套权重。用户确认此前只试过 DeepSeek V4 Flash 与0731版本，其他模型未测试。

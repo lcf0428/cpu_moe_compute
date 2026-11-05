@@ -8,6 +8,29 @@
 
 原始文件现已完整备份到 `cpu_moe/`。原始参考入口：`/mnt/share/y50063808/vllm-ascend-workspace/cpu_moe/merge_cpu_compute_latest.sh`。本仓库 `scripts/` 保存加入校时和 T 标签的参考版本，原始包装器保存在 `reference/merge_cpu_compute_latest.original.sh`。新包装器要求显式给出同次 trace、CPU 日志和校时锚点，避免 latest 指向其他运行。
 
+## 日志合成直接交给 agent
+
+日常使用时，**给 agent 服务器和本次采集目录即可，不必自己研究脚本或手工填写所有开关**。如果已经知道 trace 和 CPU 日志的具体路径，也一起提供，避免同目录多次采集混淆。
+
+可以直接复制下面这段：
+
+```text
+请在26服务器合成本次CPU MoE与NPU profiler日志。
+采集目录：/本次实际采集目录
+原始trace路径：/如果已知则填写/trace_view.json
+CPU日志路径：/如果已知则填写/cpu_compute_<PID>.jsonl
+请按 cpu_moe_compute 仓库的合成指南，自动查找同次、同PID的配套文件，
+检查时钟对齐依据后合成，追加真实T计数，保留本次窗口内原始NPU轨道。
+输出合成JSON、统计JSON和文本报告，告诉我用MindStudio打开哪个文件。
+如果缺少可靠校时信息，请明确说明缺项，不要直接拼接或猜偏移。
+```
+
+**agent 执行的流程就是：找同次文件 → 检查配对及校时 → 调用合成脚本 → 检查输出 → 给出结果路径。** 用户只需要提供能定位本次数据的路径；文件在本地时直接给本地路径，不必先搬回服务器。
+
+新采集若按下面的最低配置记录了校时锚点，agent 可以直接调用 `scripts/merge_cpu_compute_latest.sh` 完成。旧采集缺少锚点时，agent 需要寻找其他有效同步证据；没有可靠依据就说明需要重新采集，不能因为界面简单而省略对齐。目录里已有 `trace_view_cpu_compute.json` 时，先辨认它是已有结果，不能当作原始 NPU trace 再合成。
+
+下面的配置和时钟说明供 agent 接入采集、执行合成或排障时参考，日常无需用户逐项手工操作。
+
 ## 合成日志必须满足的最低配置
 
 要得到本仓库合成器可接受的结果，**CPU 计算 JSONL、同次 NPU profiler trace、同 worker PID 的校时锚点三者缺一不可**。只设置 `CPU_MOE_PHASE_TRACE=1` 不够；`CPU_MOE_CLOCK_CALIBRATION=1` 也不能代替新校时锚点。
