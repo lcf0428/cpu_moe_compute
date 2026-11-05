@@ -2,8 +2,8 @@
 
 2026-11-05 完成备份及参考实现检查。
 
-- 远端压缩归档与本地归档 SHA256 一致；2637 个 benchmark 文件逐一与归档内容校验一致。
-- 检查暂存 benchmark 数量为 2637；提交内容无超过 5 MiB 的文件；扫描未发现 GitHub token、私钥头和 AWS access key 模式。
+- 本次更正为 26 服务器 CPU MoE 核心备份：1621 个文件、22,337,873 字节；远端归档与本地归档 SHA256 一致，全部源文件逐一与远端 manifest 校验一致。
+- 移除当前分支误传的通用 benchmark 目录；核心备份排除超过 5 MiB 文件、权重、二进制及运行产物，扫描 GitHub token 和私钥头模式。
 - `python tests/test_trace_merge.py` 通过：T0/T2/Tunknown、CPU wall clock 故意错位但 RAW marker 正确映射、缺锚点拒绝、精确大时间戳裁剪、原事件保留、匹配 roundtrip 窗口并集与范围外常驻日志过滤、total 事件显式选择且不重复计时。
 - Bash 包装器语法检查和 Python 源码语法检查通过；合成器命令行成功写出可解析的 trace、stats 和文本报告。
 

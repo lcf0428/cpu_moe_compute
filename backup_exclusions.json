@@ -1,21 +1,747 @@
 [
   {
-    "path": "ais_bench/benchmark/configs/models/vllm_api/vllm_api_chat_temp.py",
-    "reason": "symlink"
+    "path": "logs",
+    "reason": "generated/cache/archive/weight directory",
+    "kind": "directory"
   },
   {
-    "path": "ais_bench/datasets/gsm8k/train_socratic.jsonl",
-    "bytes": 5401739,
-    "reason": "large/generated/secret-config"
+    "path": "DeepSeek-V4-Flash-0731-GGUF",
+    "reason": "generated/cache/archive/weight directory",
+    "kind": "directory"
   },
   {
-    "path": "ais_bench/datasets/LongBench-v2/data_full.json",
-    "bytes": 465490469,
-    "reason": "large/generated/secret-config"
+    "path": "deps",
+    "reason": "experiment output or staged dependency installation",
+    "kind": "directory"
   },
   {
-    "path": "ais_bench/datasets/LongBench-v2/data.json",
-    "bytes": 465490535,
-    "reason": "large/generated/secret-config"
+    "path": "transfer_timing_diag_20261019_164525",
+    "reason": "experiment output or staged dependency installation",
+    "kind": "directory"
+  },
+  {
+    "path": "kernel_trials",
+    "reason": "experiment output or staged dependency installation",
+    "kind": "directory"
+  },
+  {
+    "path": "tmp",
+    "reason": "generated/cache/archive/weight directory",
+    "kind": "directory"
+  },
+  {
+    "path": "extra-info",
+    "reason": "generated/cache/archive/weight directory",
+    "kind": "directory"
+  },
+  {
+    "path": "code_backups",
+    "reason": "generated/cache/archive/weight directory",
+    "kind": "directory"
+  },
+  {
+    "path": "archive",
+    "reason": "generated/cache/archive/weight directory",
+    "kind": "directory"
+  },
+  {
+    "path": "native_integration/before",
+    "reason": "generated/cache/archive/weight directory",
+    "kind": "directory"
+  },
+  {
+    "path": "native_integration/build",
+    "reason": "generated/cache/archive/weight directory",
+    "kind": "directory"
+  },
+  {
+    "path": "native_integration/kt_kernel_ext.before_native.so",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "native_integration/npu_swap_results.json",
+    "reason": "experiment output",
+    "kind": "file"
+  },
+  {
+    "path": "native_integration/kt_kernel_ext.cpython-311-aarch64-linux-gnu.so",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "native_integration/kt_native_synthetic_results.json",
+    "reason": "experiment output",
+    "kind": "file"
+  },
+  {
+    "path": "native_integration/kt_native_real_results.json",
+    "reason": "experiment output",
+    "kind": "file"
+  },
+  {
+    "path": "native_integration/adapter_results.json",
+    "reason": "experiment output",
+    "kind": "file"
+  },
+  {
+    "path": "native_integration/all_results.json",
+    "reason": "experiment output",
+    "kind": "file"
+  },
+  {
+    "path": "native_integration/source.sha256",
+    "reason": "experiment output",
+    "kind": "file"
+  },
+  {
+    "path": "native_integration/python/kt_kernel/__pycache__",
+    "reason": "generated/cache/archive/weight directory",
+    "kind": "directory"
+  },
+  {
+    "path": "native_integration/python/kt_kernel/kt_kernel_ext.cpython-311-aarch64-linux-gnu.so.pre-strict-pin-20261006",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "native_integration/python/kt_kernel/kt_kernel_ext.cpython-311-aarch64-linux-gnu.so.pre-numa-align-20261006",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "native_integration/python/kt_kernel/kt_kernel_ext.cpython-311-aarch64-linux-gnu.so.pre-cpu-compute-trace-20261006",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "native_integration/python/kt_kernel/kt_kernel_ext.cpython-311-aarch64-linux-gnu.so",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "native_integration/python/kt_kernel/utils/__pycache__",
+    "reason": "generated/cache/archive/weight directory",
+    "kind": "directory"
+  },
+  {
+    "path": "dependencies/cann-recipes-infer/.git",
+    "reason": "generated/cache/archive/weight directory",
+    "kind": "directory"
+  },
+  {
+    "path": "dependencies/cann-recipes-infer/.agents",
+    "reason": "unrelated CANN reference project; keep CPU MoE delivery patches only",
+    "kind": "directory"
+  },
+  {
+    "path": "dependencies/cann-recipes-infer/.gitcode",
+    "reason": "unrelated CANN reference project; keep CPU MoE delivery patches only",
+    "kind": "directory"
+  },
+  {
+    "path": "dependencies/cann-recipes-infer/accelerator",
+    "reason": "unrelated CANN reference project; keep CPU MoE delivery patches only",
+    "kind": "directory"
+  },
+  {
+    "path": "dependencies/cann-recipes-infer/benchmark",
+    "reason": "unrelated CANN reference project; keep CPU MoE delivery patches only",
+    "kind": "directory"
+  },
+  {
+    "path": "dependencies/cann-recipes-infer/dataset",
+    "reason": "unrelated CANN reference project; keep CPU MoE delivery patches only",
+    "kind": "directory"
+  },
+  {
+    "path": "dependencies/cann-recipes-infer/docs",
+    "reason": "unrelated CANN reference project; keep CPU MoE delivery patches only",
+    "kind": "directory"
+  },
+  {
+    "path": "dependencies/cann-recipes-infer/executor",
+    "reason": "unrelated CANN reference project; keep CPU MoE delivery patches only",
+    "kind": "directory"
+  },
+  {
+    "path": "dependencies/cann-recipes-infer/models",
+    "reason": "unrelated CANN reference project; keep CPU MoE delivery patches only",
+    "kind": "directory"
+  },
+  {
+    "path": "dependencies/cann-recipes-infer/module",
+    "reason": "unrelated CANN reference project; keep CPU MoE delivery patches only",
+    "kind": "directory"
+  },
+  {
+    "path": "dependencies/cann-recipes-infer/ops",
+    "reason": "unrelated CANN reference project; keep CPU MoE delivery patches only",
+    "kind": "directory"
+  },
+  {
+    "path": "dependencies/cann-recipes-infer/scripts",
+    "reason": "unrelated CANN reference project; keep CPU MoE delivery patches only",
+    "kind": "directory"
+  },
+  {
+    "path": "dependencies/cann-recipes-infer/tests",
+    "reason": "unrelated CANN reference project; keep CPU MoE delivery patches only",
+    "kind": "directory"
+  },
+  {
+    "path": "dependencies/cann-recipes-infer/.gitignore",
+    "reason": "unrelated reference project file",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/cann-recipes-infer/.pre-commit-config.yaml",
+    "reason": "unrelated reference project file",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/cann-recipes-infer/AGENTS.md",
+    "reason": "unrelated reference project file",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/cann-recipes-infer/CONTRIBUTION.md",
+    "reason": "unrelated reference project file",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/cann-recipes-infer/README.md",
+    "reason": "unrelated reference project file",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/cann-recipes-infer/integration/custom",
+    "reason": "unrelated CANN reference project; keep CPU MoE delivery patches only",
+    "kind": "directory"
+  },
+  {
+    "path": "dependencies/cann-recipes-infer/integration/vllm",
+    "reason": "unrelated CANN reference project; keep CPU MoE delivery patches only",
+    "kind": "directory"
+  },
+  {
+    "path": "dependencies/cann-recipes-infer/integration/sglang/llada2.x",
+    "reason": "unrelated CANN reference project; keep CPU MoE delivery patches only",
+    "kind": "directory"
+  },
+  {
+    "path": "dependencies/cann-recipes-infer/integration/sglang/qwen3-moe",
+    "reason": "unrelated CANN reference project; keep CPU MoE delivery patches only",
+    "kind": "directory"
+  },
+  {
+    "path": "dependencies/cann-recipes-infer/integration/sglang/qwen3-next",
+    "reason": "unrelated CANN reference project; keep CPU MoE delivery patches only",
+    "kind": "directory"
+  },
+  {
+    "path": "dependencies/cann-recipes-infer/integration/sglang/dsv4-flash-single-npu-moe-offload/llama_cpp",
+    "reason": "unrelated CANN reference project; keep CPU MoE delivery patches only",
+    "kind": "directory"
+  },
+  {
+    "path": "dependencies/cann-recipes-infer/integration/sglang/dsv4-flash-single-npu-moe-offload/scripts",
+    "reason": "unrelated CANN reference project; keep CPU MoE delivery patches only",
+    "kind": "directory"
+  },
+  {
+    "path": "dependencies/cann-recipes-infer/integration/sglang/dsv4-flash-single-npu-moe-offload/sglang",
+    "reason": "unrelated CANN reference project; keep CPU MoE delivery patches only",
+    "kind": "directory"
+  },
+  {
+    "path": "dependencies/cann-recipes-infer/integration/sglang/dsv4-flash-single-npu-moe-offload/LICENSE.txt",
+    "reason": "unrelated reference project file",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/cann-recipes-infer/integration/sglang/dsv4-flash-single-npu-moe-offload/README.md",
+    "reason": "unrelated reference project file",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/cann-recipes-infer/integration/sglang/dsv4-flash-single-npu-moe-offload/apply_all.sh",
+    "reason": "unrelated reference project file",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/cann-recipes-infer/integration/sglang/dsv4-flash-single-npu-moe-offload/gen_main_repo_patches.sh",
+    "reason": "unrelated reference project file",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/cann-recipes-infer/integration/sglang/dsv4-flash-single-npu-moe-offload/gen_sglang_patches.sh",
+    "reason": "unrelated reference project file",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/.git",
+    "reason": "generated/cache/archive/weight directory",
+    "kind": "directory"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/.github",
+    "reason": "non-core ktransformers directory",
+    "kind": "directory"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/archive",
+    "reason": "generated/cache/archive/weight directory",
+    "kind": "directory"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/doc",
+    "reason": "non-core ktransformers directory",
+    "kind": "directory"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/docker",
+    "reason": "non-core ktransformers directory",
+    "kind": "directory"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/tools",
+    "reason": "non-core ktransformers directory",
+    "kind": "directory"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/kt-kernel/kt_kernel.egg-info",
+    "reason": "generated/cache/archive/weight directory",
+    "kind": "directory"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/kt-kernel/build",
+    "reason": "generated/cache/archive/weight directory",
+    "kind": "directory"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/kt-kernel/build_task_trace",
+    "reason": "generated/cache/archive/weight directory",
+    "kind": "directory"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/kt-kernel/build_x86_mxfp4",
+    "reason": "generated/cache/archive/weight directory",
+    "kind": "directory"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/kt-kernel/.pytest_cache",
+    "reason": "generated/cache/archive/weight directory",
+    "kind": "directory"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/kt-kernel/build_x86_configure.log",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/kt-kernel/build_x86_compile.log",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/kt-kernel/python/__pycache__",
+    "reason": "generated/cache/archive/weight directory",
+    "kind": "directory"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/kt-kernel/python/kt_kernel_ext.cpython-311-aarch64-linux-gnu.so",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/kt-kernel/python/kt_kernel_ext.cpython-311-aarch64-linux-gnu.so.pre-strict-pin-20261006",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/kt-kernel/python/kt_kernel_ext.cpython-311-aarch64-linux-gnu.so.pre-numa-align-20261006",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/kt-kernel/python/kt_kernel_ext.cpython-311-aarch64-linux-gnu.so.pre-cpu-compute-trace-20261006",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/kt-kernel/python/kt_kernel_ext.cpython-311-x86_64-linux-gnu.so",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/kt-kernel/python/utils/__pycache__",
+    "reason": "generated/cache/archive/weight directory",
+    "kind": "directory"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/kt-kernel/tests/__pycache__",
+    "reason": "generated/cache/archive/weight directory",
+    "kind": "directory"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/custom_flashinfer",
+    "reason": "not referenced by current kt-kernel CMake source paths",
+    "kind": "directory"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/sglang",
+    "reason": "not referenced by current kt-kernel CMake source paths",
+    "kind": "directory"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/.git",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/ggml-vulkan-shaders.hpp",
+    "reason": "larger than 5 MiB",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/docs/llama-star/idea-arch.key",
+    "reason": "binary content",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/docs/llama-star/idea-arch.pdf",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/examples/jeopardy/qasheet.csv",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/examples/llama.android/app/src/main/res/mipmap-hdpi/ic_launcher.webp",
+    "reason": "binary content",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/examples/llama.android/app/src/main/res/mipmap-hdpi/ic_launcher_round.webp",
+    "reason": "binary content",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/examples/llama.android/app/src/main/res/mipmap-mdpi/ic_launcher.webp",
+    "reason": "binary content",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/examples/llama.android/app/src/main/res/mipmap-mdpi/ic_launcher_round.webp",
+    "reason": "binary content",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/examples/llama.android/app/src/main/res/mipmap-xhdpi/ic_launcher.webp",
+    "reason": "binary content",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/examples/llama.android/app/src/main/res/mipmap-xhdpi/ic_launcher_round.webp",
+    "reason": "binary content",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/examples/llama.android/app/src/main/res/mipmap-xxhdpi/ic_launcher.webp",
+    "reason": "binary content",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/examples/llama.android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.webp",
+    "reason": "binary content",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/examples/llama.android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.webp",
+    "reason": "binary content",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/examples/llama.android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp",
+    "reason": "binary content",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/examples/llama.android/gradle/wrapper/gradle-wrapper.jar",
+    "reason": "binary content",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/examples/server/public/favicon.ico",
+    "reason": "binary content",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/examples/server/themes/buttons-top/buttons_top.png",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/examples/server/themes/buttons-top/favicon.ico",
+    "reason": "binary content",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/examples/server/themes/wild/favicon.ico",
+    "reason": "binary content",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/examples/server/themes/wild/llama_cpp.png",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/examples/server/themes/wild/llamapattern.png",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/examples/server/themes/wild/wild.png",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/gguf-py/gguf/__pycache__",
+    "reason": "generated/cache/archive/weight directory",
+    "kind": "directory"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/media/llama-leader.jpeg",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/media/llama0-banner.png",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/media/llama0-logo.png",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/media/llama1-banner.png",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/media/llama1-logo.png",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/media/matmul.png",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/models/ggml-vocab-aquila.gguf",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/models/ggml-vocab-baichuan.gguf",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/models/ggml-vocab-bert-bge.gguf",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/models/ggml-vocab-command-r.gguf",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/models/ggml-vocab-deepseek-coder.gguf",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/models/ggml-vocab-deepseek-llm.gguf",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/models/ggml-vocab-falcon.gguf",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/models/ggml-vocab-gpt-2.gguf",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/models/ggml-vocab-gpt-neox.gguf",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/models/ggml-vocab-gpt2.gguf",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/models/ggml-vocab-llama-bpe.gguf",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/models/ggml-vocab-llama-spm.gguf",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/models/ggml-vocab-mpt.gguf",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/models/ggml-vocab-phi-3.gguf",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/models/ggml-vocab-qwen2.gguf",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/models/ggml-vocab-refact.gguf",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/models/ggml-vocab-stablelm.gguf",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/llama.cpp/models/ggml-vocab-starcoder.gguf",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/pybind11/.git",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/pybind11/docs/pybind11-logo.png",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/pybind11/docs/pybind11_vs_boost_python1.png",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "dependencies/ktransformers-AK/third_party/pybind11/docs/pybind11_vs_boost_python2.png",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "testdata/cpu_compute_fixture_20261006.jsonl",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "native_npu_integration/before",
+    "reason": "generated/cache/archive/weight directory",
+    "kind": "directory"
+  },
+  {
+    "path": "native_npu_integration/service_smoke_results.json",
+    "reason": "experiment output",
+    "kind": "file"
+  },
+  {
+    "path": "native_npu_integration/eager_smoke_results.json",
+    "reason": "experiment output",
+    "kind": "file"
+  },
+  {
+    "path": "native_npu_integration/graph_nopf_smoke_results.json",
+    "reason": "experiment output",
+    "kind": "file"
+  },
+  {
+    "path": "native_npu_integration/graph_nopf_repeat_results.json",
+    "reason": "experiment output",
+    "kind": "file"
+  },
+  {
+    "path": "native_mxfp4_dot_prototype/libnative_dot.so",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "native_mxfp4_dot_prototype/check_bounds",
+    "reason": "binary content",
+    "kind": "file"
+  },
+  {
+    "path": "native_mxfp4_dot_prototype/source.sha256",
+    "reason": "experiment output",
+    "kind": "file"
+  },
+  {
+    "path": "native_mxfp4_dot_prototype/libnative_moe.so",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "native_mxfp4_dot_prototype/moe_synthetic_results.json",
+    "reason": "experiment output",
+    "kind": "file"
+  },
+  {
+    "path": "native_mxfp4_dot_prototype/moe_real_results.json",
+    "reason": "experiment output",
+    "kind": "file"
+  },
+  {
+    "path": "native_mxfp4_dot_prototype/check_moe_bounds",
+    "reason": "binary content",
+    "kind": "file"
+  },
+  {
+    "path": "kt_async_runtime/kt_kernel/__pycache__",
+    "reason": "generated/cache/archive/weight directory",
+    "kind": "directory"
+  },
+  {
+    "path": "kt_async_runtime/kt_kernel/libkt_ready_poll.so",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "kt_async_runtime/kt_kernel/kt_kernel_ext.cpython-311-aarch64-linux-gnu.so",
+    "reason": "binary/weights/logs/data/secret-config",
+    "kind": "file"
+  },
+  {
+    "path": "kt_async_runtime/kt_kernel/utils/__pycache__",
+    "reason": "generated/cache/archive/weight directory",
+    "kind": "directory"
+  },
+  {
+    "path": "kt_async_runtime/kt_kernel/sft/__pycache__",
+    "reason": "generated/cache/archive/weight directory",
+    "kind": "directory"
   }
 ]

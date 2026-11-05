@@ -1,0 +1,27 @@
+CPU MoE 脚本入口（整理于2026-10-26）
+
+日常服务只使用顶层三个入口，原参数和内容均保留：
+  run_dpark_npu0.sh  卡0，dspark
+  run_dpark.sh       卡7，dspark
+  run_cpu_moe.sh     卡7，非dspark入口
+卡号/端口以脚本当前内容为准；此清理没有启动、停止或重启服务。
+
+常用工具：
+  tools/benchmark/aisbench_with_stats.sh   包装ais_bench并收集统计
+  tools/benchmark/moe_stats.py            只读指标快照/报表
+  tools/benchmark/moe_stats_README.md     指标工具说明（在该目录运行例子）
+  tools/benchmark/collect_ablation_stats.py 读取消融结果
+  tools/benchmark/bench_cache_policies.py LRC/LRU小型验证与微基准
+  tools/profiling/merge_cpu_compute_trace.py 合成同次Ascend trace和CPU日志
+  docs/HYBRID_MOE_INTERFACE.md            CPU/NPU混合接口说明
+
+历史实验和调试脚本统一归档：
+  archive/script-cleanup-20261026T130337Z-b4f6f2
+其中launchers是旧服务入口，host_tools是旧宿主机绑核/IRQ实验，debug和profiling是历史诊断。
+旧merge.sh原本依赖目录中已不存在的select_cpu_compute_log.py，已归档，不作为可用入口。
+合成profile请使用tools/profiling中的Python工具并显式传入trace和CPU log。
+host_tools不要作为当前服务的常规启动入口；旧配置未在本次清理中执行或修改。
+
+模型、GGUF、kt_async_runtime、dependencies、profiling数据、日志、expert_rank_gsm8k.json均保留。
+irqbalance_policy.d仍被宿主机irqbalance引用，原位置保留。
+完整整理前原件保存在归档内original_top_level_files.tar.gz；manifest.json记录每个旧/新路径与SHA。

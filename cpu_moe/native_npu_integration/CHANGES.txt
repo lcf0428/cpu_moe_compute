@@ -1,0 +1,25 @@
+Native single-DRAM-store offload change - client date 2026-10-13
+STATUS: CODE EDITED ONLY. No tests, syntax checks, benchmarks, compilation, graph replay or serving validation run for this change, at the user's explicit request. Earlier CPU adapter and independent NPU benchmark results do not validate this unified manager path.
+
+Activation: existing cpu_moe.weight_format=native_mxfp4 together with cpu_moe.enabled=true. The separate native launch script from the prior turn already sets this mode. Legacy gguf mode retains its existing path. No service was started/restarted by this turn.
+
+Changes:
+1. Manager allocates one NativeMXFP4Weights owner per MoE layer: gate/up/down packed FP4 and three E8M0 scale buffers through the configured host allocator. Allocation thread uses configured NUMA affinity and explicit first touch; affinity is restored. Compatibility lists are views, not additional weight buffers.
+2. Safetensors interception copies original bytes directly to this owner. No CPU transpose, scale-layout rewrite or persistent NZ host storage. Existing bounded load-pool source clones remain transient. Completion and all six fields per expert are required before CPU binding.
+3. Native CPU backend construction is deferred from routed-expert init to post-load manager finalization. Wiring requires the manager's owner; it cannot independently reload a second checkpoint in the shared service path. KT borrows the same owner via its already implemented native interface.
+4. NativeExpertUploadTask holds owner/expert/fixed device destinations. Decode and prefill builders return these tasks; existing hot preload and prefetch use the same builders and transport.
+5. NativeMXFP4H2DTransport wraps the selected existing transport. Six original expert fields upload into one reusable ND staging set per stream. Gate/up concatenate only in HBM; weights become NZ there, scales acquire NPU layout there, and results copy into existing fixed slots. No converted data returns to DRAM. Last output references and stream recording protect asynchronous copies without retaining a full converted layer.
+6. Conversions and device byte copies run on the existing selected load stream. Existing transport.synchronize/load-stream event boundaries now also wait for conversion. No new graph synchronization contract is introduced; actual replay correctness remains unverified.
+7. Host memory logging counts the actual six owner storages. Accidental legacy combined-w13 raw-storage access in native mode fails explicitly.
+
+Scope: current single-card, TP=1, one-NUMA-pool native MXFP4 path. Multi-card/shard-per-rank native sharing is explicitly rejected. Original device slot addresses are preserved. Whole-model DRAM behavior, scale strides, callback execution, numerical parity and prefill/graph correctness require later validation.
+
+Modified source:
+- vllm_ascend/expert_offload/expert_offload_manager.py
+- vllm_ascend/expert_offload/native_mxfp4_h2d.py (new)
+- vllm_ascend/expert_offload/cpu_backend/wiring.py
+- vllm_ascend/ops/fused_moe/routed_experts.py
+
+Before-edit copies: cpu_moe/native_npu_integration/before/
+Own diff: cpu_moe/native_npu_integration/native_shared_dram.patch
+Earlier full archive remains at moe_offload/backup_single_native_20261013_012709/source.tar.

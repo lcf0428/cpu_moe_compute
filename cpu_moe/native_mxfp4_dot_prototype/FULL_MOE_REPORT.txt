@@ -1,0 +1,24 @@
+Native full CPU MoE validation, client date 2026-10-13
+
+Existing NPU implementation confirmed:
+expert_offload_manager.py process_weights_after_loading -> _cast_cpu_weights_to_device_format(mxfp4=True): stack host weights, H2D, restore original orientation, npu_format_cast(29), transpose, copy physical NZ storage back into resident DRAM buffers. Scale load functions also store NPU scale layout. _build_expert_h2d_tasks and _load_expert_weights_into_slots later copy these format-preserving bytes to resident slots; no runtime NZ conversion here. Keeping one native host copy would require changing this NPU upload path, with conversion overhead still unmeasured.
+
+Isolated native_moe.c now computes input Q8_0 quant -> gate/up native dot -> SiLU*up -> Q8_0 quant -> down native dot -> ordered route-weight sum. It borrows separate immutable weight/scale pointers; scratch holds activation bytes and intermediate values only. It does not allocate/copy expert weights. All six input projection/scale arrays are hashed before and after and unchanged.
+
+Compared to actual existing kt_kernel_ext.moe.MOE using its CPUInfer worker pool (1 NUMA pool, 2 threads). Existing binary and serving code remain unchanged.
+Real: 72 cases; 2801664 output elements; max abs error 2.384185791015625e-07; max error divided by peak reference magnitude 4.438920454545454e-06; exact cases 53.
+Synthetic aligned dimensions: 24 cases; 58368 elements; max abs error 1.4901161193847656e-08; exact cases 19.
+Real layers 0/16/42, experts 0/127/255, all projection rows, BF16 and F32 I/O, batches 1/4/9/10/16/17, 3 routing slots, unique mixed routes with negative IDs and GPU mask, all-skipped routes, zero and random inputs. Batch 17 crosses the existing group_max_len=16 recursion boundary. Existing reference weights are the actual GGUF bytes, not a second new algorithm.
+Full native MoE ASan+UBSan check passed with exact-sized buffers across 17 batch sizes and invalid scale/shape tests. Dot kernel sanitizer and 109280 exact dot comparisons passed previously.
+
+Known baseline/test limitations:
+- Existing grouped code uses 256-row tiles. Initial synthetic hidden=128 produced invalid results because down task count was zero. Test dimensions corrected to 256.
+- Reusing the existing backend's shared scratch across synthetic and real sizes in one process triggered heap corruption; separate test processes exit successfully. Cause not yet reduced or repaired; failure logs retained in moe_check.log.
+- Existing decode routing source uses the first matching router weight for duplicate expert IDs, unlike grouped route merge. Initial repeated-ID input exposed a discrepancy. Standard top-k uses unique IDs; equivalence suite therefore uses unique IDs. Native implementation sums each route's own weight. This is an existing exceptional-input issue, not evidence of normal top-k corruption.
+- Full flow is not all bit-exact due to float accumulation/activation compiler rounding. Tolerances set before final run: F32 normalized peak 2e-5; BF16 1e-2. Detailed case measurements in JSON.
+- This is a validated standalone full-compute prototype, not installed serving backend. It is serial and performs defensive scale validation each call; performance optimization, KT worker-pool native integration, owner lifetime/NUMA/pinning and NPU/graph transfer integration remain unimplemented. Timings in logs are harness duration, not serving benchmarks.
+
+Reproduce:
+gcc -O3 -std=c11 -shared -fPIC -march=armv8.2-a+fp16+dotprod -Wall -Wextra -Werror native_dot.c native_moe.c -lm -o libnative_moe.so
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python3 -u check_moe.py synthetic
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python3 -u check_moe.py real

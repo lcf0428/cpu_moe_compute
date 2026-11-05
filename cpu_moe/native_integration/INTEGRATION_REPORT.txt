@@ -1,0 +1,42 @@
+CPU native MXFP4 integration and NPU swap microbenchmark
+Client date: 2026-10-13. Host: 141.61.45.105.
+
+CPU STATUS: Opt-in native path implemented in the actual KT backend and Ascend adapter. Not a standalone replacement loop. All original gate/up/down work-stealing jobs, decode/grouped token handling, CPUInfer queue and Ascend stream callbacks are retained. Only weight addressing and matmul read native consecutive FP4 bytes plus separate E8M0 scales. Q8_0 activation quantization and SiLU are unchanged.
+
+Native owner holds six buffers. C++ skips expert new[] and load-time memcpy; pin_weights mlocks those borrowed weights and scales. Actual C++ local pointers are checked equal to all six owner pointers before/after locking. The adapter holds the owner across async execution and graph replay. Loader closes checkpoint source mappings and uses configured loading-thread affinity plus explicit first-touch for NUMA placement.
+
+VERIFICATION:
+- 26 unit/regression tests passed, including legacy GGUF/wiring, native format, directory resolution, borrowed owner forwarding, native loader bytes and affinity restoration, shape/dtype errors, reserved scale rejected before worker dispatch.
+- Actual KT native implementation: 72 real scenarios across model layers 0/16/42, experts 0/127/255; 2,801,664 output elements; max absolute difference 2.384185791015625e-07 vs previously validated full native reference. F32 and BF16, 1/4/9/10/16/17 tokens, unique mixed routes, skipped routes. 18 asynchronous queue pairs match single execution. Synthetic aligned cases also passed.
+- Actual Ascend adapter: NPU inputs, eager submit/wait at 1/4/10/17 tokens passed. Actual ACL graph capture/replay at 1 and 3 tokens, 5 input-changing replays each (10 total), passed. Tested KT_MOE_PIN_WEIGHTS=1; owner retained after external reference deletion; all six pointers unchanged.
+- Earlier dot prototype: 109,280 bit-exact dots against existing GGML; full standalone prototype ASan+UBSan passed. Final threaded C++ extension has NOT been sanitizer-built.
+- git diff --check passed. New Python files formatted with available yapf; ruff/clang-format unavailable. Full model serving and CPU throughput benchmark have not been run.
+
+ENABLE:
+New separate script:
+/mnt/share/y50063808/vllm-ascend-workspace/cpu_moe/run_cpu_moe_hybrid_graph_native.sh
+This preserves the existing graph script's settings except for native weight source/mode and the validated KT package path:
+  cpu_moe.weight_format = native_mxfp4
+  cpu_moe.weight_path = /mnt/share/DeepSeek-V4-Flash-0731
+  PYTHONPATH KT package = /mnt/share/y50063808/vllm-ascend-workspace/cpu_moe/native_integration/python
+Original GGUF launch script/default mode were not changed. No full serving process was restarted or switched.
+Supported first version: ARM NEON, one NUMA pool, H/I divisible by 256, identity expert mapping. Unsupported partitions fail rather than copying silently.
+
+NPU STATUS: Production paging still keeps prepared NZ bytes in DRAM. New native single-host-store NPU paging is not yet integrated. CPU native itself needs no GGUF or second persistent C++ weight copy, but WHOLE-SYSTEM DRAM still has the existing NPU NZ copy until NPU paging is changed.
+
+NPU MICROBENCHMARK:
+Physical card 7, real layer 16 expert 0, 13,369,344 host bytes including all gate/up/down FP4 and E8M0 scales. 20 warmups + 100 measured iterations per path and token size. Baseline prepared-NZ pinned host buffers use raw ACL H2D directly into fixed NZ slots. Target uses native pinned host H2D, npu_format_cast, scale views and raw D2D copy into the same fixed slots. Both compute a full single expert using dynamic MX activation quantization, quant_matmul, SiLU and down projection. Target and baseline output are bit-exact for 1 and 16 tokens.
+tokens=1, mode=nz: H2D 0.296499 ms; conversion+fixed-slot copy 0.000044 ms; device total 0.369758 ms (p95 0.484844); wall total 0.701980 ms
+tokens=1, mode=native: H2D 0.287220 ms; conversion+fixed-slot copy 0.120784 ms; device total 0.495186 ms (p95 0.873196); wall total 1.014040 ms
+tokens=16, mode=nz: H2D 0.295710 ms; conversion+fixed-slot copy 0.000044 ms; device total 0.360853 ms (p95 0.377100); wall total 0.695470 ms
+tokens=16, mode=native: H2D 0.287451 ms; conversion+fixed-slot copy 0.125445 ms; device total 0.508610 ms (p95 0.754554); wall total 1.016735 ms
+
+The conversion+slot-copy median is approximately 0.121-0.125 ms/expert. Device end-to-end median increases approximately 0.125-0.148 ms; Python host-observed median increases approximately 0.312-0.321 ms. Event intervals include dispatch gaps; this is not a kernel-only conversion benchmark. Target currently allocates conversion outputs and copies to fixed slots, so there is room to optimize.
+This is an isolated quant_matmul expert, NOT the production fused grouped-MoE/ACL-graph paging path. No service latency/throughput gain is claimed. Multi-expert misses, graph swap integration and prefetch overlap remain to be measured when NPU paging is integrated.
+
+BACKUPS:
+Full pre-change code archive (SHA256 verified previously):
+/mnt/share/y50063808/vllm-ascend-workspace/moe_offload/backup_single_native_20261013_012709/source.tar
+Additional originals of files changed in this turn: cpu_moe/native_integration/before/
+Original installed/serving extension was preserved; native extension and Python package are at cpu_moe/native_integration/.
+Own patches, test scripts/logs, JSON results and source/binary hashes are in that directory. Other concurrent worktree changes were left intact.

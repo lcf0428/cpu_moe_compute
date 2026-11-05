@@ -1,0 +1,8 @@
+Unified native MXFP4 validation
+43 shared CPU/NPU layer owners: 137.0625 GiB weights+scales; borrowed native C++ pointers verified; no CPU weight clones; no persistent host NZ copy.
+Sampled experts 0,1,2 layer16: new weights/scales byte-identical to legacy conversion, TorchCopy and raw ACL, also from graph host callback (3 replays).
+Eager with prefetch ON: 3 concurrent smoke requests coherent.
+Graph FULL_DECODE_ONLY sizes1,2,3 with prefetch ON: simple answers pass but CPU explanation repeats gibberish. FAIL.
+Graph with only prefetch OFF: 3 concurrent requests coherent, repeated suite coherent. This is smoke coverage, not a full model accuracy benchmark.
+Root cause not fully established: prefetch-enabled graph execution/order is suspect; individual converter callback passes.
+Known-good smoke service: physical NPU1, port8152, native Graph no-prefetch diagnostic script. Native standard startup now also defaults prefetch OFF.

@@ -4,7 +4,7 @@
 
 ![原始展示效果参考](profile_reference.png)
 
-原始参考入口：`/mnt/share/y50063808/vllm-ascend-workspace/cpu_moe/merge_cpu_compute_latest.sh`。本仓库 `scripts/` 保存加入校时和 T 标签的参考版本，原始包装器保存在 `reference/merge_cpu_compute_latest.original.sh`。新包装器要求显式给出同次 trace、CPU 日志和校时锚点，避免 latest 指向其他运行。
+原始文件现已完整备份到 `cpu_moe/`。原始参考入口：`/mnt/share/y50063808/vllm-ascend-workspace/cpu_moe/merge_cpu_compute_latest.sh`。本仓库 `scripts/` 保存加入校时和 T 标签的参考版本，原始包装器保存在 `reference/merge_cpu_compute_latest.original.sh`。新包装器要求显式给出同次 trace、CPU 日志和校时锚点，避免 latest 指向其他运行。
 
 ## 最小 CPU 计算采集
 

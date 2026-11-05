@@ -1,1 +1,0 @@
-from ais_bench_plugin_example_pkg.models.example_model import ExampleModel

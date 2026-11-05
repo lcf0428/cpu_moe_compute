@@ -1,0 +1,506 @@
+--- a/vllm_ascend/expert_offload/expert_offload_manager.py
++++ b/vllm_ascend/expert_offload/expert_offload_manager.py
+@@ -1,5 +1,6 @@
+ """Expert Offload Manager — manages CPU-side expert weights and NPU paging."""
+ 
++import ctypes
+ import json
+ import logging
+ import os
+@@ -25,6 +26,7 @@
+     create_h2d_transport,
+ )
+ from vllm_ascend.expert_offload.lrc_policy import LRCExpertCachePolicy
++from vllm_ascend.expert_offload.native_mxfp4_h2d import NativeExpertUploadTask, NativeMXFP4H2DTransport
+ from vllm_ascend.ops.fused_moe.experts_selector import (
+     commit_expert_substitutions,
+     maybe_prune_topk_experts,
+@@ -107,6 +109,16 @@
+         from vllm_ascend.ascend_config import get_ascend_config
+ 
+         self.offload_config = get_ascend_config().expert_offload_config
++        cpu_config = self.offload_config.cpu_moe
++        self._native_shared_weights = cpu_config.enabled and cpu_config.weight_format == "native_mxfp4"
++        self._native_owners = {}
++        self._native_loaded = {}
++        self._native_tp_size = vllm_config.parallel_config.tensor_parallel_size
++        if self._native_shared_weights and (
++            self.offload_config.enable_multi_card or self.offload_config.shard_per_rank
++            or self._native_tp_size != 1 or cpu_config.threadpool_count != 1
++        ):
++            raise ValueError("Shared native MXFP4 requires single-card offload and one NUMA pool")
+         # The minimum capacity is the conservative global dispatch threshold;
+         # actual weight and placement sizes are resolved per MoE layer.
+         self.num_device_experts = min(self.offload_config.num_device_experts_list)
+@@ -370,6 +382,124 @@
+         """
+         return self.offload_config.num_device_experts_for_layer(layer_idx)
+ 
++    @property
++    def native_mxfp4_enabled(self) -> bool:
++        return getattr(self, "_native_shared_weights", False)
++
++    def _init_native_layer_buffers(self, layer, layer_idx, experts):
++        # Optional KT dependency: only native CPU/NPU workers import this owner.
++        from kt_kernel.utils.native_mxfp4 import NativeMXFP4Weights
++
++        w13 = _expert_weight(layer, "w13_weight")
++        w2 = _expert_weight(layer, "w2_weight")
++        if w13.dtype != torch.uint8 or w2.dtype != torch.uint8 or w13.ndim != 3 or w2.ndim != 3:
++            raise ValueError("Shared native storage requires unpacked uint8 MXFP4 expert parameters")
++        hidden, intermediate = int(w13.shape[2]) * 2, int(w2.shape[2]) * 2
++        if w13.shape[1] != 2 * intermediate or w2.shape[1] != hidden:
++            raise ValueError("Unsupported native MXFP4 expert weight shapes")
++        if not hasattr(layer, "w13_weight_scale") or not hasattr(layer, "w2_weight_scale"):
++            raise ValueError("Native MXFP4 requires both E8M0 weight scales")
++        # Allocate once through the selected pinned-host allocator. These six
++        # buffers become the only routed-expert DRAM weight/scale owner.
++        shapes = (
++            (experts, intermediate, hidden // 2),
++            (experts, intermediate, hidden // 2),
++            (experts, hidden, intermediate // 2),
++            (experts, intermediate, hidden // 32),
++            (experts, intermediate, hidden // 32),
++            (experts, hidden, intermediate // 32),
++        )
++        nodes = self.offload_config.cpu_moe.numa_nodes
++        node = nodes[0] if nodes else 0
++        previous_affinity = os.sched_getaffinity(0)
++        with open(f"/sys/devices/system/node/node{node}/cpulist", encoding="utf-8") as cpu_file:
++            cpu_list = cpu_file.read().strip()
++        allowed = set()
++        for part in cpu_list.split(","):
++            bounds = part.split("-")
++            allowed.update(range(int(bounds[0]), int(bounds[-1]) + 1))
++        allowed &= previous_affinity
++        if not allowed:
++            raise ValueError(f"Native MXFP4 NUMA node {node} has no permitted CPUs")
++        os.sched_setaffinity(0, allowed)
++        try:
++            buffers = [self._allocate_expert_host_tensor(shape, torch.uint8) for shape in shapes]
++            for buffer in buffers:
++                ctypes.memset(buffer.data_ptr(), 0, buffer.numel())
++            owner = NativeMXFP4Weights(*buffers).validate(experts, hidden, intermediate)
++        finally:
++            os.sched_setaffinity(0, previous_affinity)
++        self._native_owners[layer_idx] = owner
++        self._native_loaded[layer_idx] = set()
++        # Compatibility views for expert-count bookkeeping. Native transfers
++        # never interpret the gate view as combined w13 storage.
++        self.w13_weights_cpu.append(list(owner.gate.unbind(0)))
++        self.w2_weights_cpu.append(list(owner.down.unbind(0)))
++        self.scale_cpu_buffers.setdefault("w13_weight_scale", []).append(list(owner.gate_scale.unbind(0)))
++        self.scale_cpu_buffers.setdefault("w2_weight_scale", []).append(list(owner.down_scale.unbind(0)))
++        self.w13_expert_size_bytes = owner.gate[0].numel() + owner.up[0].numel()
++        self.w2_expert_size_bytes = owner.down[0].numel()
++
++    def _require_native_weights_loaded(self):
++        for layer_idx, owner in self._native_owners.items():
++            expected = {
++                (expert, projection, kind)
++                for expert in range(owner.gate.shape[0])
++                for projection in ("w1", "w3", "w2")
++                for kind in ("weight", "scale")
++            }
++            missing = expected - self._native_loaded[layer_idx]
++            if missing:
++                raise RuntimeError(f"Native MXFP4 layer {layer_idx} has unloaded expert fields: {sorted(missing)[:8]}")
++
++    def _attach_native_cpu_backends(self):
++        from vllm_ascend.expert_offload.cpu_backend.wiring import maybe_attach_cpu_expert_backend
++
++        self._require_native_weights_loaded()
++        for layer_idx, layer in enumerate(self.moe_layers):
++            maybe_attach_cpu_expert_backend(
++                routed_experts=layer,
++                layer_name=layer.layer_name,
++                moe_config=layer.moe_config,
++                cpu_moe_config=self.offload_config.cpu_moe,
++                enable_multi_card=self.enable_multi_card,
++                tp_size=self._native_tp_size,
++                native_weights=self._native_owners[layer_idx],
++            )
++
++    @staticmethod
++    def _copy_native_field(target, owned):
++        source = owned.view(torch.uint8)
++        if tuple(source.shape) != tuple(target.shape):
++            raise ValueError(f"Native MXFP4 checkpoint field shape mismatch: {source.shape} != {target.shape}")
++        target.copy_(source)
++
++    def _load_native_field(self, layer_idx, expert, projection, kind, loaded):
++        owner = self._native_owners[layer_idx]
++        field = {"w1": "gate", "w3": "up", "w2": "down"}[projection]
++        if kind == "scale":
++            field += "_scale"
++        target = getattr(owner, field)[expert]
++        # The mmap can close before background loading finishes. Keep only a
++        # bounded transient clone, using the existing load-pool drain policy.
++        owned = loaded.cpu().clone()
++        future = self._get_load_pool().submit(self._copy_native_field, target, owned)
++        self._track_load_future(future)
++        self._native_loaded[layer_idx].add((expert, projection, kind))
++
++    def _native_upload_task(self, layer_idx, source_eid, w13, w2, scale13, scale2, destination_eid, name):
++        owner = self._native_owners[layer_idx]
++        size13 = w13.untyped_storage().nbytes() // w13.shape[0]
++        size2 = w2.untyped_storage().nbytes() // w2.shape[0]
++        start13, start2 = destination_eid * size13, destination_eid * size2
++        return NativeExpertUploadTask(
++            owner=owner, expert=source_eid,
++            w13_destination=w13.untyped_storage()[start13:start13 + size13],
++            w2_destination=w2.untyped_storage()[start2:start2 + size2],
++            scale13_destination=scale13[destination_eid],
++            scale2_destination=scale2[destination_eid], name=name,
++        )
++
+     def init_layer_cpu_buffers(self, layer, layer_moe_idx: int):
+         """Allocate CPU weight + scale/offset buffers for one MoE layer.
+ 
+@@ -382,6 +512,13 @@
+         assert ntotal == self.num_total_experts, (
+             f"MoE layers must have same expert count: {ntotal} vs {self.num_total_experts}"
+         )
++
++        if self.native_mxfp4_enabled:
++            self._init_native_layer_buffers(layer, layer_moe_idx, ntotal)
++            self.moe_layers.append(layer)
++            self._extend_cache_for_layer()
++            self._register_layer_gate(layer)
++            return
+ 
+         _w13 = _expert_weight(layer, "w13_weight")
+         _w2 = _expert_weight(layer, "w2_weight")
+@@ -520,6 +657,9 @@
+                 self.scale_bias_cpu_buffers,
+             )
+         )
++        if self.native_mxfp4_enabled:
++            weights_bytes = self._cpu_tensor_storage_bytes([owner.tensors[:3] for owner in self._native_owners.values()])
++            quant_bytes = self._cpu_tensor_storage_bytes([owner.tensors[3:] for owner in self._native_owners.values()])
+         expert_bytes = weights_bytes + quant_bytes
+         rss, hwm, available = self._host_memory_snapshot()
+         cpu_mode = "sharded" if self.offload_config.shard_per_rank else "replicated"
+@@ -603,6 +743,8 @@
+         # Barrier: ensure all deferred load_w13/load_w2/_load_scale_shard
+         # copies have landed before process_weights_after_loading reads them.
+         self.drain_load_pool()
++        if self.native_mxfp4_enabled:
++            self._attach_native_cpu_backends()
+         t0 = time.perf_counter()
+         logger.info(
+             "[OFFLOAD] weight load (safetensors→CPU buffer): %.1fs over %d calls",
+@@ -814,6 +956,13 @@
+         Touch it only via untyped_storage() slicing, never through the tensor
+         view. No-op for non-quantized (other dtype) models.
+         """
++        if self.native_mxfp4_enabled:
++            self._require_native_weights_loaded()
++            # Keep native bytes/scales on the host. Only device slot metadata
++            # is prepared here; every actual miss converts in HBM.
++            self._cast_device_slots_to_mxfp4_nz()
++            return
++
+         first_w13 = self.w13_weights_cpu[0][0]
+         first_layer = self.moe_layers[0]
+         # Detect W4A8_DYNAMIC by scale dtype: process_scale converts float32
+@@ -953,6 +1102,8 @@
+                 w = _expert_weight(layer, name)
+                 if w is None:
+                     continue
++                if self.native_mxfp4_enabled and torch_npu.get_npu_format(w) == 29:
++                    continue
+                 d = w.data.transpose(1, 2).contiguous()
+                 try:
+                     d = torch_npu.npu_format_cast(
+@@ -1226,6 +1377,9 @@
+     def load_w13(self, layer_moe_idx: int, expert_id: int, loaded_weight: torch.Tensor, shard_id: str):
+         """Store w1/w3 shard to CPU buffer (transposed) via the load pool."""
+         self._weight_load_calls += 1
++        if self.native_mxfp4_enabled:
++            self._load_native_field(layer_moe_idx, expert_id, shard_id, "weight", loaded_weight)
++            return
+         idx = self._shard_local(expert_id)
+         if idx is None:
+             return  # shard-per-rank: expert not owned by this rank
+@@ -1243,6 +1397,9 @@
+     def load_w2(self, layer_moe_idx: int, expert_id: int, loaded_weight: torch.Tensor):
+         """Store w2 weight to CPU buffer (transposed) via the load pool."""
+         self._weight_load_calls += 1
++        if self.native_mxfp4_enabled:
++            self._load_native_field(layer_moe_idx, expert_id, "w2", "weight", loaded_weight)
++            return
+         idx = self._shard_local(expert_id)
+         if idx is None:
+             return  # shard-per-rank: expert not owned by this rank
+@@ -1266,6 +1423,11 @@
+         w2 scale/offset is a single shard — clone and defer directly.
+         """
+         self._weight_load_calls += 1
++        if self.native_mxfp4_enabled:
++            if attr_name not in ("w13_weight_scale", "w2_weight_scale"):
++                raise ValueError(f"Unsupported native MXFP4 quantization attribute {attr_name}")
++            self._load_native_field(layer_moe_idx, expert_id, shard_id, "scale", loaded_weight)
++            return
+         assert shard_id in ("w1", "w2", "w3"), f"unexpected shard_id: {shard_id}"
+         if "scale_bias" in attr_name:
+             target_dict = self.scale_bias_cpu_buffers
+@@ -1443,6 +1605,12 @@
+         destination_eid: int,
+     ) -> list[H2DCopyTask]:
+         """Build weight and quant tasks for one prefill-pool expert."""
++        if self.native_mxfp4_enabled:
++            return [self._native_upload_task(
++                layer_idx, source_eid, self._prefill_w13[pool_slot], self._prefill_w2[pool_slot],
++                self._prefill_w13_scale[pool_slot], self._prefill_w2_scale[pool_slot],
++                destination_eid, f"native-prefill[L{layer_idx},E{source_eid}->P{pool_slot}:E{destination_eid}]",
++            )]
+         w13_start = destination_eid * self.w13_expert_size_bytes
+         w2_start = destination_eid * self.w2_expert_size_bytes
+         w13_dst = self._prefill_w13[pool_slot].untyped_storage()[w13_start : w13_start + self.w13_expert_size_bytes]
+@@ -2307,6 +2475,8 @@
+         shard-per-rank: eid is GLOBAL; remap to this rank's local shard slot.
+         Otherwise: the expert tensor's own (already pinned) storage, global eid.
+         """
++        if self.native_mxfp4_enabled:
++            raise RuntimeError("Native MXFP4 sources must use the shared owner and native upload tasks")
+         cpu_buf = getattr(self, f"{which}_weights_cpu")[layer_idx]
+         if self.offload_config.shard_per_rank:
+             local_eid = self._shard_local(eid)
+@@ -2321,6 +2491,8 @@
+         shard-per-rank: eid is GLOBAL; remap to this rank's local shard slot.
+         Otherwise: the expert tensor's own storage, global eid.
+         """
++        if self.native_mxfp4_enabled:
++            raise RuntimeError("Native MXFP4 sources must use the shared owner and native upload tasks")
+         cpu_buf = getattr(self, f"{which}_weights_cpu")[layer_idx]
+         if self.offload_config.shard_per_rank:
+             return cpu_buf[eid - self._shard_base].untyped_storage()
+@@ -2806,6 +2978,8 @@
+             self.h2d_transport = TorchCopyH2DTransport()
+         elif self.h2d_transport is None:
+             self.h2d_transport = self._create_h2d_transport()
++        if self.native_mxfp4_enabled and not isinstance(self.h2d_transport, NativeMXFP4H2DTransport):
++            self.h2d_transport = NativeMXFP4H2DTransport(self.h2d_transport)
+         return self.h2d_transport
+ 
+     def _allocate_expert_host_tensor(self, shape, dtype) -> torch.Tensor:
+@@ -2825,6 +2999,12 @@
+ 
+     def _build_expert_h2d_tasks(self, layer, layer_idx, eid, slot) -> list[H2DCopyTask]:
+         """Build format-preserving weight and quant H2D tasks for one expert."""
++        if self.native_mxfp4_enabled:
++            return [self._native_upload_task(
++                layer_idx, eid, _expert_weight(layer, "w13_weight"), _expert_weight(layer, "w2_weight"),
++                layer.w13_weight_scale, layer.w2_weight_scale, slot,
++                f"native-decode[L{layer_idx},E{eid}->S{slot}]",
++            )]
+         w13_start = slot * self.w13_expert_size_bytes
+         w2_start = slot * self.w2_expert_size_bytes
+         w13_dst = _expert_weight(layer, "w13_weight").data.untyped_storage()[
+--- /dev/null
++++ b/vllm_ascend/expert_offload/native_mxfp4_h2d.py
+@@ -0,0 +1,153 @@
++"""Native host expert storage -> ND staging -> NZ device slots.
++
++All device work is enqueued on the caller's load stream. Existing manager
++synchronization/event boundaries therefore cover both upload and conversion.
++No converted weight is downloaded or retained on the host.
++"""
++
++from dataclasses import dataclass
++import threading
++from typing import Any
++
++import torch
++
++from vllm_ascend.expert_offload.h2d_transfer import H2DCopyTask, TorchCopyH2DTransport
++
++
++@dataclass(frozen=True)
++class NativeExpertUploadTask:
++    owner: Any
++    expert: int
++    w13_destination: Any
++    w2_destination: Any
++    scale13_destination: torch.Tensor
++    scale2_destination: torch.Tensor
++    name: str = ""
++
++
++class NativeMXFP4H2DTransport:
++    """Decorate the selected transport with native expert conversion tasks.
++
++    Keep one expert-sized staging set per load stream, reused for every model
++    layer and expert. The original transport still owns host allocations and
++    H2D descriptor retirement. NZ writes use raw device byte copies; scales
++    preserve the original transport's tensor-versus-byte copy semantics.
++    """
++
++    supports_remote_sources = False
++
++    def __init__(self, base):
++        if getattr(base, "supports_remote_sources", False):
++            raise ValueError("Native MXFP4 shared storage currently supports single-card offload only")
++        self.base = base
++        self._staging = {}
++        self._last_outputs = {}
++        self._lock = threading.RLock()
++
++    def allocate_host_tensor(self, shape, dtype):
++        return self.base.allocate_host_tensor(shape, dtype)
++
++    @staticmethod
++    def _copy_device_bytes(destination, source, stream):
++        # Internal NZ tensors cannot be copied through Tensor.copy_ on A5.
++        # ACL consumes physical storage addresses without invoking a format cast.
++        import acl
++
++        src = source.untyped_storage() if isinstance(source, torch.Tensor) else source
++        if isinstance(destination, torch.Tensor):
++            # An expert tensor is a slice of a larger layer storage. Copy only
++            # that expert's byte span, starting at the tensor's offset pointer.
++            dst_pointer = destination.data_ptr()
++            dst_bytes = destination.numel() * destination.element_size()
++        else:
++            dst_pointer = destination.data_ptr()
++            dst_bytes = destination.nbytes()
++        if src.nbytes() != dst_bytes:
++            raise ValueError(f"Native MXFP4 destination size mismatch: {src.nbytes()} != {dst_bytes}")
++        ret = acl.rt.memcpy_async(
++            dst_pointer, dst_bytes, src.data_ptr(), src.nbytes(), 3, int(stream.npu_stream)
++        )
++        if ret != 0:
++            raise RuntimeError(f"Native MXFP4 device slot copy failed: ACL error {ret}")
++
++    def _upload(self, task):
++        import torch_npu
++        from vllm_ascend.quantization.methods.w4a8.w4a8_mxfp4 import apply_mxfp4_weight_scale_layout
++
++        owner = task.owner
++        if not 0 <= task.expert < owner.gate.shape[0]:
++            raise IndexError(f"Invalid native expert id {task.expert}")
++        stream = torch.npu.current_stream(task.scale13_destination.device)
++        key = (task.scale13_destination.device.index, int(stream.npu_stream))
++        sources = tuple(tensor[task.expert] for tensor in owner.tensors)
++        shapes = tuple(tuple(tensor.shape) for tensor in sources)
++        cached = self._staging.get(key)
++        if cached is None or cached[0] != shapes:
++            staging = tuple(
++                torch.empty(shape, dtype=torch.uint8, device=task.scale13_destination.device) for shape in shapes
++            )
++            self._staging[key] = (shapes, staging)
++        else:
++            staging = cached[1]
++        self.base.copy_batch([
++            H2DCopyTask(source=source, destination=destination, nbytes=source.numel(), name=task.name)
++            for source, destination in zip(sources, staging)
++        ])
++        gate, up, down, gate_scale, up_scale, down_scale = staging
++        w13 = torch.cat((gate, up), dim=0)
++        scale13 = torch.cat((gate_scale, up_scale), dim=0)
++        nz13 = torch_npu.npu_format_cast(
++            w13, 29, customize_dtype=torch.float8_e4m3fn, input_dtype=torch_npu.float4_e2m1fn_x2
++        )
++        nz2 = torch_npu.npu_format_cast(
++            down, 29, customize_dtype=torch.float8_e4m3fn, input_dtype=torch_npu.float4_e2m1fn_x2
++        )
++        # The slots carry transpose(NZ(original)); a transpose changes metadata,
++        # not the physical storage consumed by the following byte copies.
++        self._copy_device_bytes(task.w13_destination, nz13, stream)
++        self._copy_device_bytes(task.w2_destination, nz2, stream)
++        scale13 = apply_mxfp4_weight_scale_layout(scale13).contiguous()
++        scale2 = apply_mxfp4_weight_scale_layout(down_scale).contiguous()
++        for source, destination in (
++            (scale13, task.scale13_destination), (scale2, task.scale2_destination)
++        ):
++            source = source.reshape(destination.shape)
++            if isinstance(self.base, TorchCopyH2DTransport):
++                destination.copy_(source, non_blocking=True)
++            else:
++                # MemFabric's existing attribute copies are byte-preserving,
++                # unlike TorchCopy's logical tensor copies.
++                self._copy_device_bytes(destination, source, stream)
++        for output in (w13, nz13, nz2, scale13, scale2):
++            output.record_stream(stream)
++        # Allocator reuse is ordered on this same stream. Only the final
++        # outputs are retained; prefill must not retain a full converted layer.
++        self._last_outputs[key] = (w13, nz13, nz2, scale13, scale2)
++
++    def copy_batch(self, tasks):
++        with self._lock:
++            plain = []
++            for task in tasks:
++                if isinstance(task, NativeExpertUploadTask):
++                    if plain:
++                        self.base.copy_batch(plain)
++                        plain = []
++                    self._upload(task)
++                else:
++                    plain.append(task)
++            if plain:
++                self.base.copy_batch(plain)
++
++    def synchronize(self, stream):
++        with self._lock:
++            self.base.synchronize(stream)
++            for key in list(self._last_outputs):
++                if key[1] == int(stream.npu_stream):
++                    del self._last_outputs[key]
++
++    def close(self):
++        # Manager.close synchronizes its load stream before this is called.
++        with self._lock:
++            self._last_outputs.clear()
++            self._staging.clear()
++            self.base.close()
+--- a/vllm_ascend/expert_offload/cpu_backend/wiring.py
++++ b/vllm_ascend/expert_offload/cpu_backend/wiring.py
+@@ -53,6 +53,7 @@
+     cpu_moe_config: Any,
+     enable_multi_card: bool,
+     tp_size: int,
++    native_weights=None,
+ ) -> CPUExpertBackend | None:
+     """Attach a kt-kernel backend when CPU/NPU hybrid owns this layer.
+ 
+@@ -102,7 +103,12 @@
+         max_num_tokens=cpu_moe_config.max_num_tokens,
+         numa_nodes=cpu_moe_config.numa_nodes,
+     )
+-    backend = KtKernelCPUExpertBackend(config)
++    if config.weight_format == "native_mxfp4":
++        if native_weights is None:
++            raise RuntimeError("Native CPU backend must borrow the offload manager's loaded weight owner")
++        backend = KtKernelCPUExpertBackend(config, native_weights=native_weights)
++    else:
++        backend = KtKernelCPUExpertBackend(config)
+     # Both sides take the model layer index: submit() cross-checks the index it
+     # is handed against config.layer_idx and raises on a mismatch.
+     attach_hybrid_expert_executor(routed_experts, backend, model_layer_idx)
+--- a/vllm_ascend/ops/fused_moe/routed_experts.py
++++ b/vllm_ascend/ops/fused_moe/routed_experts.py
+@@ -486,14 +486,15 @@
+         mgr.init_layer_cpu_buffers(self, self.offload_layer_idx)
+         from vllm_ascend.expert_offload.cpu_backend.wiring import maybe_attach_cpu_expert_backend
+ 
+-        maybe_attach_cpu_expert_backend(
+-            routed_experts=self,
+-            layer_name=self.layer_name,
+-            moe_config=self.moe_config,
+-            cpu_moe_config=cfg.cpu_moe,
+-            enable_multi_card=self.enable_multi_card,
+-            tp_size=get_current_vllm_config().parallel_config.tensor_parallel_size,
+-        )
++        if not mgr.native_mxfp4_enabled:
++            maybe_attach_cpu_expert_backend(
++                routed_experts=self,
++                layer_name=self.layer_name,
++                moe_config=self.moe_config,
++                cpu_moe_config=cfg.cpu_moe,
++                enable_multi_card=self.enable_multi_card,
++                tp_size=get_current_vllm_config().parallel_config.tensor_parallel_size,
++            )
+ 
+     def _wrap_weight_loader_for_offload(self):
+         """Wrap weight_loader to intercept w13/w2 weights and store them on CPU.

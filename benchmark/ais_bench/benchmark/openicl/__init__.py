@@ -1,2 +1,0 @@
-from ais_bench.benchmark.openicl.icl_evaluator import BaseEvaluator
-from ais_bench.benchmark.openicl.icl_inferencer import GenInferencer

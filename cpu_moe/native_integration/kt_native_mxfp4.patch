@@ -1,0 +1,670 @@
+--- a/operators/common.hpp
++++ b/operators/common.hpp
+@@ -298,6 +298,7 @@
+   bool share_cache_pool = false;
+ 
+   // for llamafile
++  bool native_mxfp4 = false;
+   int m_block = 4;
+   int group_min_len = 0;
+   int group_max_len = 0;
+--- a/operators/moe-tp.hpp
++++ b/operators/moe-tp.hpp
+@@ -50,6 +50,22 @@
+       throw std::runtime_error("no worker pool");
+     }
+ 
++#if !defined(__aarch64__)
++    if (config.native_mxfp4) throw std::invalid_argument("Native MXFP4 currently requires ARM NEON");
++#endif
++    if (config.native_mxfp4) {
++      if (config.pool->config.subpool_count != 1 || config.gate_type != GGML_TYPE_MXFP4 ||
++          config.up_type != GGML_TYPE_MXFP4 || config.down_type != GGML_TYPE_MXFP4 ||
++          !config.gate_proj || !config.up_proj || !config.down_proj ||
++          !config.gate_scale || !config.up_scale || !config.down_scale ||
++          config.hidden_size % 256 || config.intermediate_size % 256)
++        throw std::invalid_argument("Native MXFP4 requires one NUMA pool, aligned dimensions and all weight/scale pointers");
++      const size_t count=(size_t)config.expert_num*config.hidden_size*config.intermediate_size/32;
++      for (const void* src : {config.gate_scale,config.up_scale,config.down_scale})
++        for (size_t j=0;j<count;++j) if (static_cast<const uint8_t*>(src)[j]==255)
++          throw std::invalid_argument("Reserved E8M0 scale 255 in native MXFP4 weights");
++    }
++
+     this->config = config;
+     tp_count = config.pool->config.subpool_count;
+     if (config.intermediate_size % tp_count != 0) {
+--- a/operators/llamafile/moe.hpp
++++ b/operators/llamafile/moe.hpp
+@@ -30,6 +30,7 @@
+ #include "../../cpu_backend/worker_pool.h"
+ #include "../moe-tp.hpp"
+ #include "conversion.h"
++#include "native_mxfp4.h"
+ #include "llama.cpp/ggml-quants.h"
+ #include "llama.cpp/ggml.h"
+ #include "llamafile/sgemm.h"
+@@ -311,6 +312,26 @@
+ class LLAMA_MOE_TP {
+  private:
+   GeneralMOEConfig config_;
++  size_t weight_type_size(ggml_type type) const {
++    return config_.native_mxfp4 ? 16 : ggml_type_size(type);
++  }
++  bool matmul(const void* scale_base, const uint8_t* weight_base,
++              long m, long n, long k, const void* A, long lda, const void* B, long ldb,
++              void* C, long ldc, int ith, int nth, int task, ggml_type at, ggml_type bt,
++              ggml_type ct, int precision) {
++    if (!config_.native_mxfp4) return kt_llamafile_sgemm(m,n,k,A,lda,B,ldb,C,ldc,ith,nth,task,at,bt,ct,precision);
++    const auto* w = static_cast<const uint8_t*>(A);
++    const auto* scales = static_cast<const uint8_t*>(scale_base) + (w-weight_base)/16;
++    const auto* q = static_cast<const uint8_t*>(B);
++    auto* out = static_cast<float*>(C);
++    for (long col=0;col<n;++col) for (long row=0;row<m;++row) {
++      float sum=0;
++      kt_native_mxfp4_dot(k*32,w+row*lda*16,scales+row*lda,q+col*ldb*34,&sum);
++      out[col*ldc+row]=sum;
++    }
++    return true;
++  }
++
+   int tp_part_idx;
+ 
+   uint8_t* m_local_gate_proj_;  // [expert_num * intermediate_size * hidden_size ( /32 if quantized)]
+@@ -369,6 +390,12 @@
+   std::vector<uint8_t*> m_local_down_input_ptr_;       // [expert_num]
+   std::vector<float*> m_local_down_output_ptr_;        // [expert_num]
+  public:
++  std::vector<uintptr_t> native_weight_pointers() const {
++    if (!config_.native_mxfp4) return {};
++    return {reinterpret_cast<uintptr_t>(m_local_gate_proj_), reinterpret_cast<uintptr_t>(m_local_up_proj_),
++            reinterpret_cast<uintptr_t>(m_local_down_proj_), reinterpret_cast<uintptr_t>(config_.gate_scale),
++            reinterpret_cast<uintptr_t>(config_.up_scale), reinterpret_cast<uintptr_t>(config_.down_scale)};
++  }
+   using input_t = ggml_bf16_t;
+   using output_t = float;
+ 
+@@ -454,14 +481,21 @@
+     m_local_down_input_ptr_.resize(config_.expert_num);
+     m_local_down_output_ptr_.resize(config_.expert_num);
+ 
++    if (config_.native_mxfp4) {
++      m_local_gate_proj_ = static_cast<uint8_t*>(config_.gate_proj);
++      m_local_up_proj_ = static_cast<uint8_t*>(config_.up_proj);
++      m_local_down_proj_ = static_cast<uint8_t*>(config_.down_proj);
++      m_weights_aliased_ = true;
++      return;
++    }
+     auto size = 1ll * config.expert_num * config.intermediate_size * config.hidden_size;
+     m_local_up_proj_ =
+-        new uint8_t[size * ggml_type_size((ggml_type)config.up_type) / ggml_blck_size((ggml_type)config.up_type)];
++        new uint8_t[size * weight_type_size((ggml_type)config.up_type) / ggml_blck_size((ggml_type)config.up_type)];
+ 
+     m_local_gate_proj_ =
+-        new uint8_t[size * ggml_type_size((ggml_type)config.gate_type) / ggml_blck_size((ggml_type)config.gate_type)];
++        new uint8_t[size * weight_type_size((ggml_type)config.gate_type) / ggml_blck_size((ggml_type)config.gate_type)];
+     m_local_down_proj_ =
+-        new uint8_t[size * ggml_type_size((ggml_type)config.down_type) / ggml_blck_size((ggml_type)config.down_type)];
++        new uint8_t[size * weight_type_size((ggml_type)config.down_type) / ggml_blck_size((ggml_type)config.down_type)];
+   }
+ 
+   // Called synchronously from Python AFTER CPUInfer::sync(). Never throw on a worker.
+@@ -477,8 +511,15 @@
+     uint8_t* pointers[] = {m_local_gate_proj_, m_local_up_proj_, m_local_down_proj_};
+     locked_weight_ranges_.reserve(3);
+     try {
++      if (config_.native_mxfp4) {
++        for (void* scale : {config_.gate_scale,config_.up_scale,config_.down_scale}) {
++          const size_t bytes=elements/32;
++          if (mlock(scale,bytes)!=0) throw std::runtime_error("mlock failed for native MXFP4 scale");
++          locked_weight_ranges_.emplace_back(scale,bytes);
++        }
++      }
+       for (int i = 0; i < 3; ++i) {
+-        const size_t bytes = elements * ggml_type_size((ggml_type)types[i]) / ggml_blck_size((ggml_type)types[i]);
++        const size_t bytes = elements * weight_type_size((ggml_type)types[i]) / ggml_blck_size((ggml_type)types[i]);
+         if (!pointers[i] || !bytes) throw std::runtime_error("Invalid CPU expert weight range");
+         if (mlock(pointers[i], bytes) != 0) {
+           const int error = errno;
+@@ -507,6 +548,11 @@
+ 
+   void load_weights(int complete_intermediate_size, int offset) {
+     auto& config = config_;
++    if (config_.native_mxfp4) {
++      if (offset != 0 || complete_intermediate_size != config_.intermediate_size)
++        throw std::invalid_argument("Native MXFP4 cannot copy or repartition borrowed weights");
++      return;
++    }
+     // printf("gate load weights:");
+     // debug_quant(config.gate_proj, (ggml_type)config.gate_type);
+     // we need to make sure the blck size is correct for size.
+@@ -526,12 +572,12 @@
+       throw std::runtime_error("intermediate_size * hidden_size must be a multiple of gate_type blck size");
+     }
+     uint8_t* gate_proj = (uint8_t*)config.gate_proj + offset * config.hidden_size *
+-                                                          ggml_type_size((ggml_type)config.gate_type) /
++                                                          weight_type_size((ggml_type)config.gate_type) /
+                                                           ggml_blck_size((ggml_type)config.gate_type);
+     uint8_t* up_proj = (uint8_t*)config.up_proj + offset * config.hidden_size *
+-                                                      ggml_type_size((ggml_type)config.up_type) /
++                                                      weight_type_size((ggml_type)config.up_type) /
+                                                       ggml_blck_size((ggml_type)config.up_type);
+-    uint8_t* down_proj = (uint8_t*)config.down_proj + offset * ggml_type_size((ggml_type)config.down_type) /
++    uint8_t* down_proj = (uint8_t*)config.down_proj + offset * weight_type_size((ggml_type)config.down_type) /
+                                                           ggml_blck_size((ggml_type)config.down_type);
+ 
+     // Single-NUMA fast path (tp_count==1 => offset==0 && intermediate==complete): the per-expert
+@@ -562,12 +608,12 @@
+       // streaming-prefill shared page cache is hot (else the first long prefill pays a one-time
+       // cold read). Non-blocking, best-effort (page-align the start; ignore errors).
+       const size_t gate_bytes = (size_t)config.expert_num * config.intermediate_size * config.hidden_size *
+-                                ggml_type_size((ggml_type)config.gate_type) /
++                                weight_type_size((ggml_type)config.gate_type) /
+                                 ggml_blck_size((ggml_type)config.gate_type);
+       const size_t up_bytes = (size_t)config.expert_num * config.intermediate_size * config.hidden_size *
+-                              ggml_type_size((ggml_type)config.up_type) / ggml_blck_size((ggml_type)config.up_type);
++                              weight_type_size((ggml_type)config.up_type) / ggml_blck_size((ggml_type)config.up_type);
+       const size_t down_bytes = (size_t)config.expert_num * config.hidden_size * config.intermediate_size *
+-                                ggml_type_size((ggml_type)config.down_type) /
++                                weight_type_size((ggml_type)config.down_type) /
+                                 ggml_blck_size((ggml_type)config.down_type);
+       const long pg = sysconf(_SC_PAGESIZE);
+       auto warm = [pg](void* p, size_t n) {
+@@ -586,18 +632,18 @@
+     // [offset, offset+intermediate_size) block — hence the base-pointer offset
+     // above (src strides) and the smaller local destination strides below.
+     const size_t gate_dst_stride = (size_t)config.intermediate_size * config.hidden_size *
+-                                   ggml_type_size((ggml_type)config.gate_type) /
++                                   weight_type_size((ggml_type)config.gate_type) /
+                                    ggml_blck_size((ggml_type)config.gate_type);
+     const size_t gate_src_stride = (size_t)complete_intermediate_size * config.hidden_size *
+-                                   ggml_type_size((ggml_type)config.gate_type) /
++                                   weight_type_size((ggml_type)config.gate_type) /
+                                    ggml_blck_size((ggml_type)config.gate_type);
+     const size_t up_dst_stride = (size_t)config.intermediate_size * config.hidden_size *
+-                                 ggml_type_size((ggml_type)config.up_type) / ggml_blck_size((ggml_type)config.up_type);
++                                 weight_type_size((ggml_type)config.up_type) / ggml_blck_size((ggml_type)config.up_type);
+     const size_t up_src_stride = (size_t)complete_intermediate_size * config.hidden_size *
+-                                 ggml_type_size((ggml_type)config.up_type) / ggml_blck_size((ggml_type)config.up_type);
+-    const size_t down_dst_row = (size_t)config.intermediate_size * ggml_type_size((ggml_type)config.down_type) /
++                                 weight_type_size((ggml_type)config.up_type) / ggml_blck_size((ggml_type)config.up_type);
++    const size_t down_dst_row = (size_t)config.intermediate_size * weight_type_size((ggml_type)config.down_type) /
+                                 ggml_blck_size((ggml_type)config.down_type);
+-    const size_t down_src_row = (size_t)complete_intermediate_size * ggml_type_size((ggml_type)config.down_type) /
++    const size_t down_src_row = (size_t)complete_intermediate_size * weight_type_size((ggml_type)config.down_type) /
+                                 ggml_blck_size((ggml_type)config.down_type);
+     const size_t down_dst_stride = (size_t)config.hidden_size * down_dst_row;
+     const size_t down_src_stride = (size_t)config.hidden_size * down_src_row;
+@@ -732,19 +778,19 @@
+ 
+             void* gate_proj_ptr =
+                 (uint8_t*)m_local_gate_proj_ + (expert_id * config_.intermediate_size + ith * config_.m_block) *
+-                                                   config_.hidden_size * ggml_type_size((ggml_type)config_.gate_type) /
++                                                   config_.hidden_size * weight_type_size((ggml_type)config_.gate_type) /
+                                                    ggml_blck_size((ggml_type)config_.gate_type);
+ 
+             float* gate_output_ptr = s_gate_output_[act_idx] + ith * config_.m_block;
+             if (kt_page_trace_on()) {
+               const size_t bytes = (size_t)config_.m_block * config_.hidden_size *
+-                  ggml_type_size((ggml_type)config_.gate_type) /
++                  weight_type_size((ggml_type)config_.gate_type) /
+                   ggml_blck_size((ggml_type)config_.gate_type);
+               kt_page_trace("before_gate", tp_part_idx, (int)expert_id, task_id,
+                             "gate", gate_proj_ptr, bytes);
+             }
+ 
+-            auto ok = kt_llamafile_sgemm(
++            auto ok = matmul(config_.gate_scale, m_local_gate_proj_,
+                 config_.m_block, 1, config_.hidden_size / ggml_blck_size((ggml_type)config_.gate_type), gate_proj_ptr,
+                 config_.hidden_size / ggml_blck_size((ggml_type)config_.gate_type), gate_input_ptr,
+                 config_.hidden_size / ggml_blck_size((ggml_type)config_.gate_type), gate_output_ptr, config_.m_block, 0,
+@@ -758,19 +804,19 @@
+ 
+             void* up_proj_ptr =
+                 (uint8_t*)m_local_up_proj_ + (expert_id * config_.intermediate_size + ith * config_.m_block) *
+-                                                 config_.hidden_size * ggml_type_size((ggml_type)config_.up_type) /
++                                                 config_.hidden_size * weight_type_size((ggml_type)config_.up_type) /
+                                                  ggml_blck_size((ggml_type)config_.up_type);
+ 
+             float* up_output_ptr = s_up_output_[act_idx] + ith * config_.m_block;
+             if (kt_page_trace_on()) {
+               const size_t bytes = (size_t)config_.m_block * config_.hidden_size *
+-                  ggml_type_size((ggml_type)config_.up_type) /
++                  weight_type_size((ggml_type)config_.up_type) /
+                   ggml_blck_size((ggml_type)config_.up_type);
+               kt_page_trace("before_up", tp_part_idx, (int)expert_id, task_id,
+                             "up", up_proj_ptr, bytes);
+             }
+ 
+-            kt_llamafile_sgemm(config_.m_block, 1, config_.hidden_size / ggml_blck_size((ggml_type)config_.up_type),
++            matmul(config_.up_scale, m_local_up_proj_, config_.m_block, 1, config_.hidden_size / ggml_blck_size((ggml_type)config_.up_type),
+                                up_proj_ptr, config_.hidden_size / ggml_blck_size((ggml_type)config_.up_type),
+                                up_input_ptr, config_.hidden_size / ggml_blck_size((ggml_type)config_.up_type),
+                                up_output_ptr, config_.m_block, 0, 1, GGML_TASK_TYPE_COMPUTE, (ggml_type)config_.up_type,
+@@ -797,10 +843,10 @@
+                             t2.wall - t1.wall);
+               if (kt_page_trace_on()) {
+                 const size_t gate_bytes = (size_t)config_.m_block * config_.hidden_size *
+-                    ggml_type_size((ggml_type)config_.gate_type) /
++                    weight_type_size((ggml_type)config_.gate_type) /
+                     ggml_blck_size((ggml_type)config_.gate_type);
+                 const size_t up_bytes = (size_t)config_.m_block * config_.hidden_size *
+-                    ggml_type_size((ggml_type)config_.up_type) /
++                    weight_type_size((ggml_type)config_.up_type) /
+                     ggml_blck_size((ggml_type)config_.up_type);
+                 kt_page_trace("gate_up", tp_part_idx, (int)expert_id, task_id,
+                               "gate", gate_proj_ptr, gate_bytes);
+@@ -852,19 +898,19 @@
+             auto expert_offset = expert_id * config_.hidden_size * config_.intermediate_size;
+             auto m_block_offset = ith * config_.m_block * config_.intermediate_size;
+             void* down_proj_ptr = (uint8_t*)m_local_down_proj_ + (expert_offset + m_block_offset) *
+-                                                                     ggml_type_size((ggml_type)config_.down_type) /
++                                                                     weight_type_size((ggml_type)config_.down_type) /
+                                                                      ggml_blck_size((ggml_type)config_.down_type);
+ 
+             float* down_output_ptr = s_down_output_[expert_idx] + ith * config_.m_block;
+             if (kt_page_trace_on()) {
+               const size_t bytes = (size_t)config_.m_block * config_.intermediate_size *
+-                  ggml_type_size((ggml_type)config_.down_type) /
++                  weight_type_size((ggml_type)config_.down_type) /
+                   ggml_blck_size((ggml_type)config_.down_type);
+               kt_page_trace("before_down", tp_part_idx, (int)expert_id, task_id,
+                             "down", down_proj_ptr, bytes);
+             }
+ 
+-            kt_llamafile_sgemm(
++            matmul(config_.down_scale, m_local_down_proj_,
+                 config_.m_block, 1, config_.intermediate_size / ggml_blck_size((ggml_type)config_.down_type),
+                 down_proj_ptr, config_.intermediate_size / ggml_blck_size((ggml_type)config_.down_type),
+                 s_down_input_[expert_idx], config_.intermediate_size / ggml_blck_size((ggml_type)config_.down_type),
+@@ -872,7 +918,7 @@
+                 kt_effective_vec_dot_type((ggml_type)config_.down_type), GGML_TYPE_F32, GGML_PREC_DEFAULT);
+             if (kt_page_trace_on()) {
+               const size_t down_bytes = (size_t)config_.m_block * config_.intermediate_size *
+-                  ggml_type_size((ggml_type)config_.down_type) /
++                  weight_type_size((ggml_type)config_.down_type) /
+                   ggml_blck_size((ggml_type)config_.down_type);
+               kt_page_trace("down", tp_part_idx, (int)expert_id, task_id,
+                             "down", down_proj_ptr, down_bytes);
+@@ -1069,7 +1115,7 @@
+ 
+           void* gate_proj_ptr =
+               (uint8_t*)m_local_gate_proj_ + (expert_idx * config_.intermediate_size + ith * m_block) *
+-                                                 config_.hidden_size * ggml_type_size((ggml_type)config_.gate_type) /
++                                                 config_.hidden_size * weight_type_size((ggml_type)config_.gate_type) /
+                                                  ggml_blck_size((ggml_type)config_.gate_type);
+ 
+           float* gate_output_ptr = m_local_gate_output_ptr_[expert_idx] + ith * m_block;
+@@ -1078,7 +1124,7 @@
+           //   printf("matrix size: m:%d, n:%d, k:%d\n", m_block, m_local_num_[expert_idx],
+           //          config_.hidden_size / ggml_blck_size((ggml_type)config_.gate_type));
+           // }
+-          kt_llamafile_sgemm(m_block, m_local_num_[expert_idx],
++          matmul(config_.gate_scale, m_local_gate_proj_, m_block, m_local_num_[expert_idx],
+                              config_.hidden_size / ggml_blck_size((ggml_type)config_.gate_type), gate_proj_ptr,
+                              config_.hidden_size / ggml_blck_size((ggml_type)config_.gate_type), gate_input_ptr,
+                              config_.hidden_size / ggml_blck_size((ggml_type)config_.gate_type), gate_output_ptr,
+@@ -1088,11 +1134,11 @@
+ 
+           void* up_proj_ptr = (uint8_t*)m_local_up_proj_ + (expert_idx * config_.intermediate_size + ith * m_block) *
+                                                                config_.hidden_size *
+-                                                               ggml_type_size((ggml_type)config_.up_type) /
++                                                               weight_type_size((ggml_type)config_.up_type) /
+                                                                ggml_blck_size((ggml_type)config_.up_type);
+ 
+           float* up_output_ptr = m_local_up_output_ptr_[expert_idx] + ith * m_block;
+-          kt_llamafile_sgemm(m_block, m_local_num_[expert_idx],
++          matmul(config_.up_scale, m_local_up_proj_, m_block, m_local_num_[expert_idx],
+                              config_.hidden_size / ggml_blck_size((ggml_type)config_.up_type), up_proj_ptr,
+                              config_.hidden_size / ggml_blck_size((ggml_type)config_.up_type), up_input_ptr,
+                              config_.hidden_size / ggml_blck_size((ggml_type)config_.up_type), up_output_ptr,
+@@ -1140,11 +1186,11 @@
+           auto m_block_offset = ith * m_block * config_.intermediate_size;
+ 
+           void* down_proj_ptr = (uint8_t*)m_local_down_proj_ + (expert_offset + m_block_offset) *
+-                                                                   ggml_type_size((ggml_type)config_.down_type) /
++                                                                   weight_type_size((ggml_type)config_.down_type) /
+                                                                    ggml_blck_size((ggml_type)config_.down_type);
+ 
+           float* down_output_ptr = m_local_down_output_ptr_[expert_idx] + ith * m_block;
+-          kt_llamafile_sgemm(m_block, m_local_num_[expert_idx],
++          matmul(config_.down_scale, m_local_down_proj_, m_block, m_local_num_[expert_idx],
+                              config_.intermediate_size / ggml_blck_size((ggml_type)config_.down_type), down_proj_ptr,
+                              config_.intermediate_size / ggml_blck_size((ggml_type)config_.down_type), down_input_ptr,
+                              config_.intermediate_size / ggml_blck_size((ggml_type)config_.down_type), down_output_ptr,
+@@ -1230,6 +1276,11 @@
+ class TP_MOE<LLAMA_MOE_TP> : public TP_MOE_Common<LLAMA_MOE_TP> {
+  public:
+   using TP_MOE_Common<LLAMA_MOE_TP>::TP_MOE_Common;
++
++  std::vector<uintptr_t> native_weight_pointers() const {
++    if (!this->config.native_mxfp4) return {};
++    return this->tps[0]->native_weight_pointers();
++  }
+ 
+   void load_weights() {
+     auto pool = this->config.pool;
+--- /dev/null
++++ b/operators/llamafile/native_mxfp4.h
+@@ -0,0 +1,51 @@
++#pragma once
++#if defined(__aarch64__)
++/* Independent prototype: native consecutive FP4 bytes + separate E8M0 scales.
++ * No persistent repack, no allocation, no changes to installed kt-kernel. */
++#include <arm_neon.h>
++#include <stdint.h>
++#include <stddef.h>
++#include <string.h>
++static const int8_t kt_native_lut[16]={0,1,2,3,4,6,8,12,0,-1,-2,-3,-4,-6,-8,-12};
++static inline float half_scale(uint8_t e) {
++    uint32_t bits=e<2 ? (uint32_t)0x00200000<<e : (uint32_t)(e-1)<<23;
++    float f; memcpy(&f,&bits,4); return f;
++}
++static inline float activation_scale(const uint8_t *q) {
++    __fp16 h; memcpy(&h,q,2); return (float)h;
++}
++static inline int32x4_t block_dot(const uint8_t *w,const uint8_t *q) {
++    uint8x16_t b=vld1q_u8(w);
++    int8x16_t table=vld1q_s8(kt_native_lut);
++    int8x16_t lo=vqtbl1q_s8(table,vandq_u8(b,vdupq_n_u8(15)));
++    int8x16_t hi=vqtbl1q_s8(table,vshrq_n_u8(b,4));
++    /* Original K order. Matches the reference's two half-block dot groups. */
++    int8x16_t a=vzip1q_s8(lo,hi),c=vzip2q_s8(lo,hi);
++    return vdotq_s32(vdotq_s32(vdupq_n_s32(0),a,vld1q_s8((const int8_t*)q+2)),
++                     c,vld1q_s8((const int8_t*)q+18));
++}
++static inline int kt_native_mxfp4_dot(int k,const uint8_t *w,const uint8_t *scales,const uint8_t *q,float *out) {
++    if(k<=0 || k%32 || !w || !scales || !q || !out) return -1;
++    int nb=k/32;
++    /* 255 is reserved for NaN in E8M0. Reject explicitly. */
++    for(int b=0;b<nb;b++) if(scales[b]==255) return -2;
++    float32x4_t s0=vdupq_n_f32(0),s1=vdupq_n_f32(0);
++    int b=0;
++    for(;b+1<nb;b+=2) {
++        s0=vfmaq_n_f32(s0,vcvtq_f32_s32(block_dot(w+16*b,q+34*b)),half_scale(scales[b])*activation_scale(q+34*b));
++        s1=vfmaq_n_f32(s1,vcvtq_f32_s32(block_dot(w+16*(b+1),q+34*(b+1))),half_scale(scales[b+1])*activation_scale(q+34*(b+1)));
++    }
++    float result=vaddvq_f32(vaddq_f32(s0,s1));
++    if(b<nb) {
++        int sum=0;
++        const int8_t *a=(const int8_t*)(q+34*b+2);
++        for(int j=0;j<16;j++) sum+=kt_native_lut[w[16*b+j]&15]*a[2*j]+kt_native_lut[w[16*b+j]>>4]*a[2*j+1];
++        result += (half_scale(scales[b])*activation_scale(q+34*b))*sum;
++    }
++    *out=result; return 0;
++}
++
++#else
++static inline int kt_native_mxfp4_dot(int, const unsigned char*, const unsigned char*,
++                                    const unsigned char*, float*) { return -3; }
++#endif
+--- a/ext_bindings.cpp
++++ b/ext_bindings.cpp
+@@ -434,6 +434,9 @@
+       .def("load_weights", &MoeClass::load_weights)
+       .def("forward", &MoeClass::forward_binding);
+ 
++  if constexpr (requires { &MoeClass::native_weight_pointers; }) {
++    moe_cls.def("native_weight_pointers", &MoeClass::native_weight_pointers);
++  }
+   if constexpr (requires { &MoeClass::pin_weights; }) {
+     moe_cls.def("pin_weights", &MoeClass::pin_weights, py::call_guard<py::gil_scoped_release>());
+   }
+@@ -785,6 +788,7 @@
+       .def_readwrite("group_min_len", &GeneralMOEConfig::group_min_len)
+       .def_readwrite("group_max_len", &GeneralMOEConfig::group_max_len)
+ 
++      .def_readwrite("native_mxfp4", &GeneralMOEConfig::native_mxfp4)
+       .def_readwrite("gate_type", &GeneralMOEConfig::gate_type)
+       .def_readwrite("up_type", &GeneralMOEConfig::up_type)
+       .def_readwrite("down_type", &GeneralMOEConfig::down_type)
+--- a/python/utils/llamafile.py
++++ b/python/utils/llamafile.py
+@@ -54,6 +54,7 @@
+         max_deferred_experts_per_token: Optional[int] = None,
+         method: str = "LLAMAFILE",
+         numa_nodes: Optional[List[int]] = None,
++        native_weights=None,
+     ):
+         """
+         Initialize Llamafile MoE Wrapper.
+@@ -82,13 +83,20 @@
+                 "Please recompile with Llamafile enabled."
+             )
+ 
+-        if not os.path.exists(weight_path):
+-            raise FileNotFoundError(f"GGUF weight path not found: {weight_path}")
+-
+-        cache_key = os.path.realpath(weight_path)
+-        if cache_key not in LlamafileMoEWrapper._gguf_loaders_by_path:
+-            LlamafileMoEWrapper._gguf_loaders_by_path[cache_key] = GGUFLoader(weight_path)
+-        self.gguf_loader = LlamafileMoEWrapper._gguf_loaders_by_path[cache_key]
++        self.native_weights = native_weights
++        if native_weights is not None:
++            if threadpool_count != 1:
++                raise ValueError("Native MXFP4 currently requires one NUMA pool")
++            native_weights.validate(num_experts, hidden_size, moe_intermediate_size)
++            self.gguf_loader = None
++        else:
++            if not os.path.exists(weight_path):
++                raise FileNotFoundError(f"GGUF weight path not found: {weight_path}")
++
++            cache_key = os.path.realpath(weight_path)
++            if cache_key not in LlamafileMoEWrapper._gguf_loaders_by_path:
++                LlamafileMoEWrapper._gguf_loaders_by_path[cache_key] = GGUFLoader(weight_path)
++            self.gguf_loader = LlamafileMoEWrapper._gguf_loaders_by_path[cache_key]
+ 
+         # Validate TP configuration with QK_K alignment
+         QK_K = 256
+@@ -188,14 +196,20 @@
+ 
+         base_key = f"blk.{self.layer_idx}"
+ 
+-        _load_tensor = self.gguf_loader.get_undequanted_tensor_and_ggml_type
+-
+-        # Load quantized tensors from GGUF
+-        gate_data, gate_type = _load_tensor(f"{base_key}.ffn_gate_exps.weight")
+-
+-        up_data, up_type = _load_tensor(f"{base_key}.ffn_up_exps.weight")
+-
+-        down_data, down_type = _load_tensor(f"{base_key}.ffn_down_exps.weight")
++        if self.native_weights is not None:
++            if not torch.equal(physical_to_logical_map_cpu, torch.arange(self.num_experts, dtype=torch.int32)):
++                raise ValueError("Native MXFP4 requires identity expert mapping")
++            gate_data, up_data, down_data = self.native_weights.tensors[:3]
++            gate_type = up_type = down_type = 39  # GGML_TYPE_MXFP4
++        else:
++            _load_tensor = self.gguf_loader.get_undequanted_tensor_and_ggml_type
++
++            # Load quantized tensors from GGUF
++            gate_data, gate_type = _load_tensor(f"{base_key}.ffn_gate_exps.weight")
++
++            up_data, up_type = _load_tensor(f"{base_key}.ffn_up_exps.weight")
++
++            down_data, down_type = _load_tensor(f"{base_key}.ffn_down_exps.weight")
+ 
+         pin_weights = _pin_weights()
+         if pin_weights and not callable(getattr(MOE, "pin_weights", None)):
+@@ -246,6 +260,14 @@
+         moe_config.up_proj = up_data.data_ptr()
+         moe_config.down_proj = down_data.data_ptr()
+ 
++        if self.native_weights is not None:
++            if not hasattr(moe_config, "native_mxfp4"):
++                raise RuntimeError("Native MXFP4 requires rebuilding kt-kernel")
++            moe_config.native_mxfp4 = True
++            moe_config.gate_scale = self.native_weights.gate_scale.data_ptr()
++            moe_config.up_scale = self.native_weights.up_scale.data_ptr()
++            moe_config.down_scale = self.native_weights.down_scale.data_ptr()
++
+         # Set quantization types
+         moe_config.gate_type = int(gate_type)
+         moe_config.up_type = int(up_type)
+--- /dev/null
++++ b/python/utils/native_mxfp4.py
+@@ -0,0 +1,83 @@
++"""Owning native MXFP4 storage. KT borrows its six CPU buffers without repacking."""
++from contextlib import ExitStack
++from dataclasses import dataclass
++import ctypes
++import json
++import os
++from pathlib import Path
++import torch
++
++
++@dataclass
++class NativeMXFP4Weights:
++    gate: torch.Tensor
++    up: torch.Tensor
++    down: torch.Tensor
++    gate_scale: torch.Tensor
++    up_scale: torch.Tensor
++    down_scale: torch.Tensor
++
++    @property
++    def tensors(self):
++        return (self.gate, self.up, self.down, self.gate_scale, self.up_scale, self.down_scale)
++
++    @property
++    def nbytes(self):
++        return sum(t.numel() for t in self.tensors)
++
++    def validate(self, experts, hidden, intermediate):
++        shapes = ((experts, intermediate, hidden // 2), ) * 2 + ((experts, hidden, intermediate // 2), ) + (
++            (experts, intermediate, hidden // 32), ) * 2 + ((experts, hidden, intermediate // 32), )
++        for tensor, shape in zip(self.tensors, shapes):
++            if tensor.device.type != 'cpu' or tensor.dtype != torch.uint8 or not tensor.is_contiguous() or tuple(
++                    tensor.shape) != shape:
++                raise ValueError(
++                    f'Native MXFP4 needs contiguous CPU uint8 {shape}; got {tensor.shape}/{tensor.dtype}/{tensor.device}'
++                )
++        if hidden % 256 or intermediate % 256:
++            raise ValueError('KT native MXFP4 dimensions must be divisible by 256')
++        return self
++
++    @classmethod
++    def from_checkpoint(cls, path, layer_idx, experts, hidden, intermediate, numa_node=0):
++        from safetensors import safe_open
++        root = Path(path)
++        index = json.loads((root / 'model.safetensors.index.json').read_text())['weight_map']
++        prefix = next((p for p in (f'layers.{layer_idx}.ffn.experts', f'model.layers.{layer_idx}.ffn.experts')
++                       if f'{p}.0.w1.weight' in index), None)
++        if prefix is None:
++            raise ValueError(f'No native MXFP4 expert weights for layer {layer_idx}')
++        # Bind this loading thread only. Explicit first-touch puts owned pages on the chosen node.
++        previous = os.sched_getaffinity(0)
++        text = Path(f'/sys/devices/system/node/node{numa_node}/cpulist').read_text().strip()
++        cpus = set()
++        for part in text.split(','):
++            bounds = part.split('-')
++            cpus.update(range(int(bounds[0]), int(bounds[-1]) + 1))
++        cpus &= previous
++        if not cpus: raise ValueError(f'NUMA node {numa_node} has no permitted CPUs')
++        os.sched_setaffinity(0, cpus)
++        try:
++            shapes = ((experts, intermediate, hidden // 2), ) * 2 + ((experts, hidden, intermediate // 2), ) + (
++                (experts, intermediate, hidden // 32), ) * 2 + ((experts, hidden, intermediate // 32), )
++            buffers = [torch.empty(s, dtype=torch.uint8, device='cpu') for s in shapes]
++            for tensor in buffers:
++                ctypes.memset(tensor.data_ptr(), 0, tensor.numel())
++            # Source maps are closed after load, leaving only the owned native buffers.
++            with ExitStack() as stack:
++                shards = {}
++                for proj, wi, si in [('w1', 0, 3), ('w3', 1, 4), ('w2', 2, 5)]:
++                    for eid in range(experts):
++                        for suffix, target in [('weight', wi), ('scale', si)]:
++                            key = f'{prefix}.{eid}.{proj}.{suffix}'
++                            name = index[key]
++                            if name not in shards:
++                                shards[name] = stack.enter_context(safe_open(root / name, framework='pt', device='cpu'))
++                            source = shards[name].get_tensor(key).view(torch.uint8)
++                            if tuple(source.shape) != tuple(buffers[target][eid].shape):
++                                raise ValueError(f'Native shape mismatch for {key}')
++                            buffers[target][eid].copy_(source)
++                del source
++            return cls(*buffers).validate(experts, hidden, intermediate)
++        finally:
++            os.sched_setaffinity(0, previous)
+--- /dev/null
++++ b/tests/test_native_mxfp4_owner.py
+@@ -0,0 +1,80 @@
++import json
++import os
++import pytest
++import torch
++from safetensors.torch import save_file
++from kt_kernel.utils.native_mxfp4 import NativeMXFP4Weights
++
++
++def make_owner():
++    return NativeMXFP4Weights(
++        torch.zeros(3, 256, 128, dtype=torch.uint8),
++        torch.zeros(3, 256, 128, dtype=torch.uint8),
++        torch.zeros(3, 256, 128, dtype=torch.uint8),
++        torch.full((3, 256, 8), 127, dtype=torch.uint8),
++        torch.full((3, 256, 8), 127, dtype=torch.uint8),
++        torch.full((3, 256, 8), 127, dtype=torch.uint8),
++    )
++
++
++def test_owner_validation_returns_same_storage():
++    owner = make_owner()
++    pointers = [x.data_ptr() for x in owner.tensors]
++    assert owner.validate(3, 256, 256) is owner
++    assert [x.data_ptr() for x in owner.tensors] == pointers
++    assert owner.nbytes == 3 * 3 * 256 * 256 * 17 // 32
++
++
++def test_owner_rejects_noncontiguous_or_wrong_dtype():
++    owner = make_owner()
++    owner.gate = owner.gate.transpose(1, 2)
++    with pytest.raises(ValueError, match='contiguous'):
++        owner.validate(3, 256, 256)
++    owner = make_owner()
++    owner.gate = owner.gate.float()
++    with pytest.raises(ValueError, match='uint8'):
++        owner.validate(3, 256, 256)
++
++
++def test_checkpoint_load_preserves_native_bytes_and_affinity(tmp_path):
++    tensors = {}
++    mapping = {}
++    for e in range(3):
++        for proj in ['w1', 'w3', 'w2']:
++            for suffix, shape in [('weight', (256, 128)), ('scale', (256, 8))]:
++                key = f'layers.0.ffn.experts.{e}.{proj}.{suffix}'
++                tensors[key] = torch.full(shape, 127 if suffix == 'scale' else e + 1, dtype=torch.uint8)
++                mapping[key] = 'test.safetensors'
++    save_file(tensors, tmp_path / 'test.safetensors')
++    (tmp_path / 'model.safetensors.index.json').write_text(json.dumps({'weight_map': mapping}))
++    before = os.sched_getaffinity(0)
++    owner = NativeMXFP4Weights.from_checkpoint(tmp_path, 0, 3, 256, 256, numa_node=1)
++    assert os.sched_getaffinity(0) == before
++    for e in range(3):
++        for tensor in owner.tensors[:3]:
++            assert torch.equal(tensor[e], torch.full((256, 128), e + 1, dtype=torch.uint8))
++
++
++def test_reserved_scale_raises_before_worker_dispatch():
++    from kt_kernel import kt_kernel_ext as ext
++    owner = make_owner()
++    owner.gate_scale[0, 0, 0] = 255
++    wp = ext.WorkerPoolConfig()
++    wp.subpool_count = 1
++    wp.subpool_numa_map = [1]
++    wp.subpool_thread_count = [1]
++    pool = ext.CPUInfer(wp)
++    cfg = ext.moe.MOEConfig(3, 3, 256, 256)
++    cfg.pool = pool.backend_
++    cfg.m_block = 32
++    cfg.max_len = 1
++    cfg.group_min_len = 10
++    cfg.group_max_len = 1
++    cfg.gate_type = cfg.up_type = cfg.down_type = 39
++    cfg.hidden_type = 30
++    cfg.native_mxfp4 = True
++    for field, tensor in zip(['gate_proj', 'up_proj', 'down_proj', 'gate_scale', 'up_scale', 'down_scale'],
++                             owner.tensors):
++        setattr(cfg, field, tensor.data_ptr())
++    with pytest.raises(ValueError, match='Reserved E8M0'):
++        ext.moe.MOE(cfg)

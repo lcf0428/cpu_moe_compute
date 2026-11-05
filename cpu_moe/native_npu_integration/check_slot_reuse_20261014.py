@@ -1,0 +1,67 @@
+import torch,torch_npu,acl
+from pathlib import Path
+from kt_kernel.utils.native_mxfp4 import NativeMXFP4Weights
+from vllm_ascend.expert_offload.native_mxfp4_h2d import NativeMXFP4H2DTransport,NativeExpertUploadTask
+from vllm_ascend.expert_offload.h2d_transfer import TorchCopyH2DTransport
+from vllm_ascend.quantization.methods.w4a8.w4a8_mxfp4 import apply_mxfp4_weight_scale_layout as layout
+torch.set_num_threads(1);torch.npu.set_device(1)
+o=NativeMXFP4Weights.from_checkpoint('/mnt/share/DeepSeek-V4-Flash-0731',16,3,4096,2048,numa_node=1)
+def cast(x):return torch_npu.npu_format_cast(x,29,customize_dtype=torch.float8_e4m3fn,input_dtype=torch_npu.float4_e2m1fn_x2)
+def read(x):
+ s=x.untyped_storage();h=torch.empty(s.nbytes(),dtype=torch.uint8,pin_memory=True);torch.npu.synchronize();assert acl.rt.memcpy(h.data_ptr(),h.numel(),s.data_ptr(),s.nbytes(),2)==0;return h
+class Raw:
+ supports_remote_sources=False
+ def allocate_host_tensor(self,shape,dtype):return torch.empty(shape,dtype=dtype,pin_memory=True)
+ def copy_batch(self,tasks):
+  for t in tasks:assert acl.rt.memcpy_async(t.destination.data_ptr(),t.nbytes,t.source.data_ptr(),t.nbytes,1,int(torch.npu.current_stream().npu_stream))==0
+ def synchronize(self,stream):stream.synchronize()
+ def close(self):pass
+w13=torch.cat((o.gate,o.up),dim=1).to('npu');w2=o.down.to('npu')
+expected13=cast(w13).transpose(1,2);expected2=cast(w2).transpose(1,2)
+for mode,base in [('torch',TorchCopyH2DTransport()),('raw',Raw())]:
+ d13=cast(torch.zeros_like(w13)).transpose(1,2);d2=cast(torch.zeros_like(w2)).transpose(1,2)
+ s13=layout(torch.zeros((3,4096,128),dtype=torch.uint8,device='npu'));s2=layout(torch.zeros((3,4096,64),dtype=torch.uint8,device='npu'))
+ t=NativeMXFP4H2DTransport(base)
+ for e in range(3):
+  n13=d13.untyped_storage().nbytes()//3;n2=d2.untyped_storage().nbytes()//3
+  t.copy_batch([NativeExpertUploadTask(o,e,d13.untyped_storage()[e*n13:(e+1)*n13],d2.untyped_storage()[e*n2:(e+1)*n2],s13[e],s2[e])])
+ t.synchronize(torch.npu.current_stream())
+ print(mode,'weight13 byte equal',torch.equal(read(d13),read(expected13)),'weight2',torch.equal(read(d2),read(expected2)),flush=True)
+ es13=layout(torch.zeros((3,4096,128),dtype=torch.uint8,device='npu'));es2=layout(torch.zeros((3,4096,64),dtype=torch.uint8,device='npu'))
+ a=layout(torch.cat((o.gate_scale,o.up_scale),dim=1)).contiguous();b=layout(o.down_scale).contiguous()
+ for src,dst in [(a,es13),(b,es2)]:
+  if mode=='torch':dst.copy_(src)
+  else:base.copy_batch([type('T',(),{'source':src,'destination':dst,'nbytes':src.numel()})()])
+ torch.npu.synchronize()
+ print(mode,'scale13 bytes',torch.equal(read(s13),read(es13)),'scale2',torch.equal(read(s2),read(es2)),flush=True)
+
+# Slot recycling: compare each complete physical slot against an independently
+# prepared legacy NZ expert. Reuse staging across sources, slots and rounds.
+results=[]
+for mode,base in [('torch',TorchCopyH2DTransport()),('raw',Raw())]:
+ transport=NativeMXFP4H2DTransport(base)
+ sources13=list(read(expected13).reshape(3,-1))
+ sources2=list(read(expected2).reshape(3,-1))
+ for step in range(24):
+  mapping=[(step+2*i)%3 for i in range(3)]
+  tasks=[]
+  for slot,e in enumerate(mapping):
+   tasks.append(NativeExpertUploadTask(o,e,d13.untyped_storage()[slot*n13:(slot+1)*n13],d2.untyped_storage()[slot*n2:(slot+1)*n2],s13[slot],s2[slot]))
+  transport.copy_batch(tasks)
+  transport.synchronize(torch.npu.current_stream())
+  actual13=read(d13).reshape(3,-1);actual2=read(d2).reshape(3,-1)
+  for slot,e in enumerate(mapping):
+   assert torch.equal(actual13[slot],sources13[e]),(mode,step,slot,e,'w13')
+   assert torch.equal(actual2[slot],sources2[e]),(mode,step,slot,e,'w2')
+  # Reference follows legacy host prelayout followed by chosen transport semantics.
+  a=layout(torch.cat((o.gate_scale[mapping],o.up_scale[mapping]),dim=1)).contiguous()
+  b=layout(o.down_scale[mapping]).contiguous()
+  if mode=='torch':es13.copy_(a);es2.copy_(b)
+  else:base.copy_batch([type('T',(),{'source':src,'destination':dst,'nbytes':src.numel()})() for src,dst in [(a,es13),(b,es2)]])
+  torch.npu.synchronize()
+  assert torch.equal(read(s13),read(es13)),(mode,step,'scale13')
+  assert torch.equal(read(s2),read(es2)),(mode,step,'scale2')
+ results.append({'transport':mode,'rounds':24,'expert_slot_writes':72,'all_weights_scales_byte_equal':True})
+ print('PASS repeated slot replacement',mode,flush=True)
+import json
+Path('/mnt/share/y50063808/vllm-ascend-workspace/cpu_moe/native_npu_integration/slot_reuse_results_20261014.json').write_text(json.dumps(results,indent=2))

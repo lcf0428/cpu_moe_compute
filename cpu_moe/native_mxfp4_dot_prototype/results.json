@@ -1,0 +1,25 @@
+{
+  "comparisons": 109280,
+  "bit_exact": 109280,
+  "max_abs_diff": 0.0,
+  "max_oracle_scaled_error": 4.2971155942437274e-08,
+  "invalid_checks": 10,
+  "real_weight_rows": 25148,
+  "cases": {
+    "all_nibbles_onehot": 8192,
+    "all_finite_e8m0": 255,
+    "random_odd_even_blocks": 240,
+    "unaligned": 1,
+    "real_L0_w1": 8448,
+    "real_L0_w3": 8448,
+    "real_L0_w2": 16640,
+    "real_L16_w1": 8448,
+    "real_L16_w3": 8444,
+    "real_L16_w2": 16636,
+    "real_L42_w1": 8448,
+    "real_L42_w3": 8444,
+    "real_L42_w2": 16636
+  },
+  "elapsed_seconds": 2.3089387199725024,
+  "status": "PASS"
+}

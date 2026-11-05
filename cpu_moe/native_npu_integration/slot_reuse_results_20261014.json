@@ -1,0 +1,14 @@
+[
+  {
+    "transport": "torch",
+    "rounds": 24,
+    "expert_slot_writes": 72,
+    "all_weights_scales_byte_equal": true
+  },
+  {
+    "transport": "raw",
+    "rounds": 24,
+    "expert_slot_writes": 72,
+    "all_weights_scales_byte_equal": true
+  }
+]

@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ktransformers"
+dynamic = ["version", "dependencies", "optional-dependencies"]
+description = "KTransformers: CPU-GPU heterogeneous inference framework for LLMs"
+readme = "README.md"
+authors = [{ name = "kvcache-ai" }]
+license = "Apache-2.0"
+requires-python = ">=3.11"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Operating System :: POSIX :: Linux",
+]
+
+[project.urls]
+Homepage = "https://github.com/kvcache-ai/ktransformers"
+
+[tool.setuptools]
+# Ship a minimal top-level Python module so the distribution is importable
+# without keeping a parallel source package directory at the repository root.
+py-modules = ["ktransformers"]

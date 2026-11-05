@@ -1,7 +1,0 @@
-xlwt
-tqdm
-psutil
-pathlib
-wcwidth
-argparse
-cryptography

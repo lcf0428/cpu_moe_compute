@@ -1,6 +1,6 @@
 # CPU MoE 脚本设计
 
-参考源为 22 服务器 `/mnt/share/y50063808/vllm-ascend-workspace/cpu_moe/run_dpark_26.sh`，仓库保留原样快照 `reference/run_dpark_26.sh`。这是特定机器和代码版本的参考配置，移植时需要 agent 对齐硬件、容器可用 CPU、库文件、权重和当前配置实现；不能直接作为任意机器的通用启动脚本。
+参考源为 26 服务器 `/mnt/share/y50063808/vllm-ascend-workspace/cpu_moe/run_dpark_26.sh`，完整核心备份位于 `cpu_moe/`，原始启动脚本为 `cpu_moe/run_dpark_26.sh`，另在 `reference/run_dpark_26.sh` 保留说明用快照。这是特定机器和代码版本的参考配置，移植时需要 agent 对齐硬件、容器可用 CPU、库文件、权重和当前配置实现；不能直接作为任意机器的通用启动脚本。
 
 ## 双份权重
 
