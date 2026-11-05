@@ -7,12 +7,13 @@
 **使用者给 agent 原始权重目录和 GGUF 输出目录即可，由 agent 执行转换，不需要自己逐层运行工具。** 如果文件在远端，再说明是哪台服务器。例如：
 
 ```text
-请在26服务器生成CPU MoE使用的逐层GGUF权重。
+请生成CPU MoE使用的逐层GGUF权重。
+cpu_moe目录：/实际路径/cpu_moe
 原始权重目录：/实际路径/DeepSeek-V4-Flash-0731
 GGUF输出目录：/实际路径/DeepSeek-V4-Flash-GGUF
 参考 cpu_moe_compute 仓库 docs/04_gguf_generation.md。
 目前只试过DeepSeek V4 Flash与0731版本；请先核对输入属于已试过的模型和原生MXFP4格式。
-确认后使用仓库 ktransformers-AK/tools/ 中的工具，先转换一层并校验，
+确认后使用 cpu_moe 内 dependencies/ktransformers-AK/tools/ 中的工具，先转换一层并校验，
 再批量转换所有适用层并核验完整性；其他模型不要直接套用默认维度。
 不要覆盖已有有效权重；完成后给出weight_path配置和校验结果。
 ```
@@ -28,10 +29,10 @@ agent 收到路径后的流程：
 
 ## 工具位置
 
-原服务器路径：
+**以下位置均相对于 `cpu_moe/` 目录，与服务器编号无关。** 先按实际环境确定 `cpu_moe` 的绝对路径，转换工具固定在：
 
 ```text
-/mnt/share/y50063808/vllm-ascend-workspace/cpu_moe/dependencies/ktransformers-AK/tools/
+dependencies/ktransformers-AK/tools/
 ```
 
 仓库对应 [tools 目录](../cpu_moe/dependencies/ktransformers-AK/tools/) 已补齐：
@@ -48,10 +49,11 @@ agent 收到路径后的流程：
 
 ## agent 执行命令参考
 
-以下命令供 agent 执行时参考，用户无需手工逐条操作。从仓库根目录执行。先填写目标机器的 `MODEL_DIR`、`OUT_DIR`，并保证输出目录是本次新建目录。
+以下命令供 agent 执行时参考，用户无需手工逐条操作。从实际 `cpu_moe/` 目录执行。先填写 `cpu_moe` 的绝对路径以及目标机器的 `MODEL_DIR`、`OUT_DIR`，并保证输出目录是本次新建目录。
 
 ```bash
-KT_ROOT="$PWD/cpu_moe/dependencies/ktransformers-AK"
+cd /实际路径/cpu_moe
+KT_ROOT="$PWD/dependencies/ktransformers-AK"
 MODEL_DIR=/实际路径/DeepSeek-V4-Flash-0731
 OUT_DIR=/实际路径/DeepSeek-V4-Flash-GGUF
 export TORCH_DEVICE_BACKEND_AUTOLOAD=0

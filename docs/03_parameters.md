@@ -101,6 +101,6 @@
 | `decode_stats_enabled`、`benchmark_route_stats_enabled` | **最小合成可设为 `false`；研究这些指标时再开启。** | decode 汇总与 benchmark 路由统计不参与最小 CPU compute 合成。 |
 | `torch_profiler_with_stack`、`ignore_frontend` | **最小采集建议分别为 `false`、`true`。** | 减少调用栈及前端采集开销，仍须保留 worker 所需 CPU/NPU activities。 |
 | `delay_iterations`、`max_iterations` | **首次校时建议 `0`、`0`，手动 start/stop；随后按需限制窗口。** | 此建议针对当前父类中 0 表示不自动按最大迭代数停止的实现。有限 benchmark 全部响应结束后再 stop，保证锚点与计算在同次窗口。 |
-| profiler 及日志目录 | **必须使用本次任务独立目录。** | 避免 latest 更新或多 PID、多次运行混用；新远端任务放 `codex_logs/<任务名>/`。 |
+| profiler 及日志目录 | **必须使用本次任务独立目录。** | 避免 latest 更新或多 PID、多次运行混用；日志根目录按实际环境确定，再为每次任务创建独立子目录。 |
 
 合成命令与完整 CPU 计时边界见 [profile 合成指南](01_profile_merge_guide.md)；硬件亲和性及移植步骤见 [脚本设计](02_script_design.md)。

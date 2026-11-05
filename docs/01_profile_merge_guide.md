@@ -6,7 +6,7 @@
 
 可下载查看的完整样例：[first_miss CPU 向 NPU 传输权重的合成 trace](../examples/traces/first_miss_cpu2npu_weight/README.md)。这是用户提供的历史效果参考，文件保持原样，未用本仓库新增校时流程重新验证。
 
-原始文件现已完整备份到 `cpu_moe/`。原始参考入口：`/mnt/share/y50063808/vllm-ascend-workspace/cpu_moe/merge_cpu_compute_latest.sh`。本仓库 `scripts/` 保存加入校时和 T 标签的参考版本，原始包装器保存在 `reference/merge_cpu_compute_latest.original.sh`。新包装器要求显式给出同次 trace、CPU 日志和校时锚点，避免 latest 指向其他运行。
+原始文件备份在 `cpu_moe/`，原始参考入口相对于该目录为 `merge_cpu_compute_latest.sh`；`cpu_moe` 的绝对路径按实际环境确定。本仓库根目录下的 `scripts/`（与 `cpu_moe/` 同级）保存加入校时和 T 标签的参考版本，原始包装器保存在 `reference/merge_cpu_compute_latest.original.sh`。新包装器要求显式给出同次 trace、CPU 日志和校时锚点，避免 latest 指向其他运行。
 
 ## 日志合成直接交给 agent
 
@@ -15,7 +15,8 @@
 可以直接复制下面这段：
 
 ```text
-请在26服务器合成本次CPU MoE与NPU profiler日志。
+请合成本次CPU MoE与NPU profiler日志。
+cpu_moe目录：/实际路径/cpu_moe
 采集目录：/本次实际采集目录
 原始trace路径：/如果已知则填写/trace_view.json
 CPU日志路径：/如果已知则填写/cpu_compute_<PID>.jsonl
@@ -37,14 +38,14 @@ CPU日志路径：/如果已知则填写/cpu_compute_<PID>.jsonl
 
 ### 先接入校时补丁
 
-26 服务器当前原始 `vllm-ascend` 源码尚未接入 `CPU_MOE_CLOCK_ANCHORS` 钩子。先在隔离源码副本中应用 `scripts/clock_anchor_profiler.patch`，再把 `scripts/clock_anchor_helper.py` 复制到实际运行的 `vllm_ascend/expert_offload/cpu_backend/`。应用、启动和停止的完整方法见 [校时实现说明](../reference/CLOCK_ALIGNMENT_IMPLEMENTATION.md)。**未接入补丁时，只 export `CPU_MOE_CLOCK_ANCHORS=1` 不会自动产生所需锚点。**
+先检查实际运行的 `vllm-ascend` 是否已接入 `CPU_MOE_CLOCK_ANCHORS` 钩子；未接入时，在隔离源码副本中应用 `scripts/clock_anchor_profiler.patch`，再把 `scripts/clock_anchor_helper.py` 复制到实际运行的 `vllm_ascend/expert_offload/cpu_backend/`。应用、启动和停止的完整方法见 [校时实现说明](../reference/CLOCK_ALIGNMENT_IMPLEMENTATION.md)。**未接入补丁时，只 export `CPU_MOE_CLOCK_ANCHORS=1` 不会自动产生所需锚点。**
 
 ### 启动脚本中必须保留这些设置
 
 下面是应写入启动脚本的配置片段。用任务独立目录替换原脚本的 profiler 目录设置；环境变量段放在 `PROF_RAW_DIR` 确定之后、`vllm serve` 之前，避免后面的旧配置覆盖它。
 
 ```bash
-PROFILE_ROOT=/mnt/share/y50063808/codex_logs/cpu_moe_profile
+PROFILE_ROOT=/实际日志根目录/cpu_moe_profile
 RUN_STAMP=$(date +%Y%m%d-%H%M%S)
 PROF_RAW_DIR="$PROFILE_ROOT/$RUN_STAMP"
 mkdir -p "$PROF_RAW_DIR"

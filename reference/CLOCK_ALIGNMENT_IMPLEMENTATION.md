@@ -87,10 +87,10 @@ curl -f -X POST http://127.0.0.1:8151/stop_profile
 
 现有开关 `KT_DECODE_TIMING=1` / `KT_PREFILL_TIMING=1` 在 Python 路径记录 submit→sync 聚合打印，包含提交/排队等待，不是纯计算 span，也未输出本合成工具需要的逐任务 JSONL。`FORWARD_TIME_REPORT` 是 C++ 编译宏，包含详细打印而非最小开关。`KT_MOE_PHASE_TIMING` 是内部阶段耗时统计，本任务不需要。
 
-`cpu_compute_total.patch` 提供一个小型、可审查的补充方案。应用根目录必须是：
+`cpu_compute_total.patch` 提供一个小型、可审查的补充方案。应用根目录必须是 `cpu_moe/` 内的以下相对目录（先根据实际环境确定 `cpu_moe` 的绝对路径）：
 
 ```
-/mnt/share/y50063808/vllm-ascend-workspace/cpu_moe/dependencies/ktransformers-AK/kt-kernel
+dependencies/ktransformers-AK/kt-kernel
 ```
 
 两个目标文件真实存在：`cpu_backend/cpu_compute_trace.h`、`operators/moe-tp.hpp`。在隔离副本执行：
@@ -118,4 +118,4 @@ python3 merge_cpu_compute_trace.py "$TRACE" "$CPU_LOG" \
   --report "$OUT/cpu_compute_report.txt"
 ```
 
-两个补丁均已在隔离原始副本通过 `git apply --check`。总计时 header 在 22 服务器任务日志目录通过独立 `g++ -std=c++20 -pthread` fixture：默认仅旧 compute、total 模式仅 compute_total，且 T/E/C 字段保持。合成 fixture 通过 total 显式选择且排除嵌套 part。**没有重编整个真实 kt_kernel 扩展，也没有运行模型验证该总计时接入**；补丁保留为待审方案，未应用到线上源码或服务。
+两个补丁均已在隔离原始副本通过 `git apply --check`。总计时 header 在远端任务日志目录通过独立 `g++ -std=c++20 -pthread` fixture：默认仅旧 compute、total 模式仅 compute_total，且 T/E/C 字段保持。合成 fixture 通过 total 显式选择且排除嵌套 part。**没有重编整个真实 kt_kernel 扩展，也没有运行模型验证该总计时接入**；补丁保留为待审方案，未应用到线上源码或服务。
