@@ -3,7 +3,7 @@
 - 合成入口：[脚本/merge_cpu_compute_latest.sh](脚本/merge_cpu_compute_latest.sh)
 - 合成实现：[脚本/merge_cpu_compute_trace.py](脚本/merge_cpu_compute_trace.py)
 - [参考profile](参考profile/README.md)
-- [如何让agent合成profile：复制指令即可](如何让agent合成profile.md)
+- [如何让agent合成profile：离线指令，整段复制即可](如何让agent合成profile.md)
 
 配套运行代码见 [Ascend CPU分支](https://github.com/yxk-fdu/vllm-ascend/tree/moe_cpu_compute_v1-on-0928)，当前启动与短采集步骤见 [脚本设定指南](../部署指南及参考脚本/脚本设定指南.md#验证与短-profile)。本仓库既保留 `cpu_moe/` 内的合成脚本，也在本目录的 `脚本/` 提供显式配对、校时和裁剪工具。
 
@@ -18,7 +18,7 @@
 
 ## 日志合成直接交给agent
 
-打开 [如何让agent合成profile](如何让agent合成profile.md)，填写服务器和本次采集目录，把整段指令发给agent即可。
+打开 [如何让agent合成profile](如何让agent合成profile.md)，填写服务器和本次采集目录，把整段离线指令发给agent即可。文本已包含字段约定、校时和合成规则，不要求agent访问GitHub；没有现成脚本时可用Python标准库实现。
 
 **默认下载到本地当前用户桌面的本次任务子目录，只下载最终合成trace JSON**：例如 `trace_view_cpu_compute_prefetch.json`。其他统计JSON、报告、CPU日志、数据库、原始trace和整个profiler目录均不下载；需要的中间结果保留在服务器供校验。
 
