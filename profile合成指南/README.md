@@ -2,7 +2,8 @@
 
 - 合成入口：[脚本/merge_cpu_compute_latest.sh](脚本/merge_cpu_compute_latest.sh)
 - 合成实现：[脚本/merge_cpu_compute_trace.py](脚本/merge_cpu_compute_trace.py)
-- [历史样例](样例/traces/first_miss_npu_memcopy/README.md)
+- [参考profile](参考profile/README.md)
+- [如何让agent合成profile：复制指令即可](如何让agent合成profile.md)
 
 配套运行代码见 [Ascend CPU分支](https://github.com/yxk-fdu/vllm-ascend/tree/moe_cpu_compute_v1-on-0928)，当前启动与短采集步骤见 [脚本设定指南](../部署指南及参考脚本/脚本设定指南.md#验证与短-profile)。本仓库既保留 `cpu_moe/` 内的合成脚本，也在本目录的 `脚本/` 提供显式配对、校时和裁剪工具。
 
@@ -11,35 +12,17 @@
 
 目标是呈现下图这种 CPU 计算条形与 NPU 原始设备流并排阅读的效果，参考 `L4_E1_C1`，新增真实传输计数后为 `L4_E1_C1_T1`。截图用于说明展示方式；合成代码和图中重叠现象不构成模型正确性、计算精度或加速收益的证明。
 
-![原始展示效果参考](profile_reference.png)
-
-可下载查看的完整样例：[first_miss NPU memcpy 合成 trace](样例/traces/first_miss_npu_memcopy/README.md)。这是用户提供的历史效果参考，文件保持原样，未用本仓库新增校时流程重新验证。
+可下载查看的参考文件：[DSpark7预取开启的合成profile](参考profile/README.md)。大文件以gzip保存，解压后为原始合成JSON。
 
 原始文件备份在 `cpu_moe/`，原始参考入口相对于该目录为 `merge_cpu_compute_latest.sh`；`cpu_moe` 的绝对路径按实际环境确定。本目录的 `脚本/`保存加入校时和 T 标签的参考版本，原始包装器保存在 `profile合成指南/参考实现/merge_cpu_compute_latest.original.sh`。新包装器要求显式给出同次 trace、CPU 日志和校时锚点，避免 latest 指向其他运行。
 
-## 日志合成直接交给 agent
+## 日志合成直接交给agent
 
-日常使用时，**给 agent 服务器和本次采集目录即可，不必自己研究脚本或手工填写所有开关**。如果已经知道 trace 和 CPU 日志的具体路径，也一起提供，避免同目录多次采集混淆。
+打开 [如何让agent合成profile](如何让agent合成profile.md)，填写服务器和本次采集目录，把整段指令发给agent即可。
 
-可以直接复制下面这段：
+**默认下载到本地当前用户桌面的本次任务子目录，只下载最终合成trace JSON**：例如 `trace_view_cpu_compute_prefetch.json`。其他统计JSON、报告、CPU日志、数据库、原始trace和整个profiler目录均不下载；需要的中间结果保留在服务器供校验。
 
-```text
-请合成本次CPU MoE与NPU profiler日志。
-cpu_moe目录：/实际路径/cpu_moe
-采集目录：/本次实际采集目录
-原始trace路径：/如果已知则填写/trace_view.json
-CPU日志路径：/如果已知则填写/cpu_compute_<PID>.jsonl
-请按 cpu_moe_compute 仓库的合成指南，自动查找同次、同PID的配套文件，
-检查时钟对齐依据后合成，追加真实T计数，保留本次窗口内原始NPU轨道。
-输出合成JSON、统计JSON和文本报告，告诉我用MindStudio打开哪个文件。
-如果缺少可靠校时信息，请明确说明缺项，不要直接拼接或猜偏移。
-```
-
-**agent 执行的流程就是：找同次文件 → 检查配对及校时 → 调用合成脚本 → 检查输出 → 给出结果路径。** 用户只需要提供能定位本次数据的路径；文件在本地时直接给本地路径，不必先搬回服务器。
-
-新采集若按下面的最低配置记录了校时锚点，agent 可以直接调用 `profile合成指南/脚本/merge_cpu_compute_latest.sh` 完成。旧采集缺少锚点时，agent 需要寻找其他有效同步证据；没有可靠依据就说明需要重新采集，不能因为界面简单而省略对齐。目录里已有 `trace_view_cpu_compute.json` 时，先辨认它是已有结果，不能当作原始 NPU trace 再合成。
-
-下面的配置和时钟说明供 agent 接入采集、执行合成或排障时参考，日常无需用户逐项手工操作。
+下面是合成实现与采集配置的补充说明。
 
 ## 合成日志必须满足的最低配置
 
