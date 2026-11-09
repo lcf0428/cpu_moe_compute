@@ -1,4 +1,4 @@
-# 日志合成指南
+# profile合成指南
 
 - 合成入口：[脚本/merge_cpu_compute_latest.sh](脚本/merge_cpu_compute_latest.sh)
 - 合成实现：[脚本/merge_cpu_compute_trace.py](脚本/merge_cpu_compute_trace.py)
@@ -15,7 +15,7 @@
 
 可下载查看的完整样例：[first_miss NPU memcpy 合成 trace](样例/traces/first_miss_npu_memcopy/README.md)。这是用户提供的历史效果参考，文件保持原样，未用本仓库新增校时流程重新验证。
 
-原始文件备份在 `cpu_moe/`，原始参考入口相对于该目录为 `merge_cpu_compute_latest.sh`；`cpu_moe` 的绝对路径按实际环境确定。本目录的 `脚本/`保存加入校时和 T 标签的参考版本，原始包装器保存在 `日志合成指南/参考实现/merge_cpu_compute_latest.original.sh`。新包装器要求显式给出同次 trace、CPU 日志和校时锚点，避免 latest 指向其他运行。
+原始文件备份在 `cpu_moe/`，原始参考入口相对于该目录为 `merge_cpu_compute_latest.sh`；`cpu_moe` 的绝对路径按实际环境确定。本目录的 `脚本/`保存加入校时和 T 标签的参考版本，原始包装器保存在 `profile合成指南/参考实现/merge_cpu_compute_latest.original.sh`。新包装器要求显式给出同次 trace、CPU 日志和校时锚点，避免 latest 指向其他运行。
 
 ## 日志合成直接交给 agent
 
@@ -37,7 +37,7 @@ CPU日志路径：/如果已知则填写/cpu_compute_<PID>.jsonl
 
 **agent 执行的流程就是：找同次文件 → 检查配对及校时 → 调用合成脚本 → 检查输出 → 给出结果路径。** 用户只需要提供能定位本次数据的路径；文件在本地时直接给本地路径，不必先搬回服务器。
 
-新采集若按下面的最低配置记录了校时锚点，agent 可以直接调用 `日志合成指南/脚本/merge_cpu_compute_latest.sh` 完成。旧采集缺少锚点时，agent 需要寻找其他有效同步证据；没有可靠依据就说明需要重新采集，不能因为界面简单而省略对齐。目录里已有 `trace_view_cpu_compute.json` 时，先辨认它是已有结果，不能当作原始 NPU trace 再合成。
+新采集若按下面的最低配置记录了校时锚点，agent 可以直接调用 `profile合成指南/脚本/merge_cpu_compute_latest.sh` 完成。旧采集缺少锚点时，agent 需要寻找其他有效同步证据；没有可靠依据就说明需要重新采集，不能因为界面简单而省略对齐。目录里已有 `trace_view_cpu_compute.json` 时，先辨认它是已有结果，不能当作原始 NPU trace 再合成。
 
 下面的配置和时钟说明供 agent 接入采集、执行合成或排障时参考，日常无需用户逐项手工操作。
 
@@ -47,7 +47,7 @@ CPU日志路径：/如果已知则填写/cpu_compute_<PID>.jsonl
 
 ### 先接入校时补丁
 
-先检查实际运行的 `vllm-ascend` 是否已接入 `CPU_MOE_CLOCK_ANCHORS` 钩子；未接入时，在隔离源码副本中应用 `日志合成指南/脚本/clock_anchor_profiler.patch`，再把 `日志合成指南/脚本/clock_anchor_helper.py` 复制到实际运行的 `vllm_ascend/expert_offload/cpu_backend/`。应用、启动和停止的完整方法见 [校时实现说明](参考实现/CLOCK_ALIGNMENT_IMPLEMENTATION.md)。**未接入补丁时，只 export `CPU_MOE_CLOCK_ANCHORS=1` 不会自动产生所需锚点。**
+先检查实际运行的 `vllm-ascend` 是否已接入 `CPU_MOE_CLOCK_ANCHORS` 钩子；未接入时，在隔离源码副本中应用 `profile合成指南/脚本/clock_anchor_profiler.patch`，再把 `profile合成指南/脚本/clock_anchor_helper.py` 复制到实际运行的 `vllm_ascend/expert_offload/cpu_backend/`。应用、启动和停止的完整方法见 [校时实现说明](参考实现/CLOCK_ALIGNMENT_IMPLEMENTATION.md)。**未接入补丁时，只 export `CPU_MOE_CLOCK_ANCHORS=1` 不会自动产生所需锚点。**
 
 ### 启动脚本中必须保留这些设置
 
@@ -101,7 +101,7 @@ unset CPU_MOE_CLOCK_CALIBRATION
 - 同 PID 的 `cpu_clock_anchors_<PID>.jsonl`，且两个唯一 start/stop host marker 都在本次 trace 中。
 
 ```bash
-bash 日志合成指南/脚本/merge_cpu_compute_latest.sh \
+bash profile合成指南/脚本/merge_cpu_compute_latest.sh \
   "$TRACE" "$CPU_LOG" "$CLOCK_ANCHORS" "$OUT"
 ```
 
@@ -123,10 +123,10 @@ bash 日志合成指南/脚本/merge_cpu_compute_latest.sh \
 
 1. 本次 `<ascend_pt>/ASCEND_PROFILER_OUTPUT/trace_view.json`。
 2. 同 PID、同次运行的 `cpu_compute_<pid>.jsonl`。
-3. 同次 worker 产生的 `cpu_clock_anchors_<pid>.jsonl`。可审查的生命周期接入补丁位于 `日志合成指南/脚本/clock_anchor_profiler.patch`，启用 `CPU_MOE_CLOCK_ANCHORS=1`，详细应用步骤见实施说明。
+3. 同次 worker 产生的 `cpu_clock_anchors_<pid>.jsonl`。可审查的生命周期接入补丁位于 `profile合成指南/脚本/clock_anchor_profiler.patch`，启用 `CPU_MOE_CLOCK_ANCHORS=1`，详细应用步骤见实施说明。
 
 ```bash
-bash 日志合成指南/脚本/merge_cpu_compute_latest.sh \
+bash profile合成指南/脚本/merge_cpu_compute_latest.sh \
   "$TRACE" "$CPU_LOG" "$CLOCK_ANCHORS" "$OUT"
 ```
 
@@ -155,7 +155,7 @@ T 由 NPU 路由的 active.sum() 经 sentinel 传到 CPU 日志，重复 sentine
 
 ## 覆盖完整 CPU 结果归并的可选补丁
 
-现有最小开关只记录 part compute。若要求从外层 CPU 计算开始到 CPU 结果归并及类型转换完成，提供 `日志合成指南/脚本/cpu_compute_total.patch` 供隔离环境审查与编译验证。该补丁增加 `KT_MOE_CPU_TRACE_KIND=total`，写 `cpu_moe.compute_total`，并关闭原 part span，避免重复计时。边界到外层 TP_MOE forward 内 merge_results 完成为止，仍不包含 Python 返回、completion 通知和设备侧结果使用。
+现有最小开关只记录 part compute。若要求从外层 CPU 计算开始到 CPU 结果归并及类型转换完成，提供 `profile合成指南/脚本/cpu_compute_total.patch` 供隔离环境审查与编译验证。该补丁增加 `KT_MOE_CPU_TRACE_KIND=total`，写 `cpu_moe.compute_total`，并关闭原 part span，避免重复计时。边界到外层 TP_MOE forward 内 merge_results 完成为止，仍不包含 Python 返回、completion 通知和设备侧结果使用。
 
 应用并重新编译后启用：
 
@@ -164,7 +164,7 @@ export KT_MOE_CPU_TRACE_KIND=total
 export KT_MOE_CPU_TRACE="$CAPTURE/cpu_compute_%p.jsonl"
 # 采集完成并校时后，包装器显式选择新事件：
 CPU_MOE_COMPUTE_EVENT=cpu_moe.compute_total \
-  bash 日志合成指南/脚本/merge_cpu_compute_latest.sh "$TRACE" "$CPU_LOG" "$CLOCK_ANCHORS" "$OUT"
+  bash profile合成指南/脚本/merge_cpu_compute_latest.sh "$TRACE" "$CPU_LOG" "$CLOCK_ANCHORS" "$OUT"
 ```
 
 补丁尚未编译或真机验证，不能直接当作当前服务器已有能力。原有 `KT_DECODE_TIMING=1` / `KT_PREFILL_TIMING=1` 统计 submit 到 sync 的聚合时间，会混入排队，不等于这里的最小计算区间；`FORWARD_TIME_REPORT` 是编译期详细打印，也不作为本次最小采集开关。
