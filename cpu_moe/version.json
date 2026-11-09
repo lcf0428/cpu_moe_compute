@@ -1,10 +1,10 @@
 {
-  "version": "cpu-moe-153-20261109-r2",
+  "version": "cpu-moe-arch-dispatch-20261109-r3",
   "ascend_repository": "https://github.com/yxk-fdu/vllm-ascend",
   "ascend_branch": "moe_cpu_compute_v1-on-0928",
   "ascend_commit": "7cf63ca477bf6045ad5a262ff6d59b66ace463bd",
   "vllm_version": "0.30.0+empty",
-  "source": "153 verified CPU backend source and profile runtime Python/C files",
+  "source": "153 verified baseline plus ARM GGUF llama.cpp dispatch policy; x86 matching execution preserved",
   "scope": "kt-kernel, runtime and bundled third-party source verified against153; excludes binaries, weights, logs, backend tests/benchmarks and Markdown",
   "files": [
     {
@@ -497,7 +497,7 @@
     },
     {
       "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/llamafile/mxfp8_match.h",
-      "sha256": "904de185092c65daad8394a91e321f30dd8c14f0ade8072b4f893aa6f5c1db3e"
+      "sha256": "2f10622e92d208ebbb37d142feba75d9abdb52154a9599bda8aa3c7f1fa5e03e"
     },
     {
       "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/llamafile/native_mxfp4.h",
@@ -3883,5 +3883,6 @@
       "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tools/test-pybind11GuessPythonExtSuffix.cmake",
       "sha256": "3f3aefa830a427d3465c07123845e7026a6dc76e05112dfce097ad320e6ce238"
     }
-  ]
+  ],
+  "baseline_version": "cpu-moe-153-20261109-r2"
 }

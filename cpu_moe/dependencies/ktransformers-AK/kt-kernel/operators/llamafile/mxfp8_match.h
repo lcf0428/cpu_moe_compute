@@ -9,7 +9,16 @@
 #include <immintrin.h>
 #endif
 namespace kt_match_npu {
-inline bool enabled() { static const bool value = std::getenv("KT_MOE_MATCH_NPU_MXFP8") != nullptr; return value; }
+inline bool enabled() {
+#if defined(__aarch64__)
+ // ARM uses the existing GGUF MXFP4 x Q8_0 llama.cpp path, regardless
+ // of the launch environment. Keep the original x86 matching behavior.
+ return false;
+#else
+ static const bool value = std::getenv("KT_MOE_MATCH_NPU_MXFP8") != nullptr;
+ return value;
+#endif
+}
 inline float bf16(float x) {
  uint32_t u; std::memcpy(&u,&x,4); u += 0x7fff + ((u >> 16) & 1); u &= 0xffff0000u;
  std::memcpy(&x,&u,4); return x;
