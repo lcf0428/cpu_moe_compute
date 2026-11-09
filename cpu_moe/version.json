@@ -1,11 +1,11 @@
 {
-  "version": "cpu-moe-153-20261109",
+  "version": "cpu-moe-153-20261109-r2",
   "ascend_repository": "https://github.com/yxk-fdu/vllm-ascend",
   "ascend_branch": "moe_cpu_compute_v1-on-0928",
   "ascend_commit": "7cf63ca477bf6045ad5a262ff6d59b66ace463bd",
   "vllm_version": "0.30.0+empty",
   "source": "153 verified CPU backend source and profile runtime Python/C files",
-  "scope": "kt-kernel and runtime source; excludes binaries, weights, logs, tests, benchmarks and bundled Markdown documentation; existing third-party sources retained",
+  "scope": "kt-kernel, runtime and bundled third-party source verified against153; excludes binaries, weights, logs, backend tests/benchmarks and Markdown",
   "files": [
     {
       "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/CMakeLists.txt",
@@ -1110,6 +1110,2778 @@
     {
       "path": "cpu_moe/kt_async_runtime/kt_kernel/utils/native_mxfp4.py",
       "sha256": "a6edb34dc6130898fd58e0cae610eb36208f14021d74401bb3ede003c7cd9335"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/.devops/tools.sh",
+      "sha256": "5cc9f63b7444378fd2582c27354729d059d72e2ac7ef99d2603782f381220eb6"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/CMakeLists.txt",
+      "sha256": "68e411e66ddda55756f8fc6db5483cfdcdca813c2a51b957789f1ec65f5eb5a5"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/CMakePresets.json",
+      "sha256": "d0887f93585f9eb9976f02f4bd43bf30e5cd5c96e8ec4c94ced9c6cd9f51c0ef"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/LICENSE",
+      "sha256": "e562a2ddfaf8280537795ac5ecd34e3012b6582a147ef69ba6a6a5c08c84757d"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/Makefile",
+      "sha256": "6498f34d0720449394d8558e8eebf3b375accf4800efd64c75c59b669ae82efa"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ci/run.sh",
+      "sha256": "0f7a90e22957e3aef3784623dbe3f9b692020ecee31e15e7586f9e4b743bf631"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/cmake/FindSIMD.cmake",
+      "sha256": "8b2075f590918b9ad556136f77e2fcdf7d7981f067bb2503ce2c7cb740791487"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/cmake/arm64-windows-llvm.cmake",
+      "sha256": "12be8ba361b88d1a12cf28970da526f98c0f9b17103c2aa0c0b49ee7fa496a48"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/cmake/arm64-windows-msvc.cmake",
+      "sha256": "3659927c568f80cdfaae90ce28b1e9fae94870301ae1719be7fbe6895b659806"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/cmake/llama.pc.in",
+      "sha256": "afbefe6f57e37847400ad85a016e184976decb1b20759600fcf96c80efcaeb53"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/common/CMakeLists.txt",
+      "sha256": "ef1001a169bf0777eeb36b820b9257ac2bbf1a5b7dbea1c542b72fefd2e6d0b7"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/common/base64.hpp",
+      "sha256": "57f595aa0a206c4dec9a84b90a3416028a242da4dd8f219afc0859a6ccb7efe7"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/common/build-info.cpp.in",
+      "sha256": "2c000dba6d3d8d72a865db8f72694dcc2c2f14f473bb8c9db3dd056c8ea7cf31"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/common/common.cpp",
+      "sha256": "d45866ec569ab69b02283f2d0e91ef63b2242860c0709855e076df898337af23"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/common/common.h",
+      "sha256": "256f123dd486c69c75e823ab0b465516b8bdb01b05872766258913cfeffd645e"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/common/console.cpp",
+      "sha256": "9d87a4dd55757272b2d0ec18adacca4cc95e38e0719585e2609d69060acc6a93"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/common/console.h",
+      "sha256": "807f40b376adeb94d657117337cd43ebe13fb1001c06ad7000cf5852a224fc80"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/common/grammar-parser.cpp",
+      "sha256": "7f3dded412eb9e10b18d6ce2bc41f2eaf06b4d7c4d15b2d29030c3f59a52dd5d"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/common/grammar-parser.h",
+      "sha256": "646401127614dc7aefc0b419613dfcbc5e370fdb778f584007a59090ac93643a"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/common/json-schema-to-grammar.cpp",
+      "sha256": "52605f965c68e78cb5b05ebec26943ce1dba27dc43c3e3115cc0091ee57360f8"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/common/json-schema-to-grammar.h",
+      "sha256": "0d6a2c60e3057f1f3444f7223a201f8333e8679b6eea4bbc85eeadcf49257608"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/common/json.hpp",
+      "sha256": "5b4b37308d67f9820b5926486374246054fdd06baae85309b820a8315f23caca"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/common/log.h",
+      "sha256": "38b27cc2f67542c98f0b85963c27cb8bdd8e29da28eb9c37bb1d54856d53df3c"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/common/ngram-cache.cpp",
+      "sha256": "9fd6319be42759da053b219a1ea6a93c4c9fe0ccc2381c04052e7432c5fd4abc"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/common/ngram-cache.h",
+      "sha256": "f62fd2066e899c1faaa6f3d8c4f9017a96e88e4f386461b48cd3f50f7557852c"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/common/sampling.cpp",
+      "sha256": "f81119518b8804075f9298b1f4b0cfce1682718b9ef5e6e94f774ac5c1c570c1"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/common/sampling.h",
+      "sha256": "d9a8a560a7b17bbf3d81467ee20fc4b9567d19ae9660a7e3465081ed25100a3d"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/common/stb_image.h",
+      "sha256": "316453ae5dae1a077e8e7fe3d5344db7669b1aa09d53821ce67374bd015ee078"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/common/train.cpp",
+      "sha256": "1e348e9d6c76330de7205ccca7861dfbbe54d95caac266aa8fe2e1161c844839"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/common/train.h",
+      "sha256": "4b8b95b1cc49940e0618d642bae3a861de2f00416fb75b648adc3cc18d4899ae"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/convert-hf-to-gguf-update.py",
+      "sha256": "bf370864ab89447dca4b45bc218786f7d0468d3c80ffa0b63bfee17f10302ce5"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/convert-hf-to-gguf.py",
+      "sha256": "45c3a7392677d98a63b2a409d5bcf26b7b2560fd6169228bb4167cb8287f5ac2"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/convert-llama-ggml-to-gguf.py",
+      "sha256": "ddd9fcdb5842d52af0e3454dd780ea6280b319b94111006b328fb86ed22e1cdf"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/CMakeLists.txt",
+      "sha256": "3ceb32186333ecdf403a5949b149ecce25f00cbc70555d2c2012ca86333632cc"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/Miku.sh",
+      "sha256": "4fc7898e2fc66993f3b7222ad8e79c11da6b561166e7c2422dc363eca1a4d391"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/baby-llama/CMakeLists.txt",
+      "sha256": "1fd6043cab223f907562fc4bbfad9d967a39521f907984dbbdd67ca191130475"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/baby-llama/baby-llama.cpp",
+      "sha256": "43817b1928e88d14d6431028ba3ff4c8360a3751bba9bcac067d025c0aa44e9a"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/base-translate.sh",
+      "sha256": "dc952b736892d0d339a7f22a5e39b9b504faba484d4bd2be71756f5c1e0ebf1a"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/batched/CMakeLists.txt",
+      "sha256": "fbd7c5762ccc9c6ef2b768da05c2cc16302143c1aff2f5ab379ad9425590c893"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/batched/batched.cpp",
+      "sha256": "d9814f1f6d1bf8b0b066bef4e23255cad023df66cfa733cafd88955d95cd718c"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/batched-bench/CMakeLists.txt",
+      "sha256": "bbb46aa35909f3c0aff356061c4f7b21001fffa379cd54a7f5be5ceb4ad78f84"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/batched-bench/batched-bench.cpp",
+      "sha256": "545fc47372dcde106d4ac72f57b1d36caf79d9a2eab89abc9333a2f283fabaa8"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/batched.swift/Makefile",
+      "sha256": "fb84da2c51818364999fb74036930f3a236498fee74373128a00f9abb58bed20"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/benchmark/CMakeLists.txt",
+      "sha256": "4808d5a20f38bf087abe24b73686b1308b27196a7aa79e78f4be0418bd8fd919"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/benchmark/benchmark-matmult.cpp",
+      "sha256": "61049a27b221a247566dd945de028c5c26cd006ae8a2a075a9d36c8366cac9b6"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/chat-13B.sh",
+      "sha256": "457b6c5dcc602c09f7be66e49d0de390667905a6a13aeba449cc1867b6566297"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/chat-persistent.sh",
+      "sha256": "1462fe75aaa94b10d2f25cfb4647230e6ce719183faf19c85445564146662e74"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/chat-vicuna.sh",
+      "sha256": "d1e153b930c68125289e2081d7a1af7218dafede0eb905a1d9243fc33df7da12"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/chat.sh",
+      "sha256": "5a7415f1206f5e341143159db95ebf888ab61f7413947498d9c0d44de16bddfe"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/convert-legacy-llama.py",
+      "sha256": "51007a5c9a3ef1c222c6b2977270f1836888c639ef00115ac8adb368914bd6a4"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/convert-llama2c-to-ggml/CMakeLists.txt",
+      "sha256": "f53d5ad2cc774c368676cfc72d83c0596cebe577bac1ae5a3f68cb6a84ade9d1"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/convert-llama2c-to-ggml/convert-llama2c-to-ggml.cpp",
+      "sha256": "c1372da2437f26e4c538847b7c73dfd923e1559f5508dd6765d661fcdf3b3124"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/cvector-generator/CMakeLists.txt",
+      "sha256": "0d7fb0f07b016134ffb7b7aba704064b77eee0d6e24ddc59c097825f7487dcd3"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/cvector-generator/completions.txt",
+      "sha256": "bae7aed481a36f2209520b85f68a5a4274c0e5338ecdf7e9df7b959329d9a7e4"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/cvector-generator/cvector-generator.cpp",
+      "sha256": "b0989546431c3f22a9e840b0eb48f6470ae73bda86010363de541d68808ec072"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/cvector-generator/negative.txt",
+      "sha256": "aff5f361577cda4677925ec10299093f6ddc67da47d96b2eebd70d9fa6eff09b"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/cvector-generator/pca.hpp",
+      "sha256": "a5699f4350d394a2085aa0278ca964f4ec4f3ae65431fbe7278aeb66af2b84a2"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/cvector-generator/positive.txt",
+      "sha256": "3354f072d58f4aa27f64c1852b384393f720d94e2467031f9bd1a9d2afa222c6"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/embedding/CMakeLists.txt",
+      "sha256": "f5facbfc191255005ae3143397e73683b135d1d2d269b8dc641478c00815569b"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/embedding/embedding.cpp",
+      "sha256": "a6267588b99884660451fd732a43ae92b5e840a425baa50795fd441aa3209109"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/eval-callback/CMakeLists.txt",
+      "sha256": "14e16c7ea5a60ab4e4876a71d3da02dcb3694b8885630f53a4c0d54990949735"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/eval-callback/eval-callback.cpp",
+      "sha256": "8bc367b13c0e379379242de3f68beba5289df5ef596a71347c26bd16e054e833"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/export-lora/CMakeLists.txt",
+      "sha256": "6d59b483fd62558b6a03b4ca82a6abe19ed0bb8a9d8fbf1aea5c7a9b4b9ef61e"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/export-lora/export-lora.cpp",
+      "sha256": "a6f8882d535cec3d9741ba71e4e24a083976d46ab619a2b31eaefa594a394be0"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/finetune/CMakeLists.txt",
+      "sha256": "49b15d12b8a1edce6648d90058399e2ff090c6180130147ace216a0e24fce7fe"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/finetune/convert-finetune-checkpoint-to-gguf.py",
+      "sha256": "eaa924550617be8d581381eedc8cdb38b36fddb19972ee6936c179a19bc4f3ec"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/finetune/finetune.cpp",
+      "sha256": "307dc8077155574deca3efe08752ba0c57e455aafeffa51729889e33f053cd66"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/finetune/finetune.sh",
+      "sha256": "c095c2bf726861e8be62b0db630a8446b040421a6a511ba3bb4ce17e6997e15f"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/gbnf-validator/CMakeLists.txt",
+      "sha256": "7f014f33c8073bbef8581e14771fdef32ae364e967471f3ebf12f9a321430595"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/gbnf-validator/gbnf-validator.cpp",
+      "sha256": "eb80788bcf209d4cd82c85835e84d6ea703cb3737cd2854200905f77e8a47100"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/gguf/CMakeLists.txt",
+      "sha256": "b4bda4bfe6ad9ba0f88b3296c4e7aff7424bba00057f8b0f5aeb39585c67489a"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/gguf/gguf.cpp",
+      "sha256": "26f3c36ec84f5eff4f38a20d221e5bf5350658766031630a8d6ff84dbb637b8b"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/gguf-split/CMakeLists.txt",
+      "sha256": "9a4fb6e79dcd66c0ff0e41e2ed2b1369dddba7be3b852c3014e70ce5a9786dc2"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/gguf-split/gguf-split.cpp",
+      "sha256": "706266a3e7a2e80f442ecc6621d0c93f486b7621151886ba3785063d709a20a3"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/gguf-split/tests.sh",
+      "sha256": "9e61ec2702c49365ae30c88b9233cc72d9607c3927bbb5bdd18707112a87aa77"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/gritlm/CMakeLists.txt",
+      "sha256": "540dfa0bb9be0621548065b4212629a26fc66b957dc895bbdf4d2cd1fd06444b"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/gritlm/gritlm.cpp",
+      "sha256": "f03258fbcb4b12af7f37da14195f7277a3b19d0f84b7f47d30f37f51625df3da"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/imatrix/CMakeLists.txt",
+      "sha256": "3ab70fdc6c2a988a8b61b3789416f498bc9ab057348e9024852ce193520aaecf"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/imatrix/imatrix.cpp",
+      "sha256": "ec66301a82f903638aff2f08ab6f53573943750d872732316bb201cac41f0427"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/infill/CMakeLists.txt",
+      "sha256": "0da1c8253de3fb248c0f35f7116e4ca15d20ea2aaacb320a44fdfbaa279549f6"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/infill/infill.cpp",
+      "sha256": "bb3dffa8c590fbc944378f3d31879d55fb1d2b6c298fdade18cefba5391fa04a"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/jeopardy/graph.py",
+      "sha256": "5850ad858973816dca5e3761d457b54491df2c1bac35521fd3b5885c02865182"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/jeopardy/jeopardy.sh",
+      "sha256": "58cb87010aacdd7d93b6a6f96a275b1361cb2ea92624b89c93127b964d385c2a"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/jeopardy/questions.txt",
+      "sha256": "cb521a0d073fd44047e02189f85775d8901f4976036ce55d5e0af9c313cd8845"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/json-schema-pydantic-example.py",
+      "sha256": "70336c993482a8e687cfd75d38ddc5cdcbdb85d292b372da13e5d06073ba4a31"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/json_schema_to_grammar.py",
+      "sha256": "2a7d9c82758bf2640010a7639abc163000003c9778f9de6fd2d41310a84382ba"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/llama-bench/CMakeLists.txt",
+      "sha256": "3458b53566e94662bdc0bc4c79e69e7dcf1baa65e665df700539083254235ec0"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/llama-bench/llama-bench.cpp",
+      "sha256": "3a5590b5280a2855d25df09591bc25d7bf06f92a089b844e2e33d2534f28d8a8"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/llama.android/llama/CMakeLists.txt",
+      "sha256": "44ca8334b51da024fbfc7166880009f0172ef0d4435d10b1358b1dbf91492dac"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/llama.android/llama/src/main/cpp/CMakeLists.txt",
+      "sha256": "7a7aceca14dab20fc62484fc84797c3e3793ff43dd7497167c9bf5e3c09bf96c"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/llama.android/llama/src/main/cpp/llama-android.cpp",
+      "sha256": "7afd292dabbad6493ddaf8f9bdc2a504bfe4be03408f9e3224ce06c32a498a92"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/llama.swiftui/llama.swiftui/Assets.xcassets/Contents.json",
+      "sha256": "0fd49ba3c3585c709678e0046a821c3c60685ec7063720d30d3a3448be3a208b"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/llava/CMakeLists.txt",
+      "sha256": "0e14c878e21eb547c85de5ab9e8b73b591ceb66b5e109af7d4d0b04c245fe04f"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/llava/android/adb_run.sh",
+      "sha256": "d9171a7982e8e78edd4f11cac18605cba7228a2a4e2cd2ab59a89bbf7fb6cac7"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/llava/android/build_64.sh",
+      "sha256": "88ef5a5a43b7e5446710398859c43106dc9ab6aef404cbc2f0ff79ae84922e6b"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/llava/clip.cpp",
+      "sha256": "9ae9a0bc5d1203e2bb1c060111fc1976cfc6801188a1aeee395e859496b7a26f"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/llava/clip.h",
+      "sha256": "678346aeeb4759d48bc0fa0eea4bdbe030e7c68c169c068a6ddff9e8a57d6d3a"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/llava/convert-image-encoder-to-gguf.py",
+      "sha256": "a147b4e0dce48c78e199e39719703c2a83b77b94cb123e74c282499159ed5f71"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/llava/llava-cli.cpp",
+      "sha256": "b82ee4086e571f8eb46e320971f09116f9c3ca9ed96720d05287809b807967d9"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/llava/llava-surgery-v2.py",
+      "sha256": "03f6afa58753e4d2b521974da03c26b4921fdf8375c93d7927728f7f61754d8c"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/llava/llava-surgery.py",
+      "sha256": "9e5d0aeb219fe8b2fb87838991f49cdc1205365d004109f4f8c26b8d11ea2295"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/llava/llava.cpp",
+      "sha256": "33e52302e47fb6f6f752760185abaef001647134631c98c047776a8ebca65a8f"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/llava/llava.h",
+      "sha256": "b5b14c0f24d7ec1577a95f705724b0dae76a80025bfad54bc33848d06bf1f95c"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/llava/requirements.txt",
+      "sha256": "1ea4f9c8e0e793fb6d8e6e28e7bc1ed3d16325ca1d67b02cff308bdf467bd7bb"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/lookahead/CMakeLists.txt",
+      "sha256": "edd2d308ab14d87a2c274985f91266a9ee492a1f0ef8a814c456ec91c4509181"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/lookahead/lookahead.cpp",
+      "sha256": "a34e5708d8bda803a0b82c4faf19f89515eb3a8c73a595ea2301757fa3fd6bc8"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/lookup/CMakeLists.txt",
+      "sha256": "b3af2231db852ae5e4698b6d8ce20bfd90fc3f34339201950b2a75a438927874"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/lookup/lookup-create.cpp",
+      "sha256": "7671d51fbfbf699f5b71612192dbf8a51c44e8b2f117ca3dc44643910eec518c"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/lookup/lookup-merge.cpp",
+      "sha256": "571090db1264e6b859f349fb0d4dd61cb633d42a56c5e5664e47288785d120f1"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/lookup/lookup-stats.cpp",
+      "sha256": "76db388b180f5c6217250a312a3348c735b34044974c5b3bad83bf670519ae2a"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/lookup/lookup.cpp",
+      "sha256": "179bc3ab971780f7bf20772125a965da2c438ea574d27cdf74383d8162fedd44"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/main/CMakeLists.txt",
+      "sha256": "7b327ddcb0ed8122998ead0f4376e08111c802dcc37133baebc1c1a1ccca0ff4"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/main/main.cpp",
+      "sha256": "6b30106d8b42353e09a990f688254806f4ed13999c421a60134391426a4d5412"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/main-cmake-pkg/CMakeLists.txt",
+      "sha256": "b8a197ae46e6f178ed0c3266a4b2bdd98ed3838e08b28c06398adc868a0ad405"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/parallel/CMakeLists.txt",
+      "sha256": "43caae3fb9141c8bfc295ee16136f209d236f0eafed447102bdc70000d7b4316"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/parallel/parallel.cpp",
+      "sha256": "9839bb02083d0a8e6cc88b2a3f73d16ebab966de0e0c983aa1ef19f07b9ab66e"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/passkey/CMakeLists.txt",
+      "sha256": "f051c637a20567dbb4858aa1f268ec75234af2307778fadd68f61f4cdbe8ae67"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/passkey/passkey.cpp",
+      "sha256": "dbe474f66b46cca5077ed34f84d15bdbd84fa35779f4a896ec740a939b058f0a"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/perplexity/CMakeLists.txt",
+      "sha256": "d119d138f847c449e928e5dfefee9adb355486c4ab962e60c48c244d1792296c"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/perplexity/perplexity.cpp",
+      "sha256": "3ee0206187d20997dbe106012ec0b2da671550b4f81360f7e79f9335c7a1c001"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/pydantic-models-to-grammar-examples.py",
+      "sha256": "0664265e073603c0e2336c065da0ec27480d0f886e7599e60cd94da7d9a8a4e1"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/pydantic_models_to_grammar.py",
+      "sha256": "b50205a10140f7b6de964998c884e68dca697841beab8af930a79cc59f300e2b"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/quantize/CMakeLists.txt",
+      "sha256": "1156a15758d86fd233c2462ba12f97f9fda5d1cfab5ca8ac5679764f5c7f9676"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/quantize/quantize.cpp",
+      "sha256": "32e9834ad6c4b679e5fce54acfcf1cde0de7039bf88127d7b4da88415d40b9cb"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/quantize/tests.sh",
+      "sha256": "bca42b0becb9f4090692e9b905a1a06769334bf4cdc13a7369bd43493d32d7ed"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/quantize-stats/CMakeLists.txt",
+      "sha256": "dcff7a0657fd531c8966892565685eb152e9e78729a385ce428ec001a46ce957"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/quantize-stats/quantize-stats.cpp",
+      "sha256": "668d56ba77ba6c680be24be81a883a7bcb1d3f5f4d2cc4af44ea8ff1252500c6"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/reason-act.sh",
+      "sha256": "2005a2737b36571db712fe1957a625a2a5710a85fa2dc2ae7dca330ebdfeec82"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/regex-to-grammar.py",
+      "sha256": "87575b5aada7ca0f854c870d7a1cf3d4349df273a39315f168cfe8d93ee7c0c3"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/retrieval/CMakeLists.txt",
+      "sha256": "65ec46b4177362aca18108371c34e2346b6af12e95e449092af62fbc7f25e9b7"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/retrieval/retrieval.cpp",
+      "sha256": "af9f4946d2defbf2f8fbe21c71182c20cfe1bdf4f73e0b130dbefb477d2bc4c2"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/rpc/CMakeLists.txt",
+      "sha256": "ec9f4944cf7d6036c55c6badeb4806d54ad238fb3621c13b530d9b2d89ba765a"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/rpc/rpc-server.cpp",
+      "sha256": "021cc49566456d379049e4a1d7cf65d9a74ea29f040378e95a564b26f89ff618"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/save-load-state/CMakeLists.txt",
+      "sha256": "bf20c853b562ab3ed398aab38003d84e2b8397bc2ede2996b79ac34a279e0af5"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/save-load-state/save-load-state.cpp",
+      "sha256": "6bc4c8e8279cfe5100306a02e3ffbb0fccd98b28aeb3bd4d021ef5a9918ece6f"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/server/CMakeLists.txt",
+      "sha256": "bbfb1205f5d18baf9d9f93bbaa8344909814d9df76404fe2178ba478b3a49730"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/server/bench/bench.py",
+      "sha256": "e45f44ad69610c36a29ee10819d14ee8bc76ba433e0119600160ebe4707ca9e3"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/server/bench/requirements.txt",
+      "sha256": "105cc90e6706a1296b93e961f24783cc455dfbbe6c6c9acf19d1a9a524e9eee1"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/server/chat-llama2.sh",
+      "sha256": "cba89b86f75a7250ca79435deb28f4f4416dc76c8973c0ebdbb038f461bd7c89"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/server/chat.sh",
+      "sha256": "30ea92228915ec32368e53e7b88705f3a7d6a8ceeb710773d830dc182b090e60"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/server/deps.sh",
+      "sha256": "e1da56b5a793cda2bf3336430381fd95d9e0d94ba6d8f8af8fe1879d3f489694"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/server/httplib.h",
+      "sha256": "bd5c99044a3dca5c2f75ee507c4dc1b4429ec546b049a0238ffc400bc831bc43"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/server/server.cpp",
+      "sha256": "78aae7f0eb3980c91716129c7e81fce708eec5677b09a6e225582b25a81f0ce8"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/server/tests/features/environment.py",
+      "sha256": "ddbe65c1de9a3b42e73f66e7c37d68d32041362dd45c673417a1048807f832f3"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/server/tests/features/steps/steps.py",
+      "sha256": "699d812766cd082ed2d0d7984a7f085ef3388ac5deeb7f79147cfe2a3fc6d3a7"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/server/tests/requirements.txt",
+      "sha256": "c90625620df2df979122ccc8933711e71dba4d4440114361a217ddeeb6650b9b"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/server/tests/tests.sh",
+      "sha256": "03fc1aac966967ba79620d5839ac1c714a9afbc3301b1484189ec3205285db06"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/server/utils.hpp",
+      "sha256": "908b3120bbb19e26a9a929506c8346965af855b9814a18c02c4fe46577af9562"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/server-embd.py",
+      "sha256": "77b5f1a02a7a858164bd689585446c8b9aeeacb99f3982da286e9bc8e61a39c2"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/server-llama2-13B.sh",
+      "sha256": "968219d2ebec0329118e7107e23356ccd79d983d677c76c28fcf756a4a8dd927"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/simple/CMakeLists.txt",
+      "sha256": "35b0e1bb935904a0ea5b5570da3ff0d2adebea3aeb8d9407aa99e5c48e6c5fd7"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/simple/simple.cpp",
+      "sha256": "6b79a18712c12eb8f377cd8f02ee9dda2de54f2da88c3bb45c3b948d2f839743"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/speculative/CMakeLists.txt",
+      "sha256": "8c68c7515bb83bd94948ef21d4e2c2370d8095fcd28fc3f1cf11f4492555e05f"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/speculative/speculative.cpp",
+      "sha256": "af94f681cb7fac3c8b27abc8ccab154407f33e73f604b2d33333026471bd9d00"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/sycl/CMakeLists.txt",
+      "sha256": "fe07cdc15f4fa38e732c43703fe4fc971bce9c1ffd3ca12a2d65698679d54b3e"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/sycl/build.sh",
+      "sha256": "00bcc0c6e0dd04b0366d78c537966daa77139e5e57b015161e06874d48932fd9"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/sycl/ls-sycl-device.cpp",
+      "sha256": "d300b651318090172d4fb3a6987e1745d5fd74c127126711b9557c0bab0d8fb4"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/sycl/run-llama2.sh",
+      "sha256": "07f91aea23b18e46b793abc19a43cc3312f135d08a713831ac9dd3c9743aae75"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/tokenize/CMakeLists.txt",
+      "sha256": "205043af156cbe50bd487ccf2005b34b63f5586668f16d35e23a0bf301bc136d"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/tokenize/tokenize.cpp",
+      "sha256": "7616cd49cd508946e43d3a1174e1969bb815477bae3ed459ab61bd90c37c3e9d"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/train-text-from-scratch/CMakeLists.txt",
+      "sha256": "3feb8bbb2fba9b19aeb90a3f2698465cf964505755259d8167d9958fcb5cc64c"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/train-text-from-scratch/convert-train-checkpoint-to-gguf.py",
+      "sha256": "da0d015c2a546863c27f084a345f06fed17fd8205391e869fcdd18460f0017ab"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/train-text-from-scratch/train-text-from-scratch.cpp",
+      "sha256": "b40bc81e84ceeaf5885fd9aa7aa2ac43a6a22b36b29ee31032e3d9d43b9f5c69"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/examples/ts-type-to-grammar.sh",
+      "sha256": "23ffcb434aafd40022c64b5fe8c5ec183db8c77d10b4e841052119e9c45f8b49"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-alloc.c",
+      "sha256": "e70d5745adc5041a8e33d127835f2c5091d662d9e732f293f4ffc4be4b438087"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-alloc.h",
+      "sha256": "f55add6e0bc491b253b91dbabae6e00425197799bc9146ef028bdc7e6e97d52b"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-backend-impl.h",
+      "sha256": "a785990caaa05f22def6f73b91e00cbe51cebd27bd42811579a0862249477ae8"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-backend.c",
+      "sha256": "ac2d550f5b18451e94c761d971956b72be37a93203e859d60dcd90f8d60a579a"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-backend.h",
+      "sha256": "b8664b117624a9296ad9369893c8b9f054625eb2ffc504a590cbaad642ff1321"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-blas.cpp",
+      "sha256": "035e6a1b29d0a3affb8436274f602fb2cb82ba0799db64a1c8f3a403d885ba98"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-blas.h",
+      "sha256": "2c3fc017d672f944f593c12a7f3e88ee40a9cec45349a5e92412617dd5cda5a8"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-common.h",
+      "sha256": "f9a5815d753a9cbf053bc8ed0683182c566e599a20ffd83f0b4eb45a637c80af"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/acc.cu",
+      "sha256": "cad0b1fe4b230d959ed0794216a1674ff625a4a47f94f76b8ccab4b4f35427ec"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/acc.cuh",
+      "sha256": "4d5ff42aa0767d1b2d1f38ebd7aafef34989c329ba10ff075309feb8dcf0524a"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/arange.cu",
+      "sha256": "e9bef1d5940009034d8bc8ca4185dd204191c20d1a0682a9bdccf4f953c57a5e"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/arange.cuh",
+      "sha256": "f5bd2851bc3a5c0191aa3e5ef6dbd4e1aa6a3baef6f7b01ff018220b803cc4a6"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/argsort.cu",
+      "sha256": "275b490b7384e23b39bbf399c4ec9922358eead6d24859c51feb7bd2c2e85cdf"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/argsort.cuh",
+      "sha256": "3f42aa142fa4b504546cded8606de70d9bad6a104f90f7a0061dde649f6c4161"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/binbcast.cu",
+      "sha256": "7818d23c87d291b1acf75134e814681bdccec1dfd0335a66b8dec5c9a1dbb3f8"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/binbcast.cuh",
+      "sha256": "d3f1815dca7dc8a8c05402d1ccfa098cc5fa7db4759e262ae7b1f07072434b44"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/clamp.cu",
+      "sha256": "4790ca218a581c3e268d19209150821593611f1e4e15a6f8c58cddba8cd013a4"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/clamp.cuh",
+      "sha256": "53713bdce3d2cd614719a00e3e282c7ec2555cad1d35baa65e930cb5bda54b27"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/common.cuh",
+      "sha256": "2d38fabb5bec22f5a11a45a14d89f5ed3865f0677d4e35d20e97e3b30348cabe"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/concat.cu",
+      "sha256": "4b70c68a5aeca4513648d5b35979311bc7afc3d479cf2aec580497ecf6462c84"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/concat.cuh",
+      "sha256": "d367604a4ae4ab673580082fb397d04062bd541706d9eefb6989f9a905e61a12"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/convert.cu",
+      "sha256": "368adfd3bd1332decb34a661ce9923a1975c1709d9c83aebd10e48e758d43357"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/convert.cuh",
+      "sha256": "a2ff41e851e3c7834b2e6f9cae679043d8da72798683c9a52714687e3a32e280"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/cpy.cu",
+      "sha256": "4b7ee39b4ae9fccbcde065be90525e04b120918817ae7bf0d4a34d25854ed2fc"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/cpy.cuh",
+      "sha256": "e95138afb086b2830ed6f6ae58a62a03e0fb3941eeb80a0a39986ad7e91fc278"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/dequantize.cuh",
+      "sha256": "d4fb541fda5a603395438ca43f66196ee35d8126b543969ffa3da7e7aa4e2c22"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/diagmask.cu",
+      "sha256": "dbd7dcd55bbe033bb34d8ead3733c37a7e4e2eecb905a9199315d98cc3e04f7a"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/diagmask.cuh",
+      "sha256": "6017d90f19b13f525806151ff115d94ff38154764334c143b966c5e0efb66bc1"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/dmmv.cu",
+      "sha256": "a486592227917ef6c324a7206bd52d04d53376404851c9a0b689c02487e5efc5"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/dmmv.cuh",
+      "sha256": "fbae6fe100443cff2e22a01a6a4501b3a432d6845ca73414a40ac6ee9a683249"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/fattn-common.cuh",
+      "sha256": "83bbd3d7b70bb81dd07cb63783b0ecef1e6942b4b79754b6bd0598fb3696ec84"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/fattn-tile-f16.cu",
+      "sha256": "ceb3db89c59b291b41ad226fde2db8109042d9d7bd39574406b7071451616954"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/fattn-tile-f16.cuh",
+      "sha256": "d724dcf6eb9beffea7a328b5b64874cc263d50a94e5e3f3c59613125e7f4b2b7"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/fattn-tile-f32.cu",
+      "sha256": "3a29e82e73020be6e32afcde2cb227f069bda96a38bc6e7a454278cb3e7d0730"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/fattn-tile-f32.cuh",
+      "sha256": "b844a715b7eceeb5a7a96655df8192e9737166238326cb4192f9106f7575b995"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/fattn-vec-f16.cuh",
+      "sha256": "8027f55821c894576fa58eeac4d7aac2b0cbbb1d87b235cd9721a3083cd4e751"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/fattn-vec-f32.cuh",
+      "sha256": "cee2a652b3fc65172cf758534f626c57c6ae70958dd872d0b7eef7bc365a813f"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/fattn-wmma-f16.cuh",
+      "sha256": "ac27909c95ab25115b71845b889ad5394c706b22315a80c65f13fbd6296590fc"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/fattn.cu",
+      "sha256": "7e1a8fb7a97b68c873bc2b8510475a37665bd00580d349cf3a88e6f78e8ab1c3"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/fattn.cuh",
+      "sha256": "69fa53aa9573a6734a931f80f4ca6946cd847dce87cccdc0c7aa7b10a8d9066b"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/getrows.cu",
+      "sha256": "19ced0f04386f7162c9ea7ed41f6fe555236ad53bdce1c42bc57eac2a3285233"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/getrows.cuh",
+      "sha256": "9b1154b305b98767abe4f5f57030be1739c1a38e63ba2c10918cb2aade1cba7e"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/im2col.cu",
+      "sha256": "ad8679c908dd080502e7dd4917793cd7968496d22b3273e59ee4cdcd4d7e26f7"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/im2col.cuh",
+      "sha256": "cf9650b3f19e3345c81e2d56a359d42ed4c1438ae2c841a0fea7bc790ffb5de4"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/mma.cuh",
+      "sha256": "ea0d1215ad23a0cb596c3eba43b9699dfa66944d0f85a1b336e46b915e689153"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/mmq.cu",
+      "sha256": "475272fe2afd4d7747f9994abb003ad1f2483413ff40526f2354b1e043169fc8"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/mmq.cuh",
+      "sha256": "aea9e7aaaeceb499974157c8af2a4c423cf25a43a7cf8ab3643568d2ef5a43df"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/mmvq.cu",
+      "sha256": "1b297cf58e3b81e00572e6c47392241947834968ab3fb321af5b8a56b5b2ea41"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/mmvq.cuh",
+      "sha256": "2587ed3371aa655313beb9d7549be2125ddb31a6826042797434be57bd5131f7"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/norm.cu",
+      "sha256": "b680556d4d7bb86278320a664b4c2db05666f7effb387c230f2a84c5c2e799ad"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/norm.cuh",
+      "sha256": "0fd32064b828494f31a779a1c62ffb9d6de49d523e6e91073cdffee240fbe25c"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/pad.cu",
+      "sha256": "33ba5d07711b5fde8cfa0584f09c08442785f9f856cb457a1f5a668c97cd0d4f"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/pad.cuh",
+      "sha256": "2ac173fd9d89eb83c146962f741ca8e1ec49c0d2312df07b16e77a1a3407a275"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/pool2d.cu",
+      "sha256": "71d204b8bff51226abe25f3eecf6ca8325fd9399ff89d4eb0c41b1b00f8ad1bb"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/pool2d.cuh",
+      "sha256": "3417872508e299a2b480df788fb96bdeae09cfd48e089238d9eedca779d80a30"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/quantize.cu",
+      "sha256": "819031b453ce619868a20729d6ce89fd1eea822081f1bac07a9c63d96fbf7b85"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/quantize.cuh",
+      "sha256": "388372a1e4e7e9f364df8300986c3dad8d52000dbd0ca042f5baada1171f0b28"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/rope.cu",
+      "sha256": "f79c481c3761ed31755224ebb77fee19924822ce7e6e08ba43a9fe58498d11b9"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/rope.cuh",
+      "sha256": "1c0aa19fe0a3b2ca59489217b1004b35a46e74f01560dc523182ecfd8061d679"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/scale.cu",
+      "sha256": "1c77d1780b3e0e1c425d013896074f166ec5a26d35a5f9a49ea7ce5237d1168b"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/scale.cuh",
+      "sha256": "7b7c8e4eaeba76d297739b3757f775b9f011568cf40f4f2cc242e8aeb6f4ff5c"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/softmax.cu",
+      "sha256": "ad14c70a5b6253a0ca0e01be415b7d52edd87b6dab71d693a73e04252fc66493"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/softmax.cuh",
+      "sha256": "8a970c7ac16c8b36971a12e27a5f9bade0572ffd5c653d50828e36a81fe40dd7"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/sumrows.cu",
+      "sha256": "94abc7495d788e4c95c219f914d2a8be81e453c4f19b6d5ce1601f358f27f56e"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/sumrows.cuh",
+      "sha256": "b2ab1f6d81ec3f208b84f3bf4f308ae3295b24b333ae69dadeb0a28825bb888d"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f16-instance-hs128-f16-f16.cu",
+      "sha256": "fa4863b663d6c6698197a1a0cfdf8e14a58d83a175117c5067cada321a23e325"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f16-instance-hs128-f16-q4_0.cu",
+      "sha256": "f61ed4401c60b150673fb788d679411873b54ee47de6e0d3df3a819f6536facf"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f16-instance-hs128-f16-q4_1.cu",
+      "sha256": "8feb4ba0d0a7f48f4260c61d389c9420dd4d74da833717593f2f567924c6459b"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f16-instance-hs128-f16-q5_0.cu",
+      "sha256": "8430ab920e7094185cfdbfb4ced8866dfac980fa9c6061d1cf5543b219c8c818"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f16-instance-hs128-f16-q5_1.cu",
+      "sha256": "cec5f88818b19c68a1eeae9745a155f4a0bcaffb519915db804fa97948989c4b"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f16-instance-hs128-f16-q8_0.cu",
+      "sha256": "5a48c537d8015d881aa7173c34f5484c4c1fef8153e09fe3425ef4ce251f519b"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f16-instance-hs128-q4_0-f16.cu",
+      "sha256": "c9b2fba31fb78f315f7e457f38cd9e569efb2ded6ce3b88e9681326a86e90d84"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f16-instance-hs128-q4_0-q4_0.cu",
+      "sha256": "af8d1968b168f52b692a6c260253f777e5e6b8a4a2ad9d576e9c4188c49f62b7"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f16-instance-hs128-q4_0-q4_1.cu",
+      "sha256": "af4d5adb077e34b3bcea279b1a732fe58885b6fab6a302437f1d28f97c26c6f2"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f16-instance-hs128-q4_0-q5_0.cu",
+      "sha256": "3c463dae6aa7712aaaa7591d4463a940a486a0b601eef71c52bb6f448a8e3be5"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f16-instance-hs128-q4_0-q5_1.cu",
+      "sha256": "ab6f391dc2897858ca9ef02bbbbbee437b752d71ff37fd3ea3a1a8d0f75a5b88"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f16-instance-hs128-q4_0-q8_0.cu",
+      "sha256": "b6c342505744776dcc893204b3abfbef61c16cb543d77f39d0176d1940ba0a0f"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f16-instance-hs128-q4_1-f16.cu",
+      "sha256": "a8cc0db6c6d0a8836e46f44a56f0223a934dc75dc891d04cd2cee13e9de40931"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f16-instance-hs128-q4_1-q4_0.cu",
+      "sha256": "a9f5184ae6a9cfb79770502fe9896d7c82a4708921fadd8cc18594d56d89dc09"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f16-instance-hs128-q4_1-q4_1.cu",
+      "sha256": "ec75125b350593eccea0d3e7bb6df11dd4c78183a20eafcb1021cdb001f90e66"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f16-instance-hs128-q4_1-q5_0.cu",
+      "sha256": "94804a3d0b58786bc2954151f18e37ee0bf71e1c25d5ed0d55d091d20bf739d1"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f16-instance-hs128-q4_1-q5_1.cu",
+      "sha256": "437cdd8814b911f8e0696182c6aa4073331b5b6b5733e15f81dcfe5ab6cc38ed"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f16-instance-hs128-q4_1-q8_0.cu",
+      "sha256": "7742fe9df04fcffda18befc9e41852c96361e94e3497ea3d43e01857835dbe21"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f16-instance-hs128-q5_0-f16.cu",
+      "sha256": "e1049321490f05ec8b8ee811bfa4d6792b8713c40e2939e9f8d63147c6d488a7"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f16-instance-hs128-q5_0-q4_0.cu",
+      "sha256": "ea2ff14ab8340f7abc40a17b49ed44568345d123e31c9b71e6091623333b1bf4"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f16-instance-hs128-q5_0-q4_1.cu",
+      "sha256": "9833ce1db260fd6e41084e21638a3f6611b79bffa81e6f4fb8ee95246b26e431"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f16-instance-hs128-q5_0-q5_0.cu",
+      "sha256": "b70bccacc2652dddb800ce3b4addcdc5835686e761f9a328bd2c0a935f51b5e2"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f16-instance-hs128-q5_0-q5_1.cu",
+      "sha256": "4da95053de2f08d29b182455841e08eae44cf805c8f00f16182050fed0419e14"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f16-instance-hs128-q5_0-q8_0.cu",
+      "sha256": "eb83dfabd3cc982c8cdb78e009c2726a973f2ccd8cbeb362cbb31ab49964693b"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f16-instance-hs128-q5_1-f16.cu",
+      "sha256": "ca4b312ae728dc25ffc1a0a82d5764591bebfe3367eb6338fce160a251350301"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f16-instance-hs128-q5_1-q4_0.cu",
+      "sha256": "153430ef03835b944db5ad9ab9097b3764216e8ee12d96ce21bdfcfe06ed8adc"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f16-instance-hs128-q5_1-q4_1.cu",
+      "sha256": "bbc26788cd8817b4fb649ac39612dd7db40fcbdc9f9c9d98429d4adc5de53129"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f16-instance-hs128-q5_1-q5_0.cu",
+      "sha256": "b64ae9631566781a89af4e960e965abf28f727156310df86ea173ad137019ec3"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f16-instance-hs128-q5_1-q5_1.cu",
+      "sha256": "28922e21c22228bc725bb011d5816de7b7d80cbdfeca7c63a914fa4268082ca7"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f16-instance-hs128-q5_1-q8_0.cu",
+      "sha256": "f4f183f58ab012da7e5ea272d105ae93b258306f83faaa8e5ddadc6ed02e29d2"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f16-instance-hs128-q8_0-f16.cu",
+      "sha256": "aa84dfa0da9f58519df93ab0e83e5bd5425f9314fdddc2d4426d60b24217771c"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f16-instance-hs128-q8_0-q4_0.cu",
+      "sha256": "2eda4aab8596a3cf9f4ae2506dd965b2153042e11eb1a3550da4679c0a5cd9c5"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f16-instance-hs128-q8_0-q4_1.cu",
+      "sha256": "ba6c944a49a97a81e3c346b727e4dc40d63912dae720d9a900da7f34b234a762"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f16-instance-hs128-q8_0-q5_0.cu",
+      "sha256": "303d44cd5d74d0e5e9afaca2d04e2fe440b2a1be631303df228afe8f404005a6"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f16-instance-hs128-q8_0-q5_1.cu",
+      "sha256": "d1ff80a98bf7f1bf52148b5cc727b490581ffc8181f4e943be376b9f3e997055"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f16-instance-hs128-q8_0-q8_0.cu",
+      "sha256": "eb0c1af9702bada1b0ea07b7fd0ca20ff3c015a9c09cdda2efb28dfcebd02667"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f16-instance-hs256-f16-f16.cu",
+      "sha256": "eb6a75b1921025b361a85d8bc66d0373610e7c4b58037ea00d12eda1cfab49cd"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f16-instance-hs64-f16-f16.cu",
+      "sha256": "87a6081ec27d93be8a775320fe251bdc7c6bed8b2ad61bacc0afda05b33f6659"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f16-instance-hs64-f16-q4_0.cu",
+      "sha256": "0fecd5b0931c4c441c6b89e10322db10373ebf93766c95c39df7b7f68b97a1b7"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f16-instance-hs64-f16-q4_1.cu",
+      "sha256": "4c1b8eda6584b43a673ffae69de402e0bfed109db61e108a123d73be8db375de"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f16-instance-hs64-f16-q5_0.cu",
+      "sha256": "4280c07fab4281ea8f89dd041f0c5239dd8283cb1a3a7e7a7c9060af2b0ae2b0"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f16-instance-hs64-f16-q5_1.cu",
+      "sha256": "e33acd639339973757ba74dba279b229ea6218a4ece40268995f5f801ba08d82"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f16-instance-hs64-f16-q8_0.cu",
+      "sha256": "c8cca92d02260d0d9908f6f862da3f4eaf5b4c519af3195b66a9e6c6e8f53442"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f32-instance-hs128-f16-f16.cu",
+      "sha256": "37cc3beeb6c464fa0528a0be32b2fa73171392e293f2c17a81af71e508b87d34"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f32-instance-hs128-f16-q4_0.cu",
+      "sha256": "f005469c261fb64b3ce28cfb634300df44d74b7fd1151d32696558157e964b7e"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f32-instance-hs128-f16-q4_1.cu",
+      "sha256": "11c4e3ce73dfbd77bdee9ebbaf29587076e187f7d2f1f27a3c15748d275dfd57"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f32-instance-hs128-f16-q5_0.cu",
+      "sha256": "78267689b82126d2786228cc63a1ae170f712c0f547bc7540831ad1a2e5b2ed8"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f32-instance-hs128-f16-q5_1.cu",
+      "sha256": "a097ff3296fdc7e402521c96d731a8d448e60d9810fc69b36a60f94e7be90aa5"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f32-instance-hs128-f16-q8_0.cu",
+      "sha256": "871dcef77724eadb1518b089e699701117597c2bef3b53b2eb1837289d705d14"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f32-instance-hs128-q4_0-f16.cu",
+      "sha256": "3721ae5afb58612dcba30fabb63c9d965960555a93b4eb5dfe27e524247f5739"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f32-instance-hs128-q4_0-q4_0.cu",
+      "sha256": "330e78e787c22e6cf37f6cb1782d7073f0a3e2c4cf8b961966f7805777657218"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f32-instance-hs128-q4_0-q4_1.cu",
+      "sha256": "56907fef3e18aa2aed70ff42838ad37a3fdc602ff5812006a4e9d931fdc98653"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f32-instance-hs128-q4_0-q5_0.cu",
+      "sha256": "160deacd911fa779b8c947e2f8a87171d5d8aefbe3d449e80df92fa2fa46256f"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f32-instance-hs128-q4_0-q5_1.cu",
+      "sha256": "bd235429f04fde1cbd33a4fa07504c98cbb5967f755e528ff2527f3d80763618"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f32-instance-hs128-q4_0-q8_0.cu",
+      "sha256": "63c672b4f60586fe26349b76778d909d77abd2ed21598eaaaf23f04ecd629cfc"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f32-instance-hs128-q4_1-f16.cu",
+      "sha256": "ccf8df1dac98ed796e0b4b65059fb6d6ea2a2de8721a8839df00242bf6b22357"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f32-instance-hs128-q4_1-q4_0.cu",
+      "sha256": "146e31288710ed31781ce63e568b81e9503622d0a85e003852741271ec008c35"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f32-instance-hs128-q4_1-q4_1.cu",
+      "sha256": "17dfd4953d9cdcad2252e011dc1ce2969667e2993574c25af0475149ff1deec1"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f32-instance-hs128-q4_1-q5_0.cu",
+      "sha256": "1ed18e2e8d58eea2548bdafc84ef1620ec03e512a49cda95d121ec81d1aac627"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f32-instance-hs128-q4_1-q5_1.cu",
+      "sha256": "55c18a4066099f996e6a00d0303336639dbdd65eb9e0becff86654e5be76306b"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f32-instance-hs128-q4_1-q8_0.cu",
+      "sha256": "65b223abcc8ee05c2cc20ba0771e4407dd382d63155ef73c4be7a504c0f52a1a"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f32-instance-hs128-q5_0-f16.cu",
+      "sha256": "aab94255a0a7945391aa0c14bff5e21774c0de83ba5ec3e5619d2960964002ca"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f32-instance-hs128-q5_0-q4_0.cu",
+      "sha256": "c12cf8c7c9dca60b47eb979838f44fa362252fbbc0d50c1bba87aa3f193bb897"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f32-instance-hs128-q5_0-q4_1.cu",
+      "sha256": "7980ed49a0f13d72a723cf4382a42798b8470940cb883fdd6a8506d538bb37a5"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f32-instance-hs128-q5_0-q5_0.cu",
+      "sha256": "9a833848c9c0992acdfd5104524e0020e3c02e53f95e9046af70919afb6c3238"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f32-instance-hs128-q5_0-q5_1.cu",
+      "sha256": "79567ff041269eba3eeffcca92b01143fcfff0b7878e0e151ec14f8e088971d1"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f32-instance-hs128-q5_0-q8_0.cu",
+      "sha256": "4daef0c75a20d7d3b40ca05e8b9bdad4725ce725d5050174c857c512ac9881d1"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f32-instance-hs128-q5_1-f16.cu",
+      "sha256": "754a67caf0d33dfbf34e663fddbb055dde045d5b2cde2cca9f2a858a8b06476b"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f32-instance-hs128-q5_1-q4_0.cu",
+      "sha256": "f7561b6886f67e6ac767d89622656887ac8f2582ce2042fe66dbcd59aedd7a96"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f32-instance-hs128-q5_1-q4_1.cu",
+      "sha256": "067b4f5877f4c1f7f4b79f8d56b09842ea3303f8a3c013ee7ad64e2c3b31f377"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f32-instance-hs128-q5_1-q5_0.cu",
+      "sha256": "194bbe8202d95219ec354a3bb68d3ac8367371daf30aa8a57bf18bb43cbc3cde"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f32-instance-hs128-q5_1-q5_1.cu",
+      "sha256": "c3d30d03b2554090b1393fac65c1e96f7ffdcdecb55538d46c7b5b9f6994de9c"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f32-instance-hs128-q5_1-q8_0.cu",
+      "sha256": "4b6e781f4d85ad7a4cf25ed6da04f810ed28b67bc3567a7eaeadc36427c38f30"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f32-instance-hs128-q8_0-f16.cu",
+      "sha256": "ab59910a3db1d0d2e62433f03e5fad46d0f290e58a966a9e1fa095ae70db52c0"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f32-instance-hs128-q8_0-q4_0.cu",
+      "sha256": "6a3981409335c625dcdad04fc06968fb4cdfd19776cc185d8e657adc81f32cc6"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f32-instance-hs128-q8_0-q4_1.cu",
+      "sha256": "03b474cb6aa9c1ab4f4dbdfcea5c9120b07f33529f63a265825677e1785cd30a"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f32-instance-hs128-q8_0-q5_0.cu",
+      "sha256": "3687f181ce9286afc1a9ac9320cf328ccb1103068c001e422329e750b6ad53bb"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f32-instance-hs128-q8_0-q5_1.cu",
+      "sha256": "a33f5136f4fb3ad37f9c272788751494c49362de9b064c1a19e5c3665313011a"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f32-instance-hs128-q8_0-q8_0.cu",
+      "sha256": "2c83dc5ab144d84419ca30d644fd121ee62c960d46a9cc28ee13eda81f5be89e"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f32-instance-hs256-f16-f16.cu",
+      "sha256": "24d2c8e6541774cb5573b3fbafd4d93765debc4bb06ca9f28ddeeab75ea60941"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f32-instance-hs64-f16-f16.cu",
+      "sha256": "3df6568c274b74f24688f6252b40c2c7eb6325325e38ef479cbd6d1763fce680"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f32-instance-hs64-f16-q4_0.cu",
+      "sha256": "8c0ac9e17fde573ab0327f2641ff2339b056992f660d952e4e17b546b213ff46"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f32-instance-hs64-f16-q4_1.cu",
+      "sha256": "007bc60411e09079d7c0efd755e0dbe0fda965089bb76c8a56fc4913a4222301"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f32-instance-hs64-f16-q5_0.cu",
+      "sha256": "86ebedfa6462050a699f66ec09b33f445cabd4a47e746b842cfdc28eb7261ffb"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f32-instance-hs64-f16-q5_1.cu",
+      "sha256": "f4f1f226dd5fe4c32604a9f4f5c8ff00bfd97b5ee20fd750adaf6baae702e93c"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-vec-f32-instance-hs64-f16-q8_0.cu",
+      "sha256": "8dc1c8f9cc8696476c21263397b97bb04c1d06778a429d1bee1fad915f045c7f"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-wmma-f16-instance-kqfloat-cpb16.cu",
+      "sha256": "caa30ad3e38760771cdf16a42b223f928ad874ed8e03497a13deae534b83456a"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-wmma-f16-instance-kqfloat-cpb32.cu",
+      "sha256": "627f5a2d81d00882441719c7bb27e5f7fa2c66a33f2ea0ea6db9d17d8ccd94c2"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-wmma-f16-instance-kqhalf-cpb16.cu",
+      "sha256": "b4ae017c90b74a7b961bfbcf74c334a493b9a437b47509bc9830b2f5afc0d4c6"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-wmma-f16-instance-kqhalf-cpb32.cu",
+      "sha256": "3faaf54e9cc789ea6eb7e15f565baf7b4b8bbcb30590307ce845e5dfeba301ef"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/fattn-wmma-f16-instance-kqhalf-cpb8.cu",
+      "sha256": "85e6e33770a1c8d77a639bd15842964d9d00adf75647f84bb59aac63fb54bdea"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/generate_cu_files.py",
+      "sha256": "9ba9f2f2e34aa1c10e47ea9461d4941a60626bce245cb0e588bbcb2a5edb8370"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/mmq-instance-q2_k.cu",
+      "sha256": "e378922ee4aaabe395e7e3f620a38ae26e36e27b46036b8b7fea71292bf8cc2b"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/mmq-instance-q3_k.cu",
+      "sha256": "3847ca2cefb02dd316033e05db5451b24440cf6ab4cb2d23b4f54a388b492edc"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/mmq-instance-q4_0.cu",
+      "sha256": "b0f6646afd4a8cc45aaf390a004700057baeae6d87d672dcd67c21a0a81eb74f"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/mmq-instance-q4_1.cu",
+      "sha256": "8a8c0da33c1c44fcbe516c6c7bd7bf1a6f3b934b63eaf99333e3fba42bfebbea"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/mmq-instance-q4_k.cu",
+      "sha256": "2ab47361d40a9ece25406c20693424a466c93bcb5cdb5c06cee8f9d03a806beb"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/mmq-instance-q5_0.cu",
+      "sha256": "34a443ed0e68b1ad614eb251758d0f43f003ce8d10e7833f9f58a46677d336db"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/mmq-instance-q5_1.cu",
+      "sha256": "a1312dd1316cd75b4a18e2c4a4c34d54ddfcd92b7fc1e45d4daee101e8d69f00"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/mmq-instance-q5_k.cu",
+      "sha256": "c98bbe1dd91e03362f4136357c6f4e4e2c5328902fdc6fd857d0f608386ffb2e"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/mmq-instance-q6_k.cu",
+      "sha256": "989943d6501a74927d079eacca793e94a1233863196c94dd20e459017ed76fc2"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/template-instances/mmq-instance-q8_0.cu",
+      "sha256": "b38f4de9a3563debaf4796d6772e1ed72ce6944c2b8b03f9c26bf19191addee7"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/tsembd.cu",
+      "sha256": "d5b908a5bf52816f39030e281791fd9f3912b2fc5ae06eb6c0cc0b0e3bb241a8"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/tsembd.cuh",
+      "sha256": "7dd4784baed53b3f8cf3c2919fb294e5341398f91297776e4b8af775279e6dc1"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/unary.cu",
+      "sha256": "afb755b8f18c58efe9ecd9831b7cfcb11e8e884789071e8fb73a380395908069"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/unary.cuh",
+      "sha256": "194dd7a1084b9e706f5d29ba04d52a3a689b6ff559b2158f615375696f9623aa"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/upscale.cu",
+      "sha256": "d42b6eaada890c7830156f72f990bfcc2b270a8786a1ee0106c76c70481d5950"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/upscale.cuh",
+      "sha256": "2557d6d800986a0aa9153adbfdbba746945c179323661030b5c45b4aae869687"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda/vecdotq.cuh",
+      "sha256": "e723fcb80b175784327537c10ff33f649d2e543442c7e0a1a72e369245d66f5e"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda.cu",
+      "sha256": "7cd1cbb60ee483127fd111e13a32fdd7bdf320569d682fb82a49f2fdfb07bac2"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-cuda.h",
+      "sha256": "b216bf4a73e7983f9bf8b45709e5274d219668fe7f03312b974ca7779bbe6076"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-impl.h",
+      "sha256": "a42f4d49fc60ce512e197d7291f81b2d5760ece317fbf5d02d900f53048dd408"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-kompute.cpp",
+      "sha256": "58148c36e6855e6827afdbbfee398990811684a5dee936187cfc9dae5c5c7cb3"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-kompute.h",
+      "sha256": "e3b501f57ae0af324df0d9c7f0055e3f08eff26ae66a3ee5149cd01e4799d6fa"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-metal.h",
+      "sha256": "2e4070e03d056324f9b43a4079d65fce32616dce4840a4c8d7e03a6447ff33fb"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-metal.m",
+      "sha256": "33a82d4aa6523264ae79bd0618749acbe100de275c3b4f3b65b45eb870137837"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-quants.c",
+      "sha256": "c3de1caa03bfa20f1844a6a463b4c54405e8abf3b89cda71679bd7acfcc6571b"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-quants.h",
+      "sha256": "23a1f3ffa604a8a138b93733e49fc30f4a07ac2e9f0bd107eec18c210cad2d8f"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-rpc.cpp",
+      "sha256": "46a7aa0be27bf37953fef12e0c416276f85e499155007715bbf00d3133b231ad"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-rpc.h",
+      "sha256": "150f2582620dd1638a142d025977a2a4740d8c0613cd02f599f9d58497388735"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-sycl/backend.hpp",
+      "sha256": "1364c7e7a17474549d25d31baf92b517d3ad9f54cbe2115a86c5dd240c0e0918"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-sycl/common.cpp",
+      "sha256": "234d9dc42ef7aa0292930741938b0218e9cb10a3ca4dd8826378c07417b2210a"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-sycl/common.hpp",
+      "sha256": "f22aa8834b92b918ff6c206c21e95cc49063592620b503cb8fb9fecfe2ead0fd"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-sycl/dpct/helper.hpp",
+      "sha256": "ac7ee63c769d774d48137e0bfea021b8cc9cd02a0432b52e66ff490f069db6e2"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-sycl/presets.hpp",
+      "sha256": "ddb42abedae6b4ced5e998fa5b6423887d88940a8a5fab0159716422b69120f3"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-sycl.cpp",
+      "sha256": "f7f082f0342b9d95ebcbbd384db9069117d49d10785dfd8e67baa79ef16fa66b"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-sycl.h",
+      "sha256": "f20dda4c0af52c789cd509c71a0033e2f30528e4ab518c0dce409a71f42f4c50"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-vulkan.cpp",
+      "sha256": "d3d7954e98259e530b8bc33d4adecebc85f371cfbc2c47ed9f4e3f2fb99a1942"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml-vulkan.h",
+      "sha256": "2db87bbe914c18d03c5c2c547e713bd113ae5be44c020b70a6da8430856f9448"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml.c",
+      "sha256": "b5d0e21ee87aed7e32d6de11e7209fcf07f79753475955cf9a747cd93f578818"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml.h",
+      "sha256": "176d2714596b219e050c850cf3a0ca624c316b3d9c1cc12d263c27287c0dc30a"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/ggml_vk_generate_shaders.py",
+      "sha256": "d131802ed6252db458e89e971cc6c72ee8d187feeff341a0852e8e7a9eed3589"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/gguf-py/LICENSE",
+      "sha256": "ef78c7e6659e34c798194f0d344e807c722de70cbca1359ef54772661e11ca38"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/gguf-py/examples/reader.py",
+      "sha256": "f49aa785f8970c288a0a596d0f732509076b209fb78b0d7548f1aa3306fd1ffe"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/gguf-py/examples/writer.py",
+      "sha256": "acbfa9df7f3f4c5b16c60b42089ae82999ab0548cc59ed39285b1cf2907eda7c"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/gguf-py/gguf/__init__.py",
+      "sha256": "5ebd8ea00df243c67919c6c6729a4d4384f0f7328cccfc530f4888eaa9be4917"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/gguf-py/gguf/constants.py",
+      "sha256": "bb8775ede1421b34928ecdd191b45b0c7455aff7a314ab4c6c2c519deb5c400c"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/gguf-py/gguf/gguf.py",
+      "sha256": "f0c0eeedad0911784b52ffed8e162a0eb5ae6d535ce35705bc16196e46597a72"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/gguf-py/gguf/gguf_reader.py",
+      "sha256": "45e5806702f9f3d0d6fdb2968b1d0b2b6a9a0d63a3d2be235cf281ca6a09f81e"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/gguf-py/gguf/gguf_writer.py",
+      "sha256": "8cd85e6398e1b6e4539aded114a0d47a118fff4cdaa4f0b3bd04d2f3ccfa3592"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/gguf-py/gguf/lazy.py",
+      "sha256": "1fb6023bbdca14afecd4466d3bcf828fdf0d25aec968d3c3683ea4d4a78a06e0"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/gguf-py/gguf/quants.py",
+      "sha256": "748e89b12a5a4b37ddcfb3b07ea1f592f2bdf0cfc0c7c77a34c358639a72a103"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/gguf-py/gguf/tensor_mapping.py",
+      "sha256": "88f4b43b399e2844bfd835300950c6db0ba244489966fa2f65cccdac43726902"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/gguf-py/gguf/vocab.py",
+      "sha256": "3783cdba557cc7f9bb71d6e66d4045de7a90d145c64c38b7d6810887787c840b"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/gguf-py/pyproject.toml",
+      "sha256": "322ba0656f5e9b8f35bdaff2f405482eb248b843ab24ea8c16b29df0497d27f2"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/gguf-py/scripts/__init__.py",
+      "sha256": "142a3376f808e2e6d9e0e37a2b1d2f33400a0b642a9477ab2b1a18d1069cf24a"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/gguf-py/scripts/gguf-convert-endian.py",
+      "sha256": "b5ca5ed4eeb12d349eb580f94fc75870337b730893592fb9b07ee21423fb81af"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/gguf-py/scripts/gguf-dump.py",
+      "sha256": "da18186e9c3808b1fefc60d0b6d9b7faaeddb56c2304a0e62720aa088251086b"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/gguf-py/scripts/gguf-new-metadata.py",
+      "sha256": "0b35dd925ec48d69be21a51b31fb3913fed0aeb81ad1d53614ba83bd4ceadd39"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/gguf-py/scripts/gguf-set-metadata.py",
+      "sha256": "f632128278766ad6f02a1fbaf283796f4c0bc6cd266295ce5882e3baa2d3b7e4"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/gguf-py/tests/test_gguf.py",
+      "sha256": "dee55282983e979653e7e8a8b933f2983995c2baddf285205e3337c16bf5bd83"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/llama.cpp",
+      "sha256": "55835636f0c15dd6af26a7543a3f871f9e41e8dee1d37895020ebe2f9a8e5bab"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/llama.h",
+      "sha256": "7eb4c69a33fc07cced5610ac4cf397974fc72d3fffdda21e678b81af42405599"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/pocs/CMakeLists.txt",
+      "sha256": "7d7e50f23182ab397c673c265466b6819f344f83f789dbed4b0fa57ef671879f"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/pocs/vdot/CMakeLists.txt",
+      "sha256": "0ce466e2eae8dc94b576cdda37b1fd107f7dcd2a6150dd24e8793a18c4ac8d06"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/pocs/vdot/q8dot.cpp",
+      "sha256": "ce02cad627ad1390e84f1977caf17e6ba9a30f78a16d2e2eccbbf68a0b20cdb7"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/pocs/vdot/vdot.cpp",
+      "sha256": "b1531292f3f8d25fafedeb782b3406f69d148506ffb9bb4f2a0b254d75f3efd7"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/prompts/LLM-questions.txt",
+      "sha256": "3c6ccd08307944812f4efb8dfb12c16f4d5f1999da2a7c8a91237e5f3c6849f0"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/prompts/alpaca.txt",
+      "sha256": "8fadb9ad1206f2f130b54004893a2a7f76b1ff41a78049d69d797df2ee67fe94"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/prompts/assistant.txt",
+      "sha256": "703bc9eee1540efd9e0bbba45e282e0edf4e8834cbcc43a2b193b7fdaa9ee5a8"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/prompts/chat-with-baichuan.txt",
+      "sha256": "b271ef8d220fb4f061d4adc1325952d0baf9c1457e63baaf26c9b19791b59483"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/prompts/chat-with-bob.txt",
+      "sha256": "adda4026c55a972e7b2ccf65176babf2d81953b4b2df7e7c6ab74a60625f3783"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/prompts/chat-with-qwen.txt",
+      "sha256": "75357d685f238b6afd7738be9786fdafde641eb6ca9a3be7471939715a68a4de"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/prompts/chat-with-vicuna-v0.txt",
+      "sha256": "d19bea2a0e7717ec5bbc4bd8c26d7edd1f8e90840ef56cc2fc16d3e7142f1c13"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/prompts/chat-with-vicuna-v1.txt",
+      "sha256": "d0d03626e7c4330cd94833ed78d41f38f2a908f00d44afe26689c6f1ac1d79f5"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/prompts/chat.txt",
+      "sha256": "d87c553a8b967b979577125dbfe8897715d986caa9c222cd2ef874067b91a8ea"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/prompts/dan-modified.txt",
+      "sha256": "5dc174a6bb41f9b5fe5b9a6b9e5d7612afc58679f3ff337d98cf25dd0ffb4307"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/prompts/dan.txt",
+      "sha256": "68014ce694d8456a21abf685a543c8320f464b16fe5cfec700f508dec2c4f497"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/prompts/mnemonics.txt",
+      "sha256": "7b307da13ec996b335b307de9570ab100012aa3504db33c80418a9660e10789a"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/prompts/parallel-questions.txt",
+      "sha256": "e969e6f06e75c5d4cc7415203895461eefc5b1a15250e96eb011ebfa2b87757a"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/prompts/reason-act.txt",
+      "sha256": "9e980022a34351c0e3cabf9c138594c68d7161ccf9a2276c86a0dd05c62ea478"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/pyrightconfig.json",
+      "sha256": "30f17c573422fb704c5e55161da68c2e7eccc2d120ca4a5fe11f0ebd9c5c6da7"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/requirements/requirements-convert-hf-to-gguf-update.txt",
+      "sha256": "c2257a7dbcc6ab65561fb34b6b5a86d144f91b14ccaf3669783c3dfda2349cf2"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/requirements/requirements-convert-hf-to-gguf.txt",
+      "sha256": "c2257a7dbcc6ab65561fb34b6b5a86d144f91b14ccaf3669783c3dfda2349cf2"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/requirements/requirements-convert-legacy-llama.txt",
+      "sha256": "88142859dc62150ce8e9273ba81cbbdcd90965c01a0eac29b126f130dac1a87e"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/requirements/requirements-convert-llama-ggml-to-gguf.txt",
+      "sha256": "1838b903390b4805618cca0cb1e87a179625020e19bcff235660afda8efbaea7"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/requirements.txt",
+      "sha256": "8271c9164399c8e24de53f652d5d5feaefab48a948ce2647ab6bc929f187d007"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/scripts/LlamaConfig.cmake.in",
+      "sha256": "325bb81a229b413b231a768c8fc3b2b20f5622ffa203d3e737c80d68b7d81af3"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/scripts/build-info.cmake",
+      "sha256": "7f002672200e9cb52268979daa627b3715a35ffada043002e60930a3c445c1bc"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/scripts/build-info.sh",
+      "sha256": "3c592a711ef5ff0bed77c5c42ae79b44d078cdab5eea027142a32748230e7cd1"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/scripts/check-requirements.sh",
+      "sha256": "8834d5cefadf45dd05159c71d4e3ae57dd270ed82d00457178e5f8e861467371"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/scripts/ci-run.sh",
+      "sha256": "1b65315a597bb4f0437e9ac1da2da6cf4c065ecb04fd9b9cec1f5412b24180d5"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/scripts/compare-commits.sh",
+      "sha256": "7430de3b53eb2abe3741d242dc9e4ee39298087cbbf2a18ac029494e46093c19"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/scripts/compare-llama-bench.py",
+      "sha256": "dc1a6012fcaa5baad4e55f32a4e89cb4a8dc1777f544846a4d36726607fdcc11"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/scripts/convert-gg.sh",
+      "sha256": "3a1fbc1ce9f0aee7dfa7d640269797b95466f8f42c984dc08dcf24be270c9b10"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/scripts/debug-test.sh",
+      "sha256": "42b628e452ec126ec36e920bfe3f3d9e02b329613b3242bf3ce8423f53707bfc"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/scripts/gen-authors.sh",
+      "sha256": "d24011ba9a6fa89e74706f4696e2157b2da365073e6de439df1109620989f352"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/scripts/gen-build-info-cpp.cmake",
+      "sha256": "ce220ba0b7afb332558ad0ca0f82383e05726fd6a03f1a0070152e1d6568c692"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/scripts/gen-unicode-data.py",
+      "sha256": "7d2a5a7dc47b4f6f82bb8ef10cf7976006a5dbfa2367563abbfbd2a3b7e57476"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/scripts/get-hellaswag.sh",
+      "sha256": "36e77b6fe2fddd788cf7dd35984d1ce8cac9df022d23c04471d3d5ce4a350fd9"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/scripts/get-pg.sh",
+      "sha256": "d716359f7bc44cdd8f5287aa7d3740c9aa6165e6d6b3edf6534781cb10538f37"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/scripts/get-wikitext-103.sh",
+      "sha256": "49b4456d4fcf14a46c3ca18e34be200bbf14e75f539f32306b65448b6187b0de"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/scripts/get-wikitext-2.sh",
+      "sha256": "3fc08f58c058de0a26ba01cfade0aaeb3f2d95956ed39cb44249aebd2f684611"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/scripts/get-winogrande.sh",
+      "sha256": "02be5db1044948cd98667b7f3004a76287537bd35bdae598a792ecc5802514bf"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/scripts/hf.sh",
+      "sha256": "a52245b56aeb9de52a0ec3a565faa8e653adfd381d97330a36de023ba86cb8ae"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/scripts/pod-llama.sh",
+      "sha256": "2d1d591e7ac4dc178bf4d89b123b4ff2fe24e25d83773d94a3ebdf54bdcbfa5d"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/scripts/qnt-all.sh",
+      "sha256": "bf9b1f36878c93d5eb36ee97555efbb54a4f878bcd722a0345ad5df5e6d9494c"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/scripts/run-all-perf.sh",
+      "sha256": "b45ec886e2d39b27a5fee854396069b1cbae59581856d559e4e96f9ff6faf9a1"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/scripts/run-all-ppl.sh",
+      "sha256": "72ab8f8f5c3f5038a61aa0347af445690d2a89cbb6d4c26b0c8b55f3669379d4"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/scripts/run-with-preset.py",
+      "sha256": "23c5dec683653577fc0793a33d3ab1126e90f89ff3247ca06cb062662851543e"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/scripts/server-llm.sh",
+      "sha256": "a05594368184cfa1528b3eba38434bac5e4370cc70a03464b8f8c33d055fe307"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/scripts/sync-ggml-am.sh",
+      "sha256": "36dd3b1bde0697af717085f22ce7fd1133a26233d6c793999b12499531adfa34"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/scripts/sync-ggml.sh",
+      "sha256": "5be658ad55550cd56561cc5c122f58b666787860a5b81bd68c3cd6b9e4d65f60"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/scripts/verify-checksum-models.py",
+      "sha256": "a76122391f4e332c61f16469e5e300f1181cb4b50ea2dd757be2cc7f885046b2"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/scripts/xxd.cmake",
+      "sha256": "ee4b6926aa330add0a9035ba8739e09b37d483b676f84075c11553a3a7510ab4"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/sgemm.cpp",
+      "sha256": "3b36aecd99db87b31ed959a98a9a7ad54f499899aea85e8d953cd022ef61aadf"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/sgemm.h",
+      "sha256": "73cf07ffb5fbfb50b3511c142141a3779186873872eb34ec732ff5c0d8967560"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/tests/CMakeLists.txt",
+      "sha256": "12c2b4eab1cae507edc7cf519eebf772a6f1ca6c3a29c9fdce03be40be6627eb"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/tests/get-model.cpp",
+      "sha256": "f7b42ac8a82d8fbde2bd32d9d713d9918f3f00f879f7caca38d6a4023cdd0459"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/tests/get-model.h",
+      "sha256": "00ebf8f991244f906ffb89c9cd3aa7701c5667db43ad84086d103dc1b8abc8c9"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/tests/test-autorelease.cpp",
+      "sha256": "c763a87243ab0e54c82048fe41fdc891d13843bed923d6e537bceea18e9dde50"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/tests/test-backend-ops.cpp",
+      "sha256": "aa0bc1831f3549d3123682ec62b790be6c77d9d586638d4c5ac4ec427804dd57"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/tests/test-c.c",
+      "sha256": "7b36a75d0cc8a0ae6d50b491088c51f9435a62043127bc741d821d08591fd132"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/tests/test-chat-template.cpp",
+      "sha256": "c93cff73136f05704aa2fbb6997720fab90c4d2af4b470d96996e10586e05bcb"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/tests/test-double-float.cpp",
+      "sha256": "e5a022e26c54b7147d6bd0252f06ed673b23ae1512f75f2c52c8e1cd61e0b203"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/tests/test-grad0.cpp",
+      "sha256": "f558b43a1049545ef1d7cd39d2ee8203ac16a0cdac39afd9fdb2de287d7234da"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/tests/test-grammar-integration.cpp",
+      "sha256": "3843a6799a075e10d830fb7707612ff906630e6438082ac1091afbe53abec075"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/tests/test-grammar-parser.cpp",
+      "sha256": "4ce5a5802e86c20d272343f9d540eee49aa08fed6cbe804df0f1805be5211895"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/tests/test-json-schema-to-grammar.cpp",
+      "sha256": "c43e12e3460c9db2650f82c50c484ae4f60f289b4a19ce224ab088d3f7011971"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/tests/test-llama-grammar.cpp",
+      "sha256": "10149cbecd531cf7cc476a0a2bf6f95f30085dc9c97ffdffae301bbd1c343564"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/tests/test-model-load-cancel.cpp",
+      "sha256": "cc3fef4868861978d84a069d834ad62fe389d299a7ec0fd1064c84dbc57f85d5"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/tests/test-opt.cpp",
+      "sha256": "2762f5d9f95f48e24fd5d3f230086730fea9653766745f993835fa416a7e472e"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/tests/test-quantize-fns.cpp",
+      "sha256": "285d727a0e4904b0ae8417b4b12a3e40725e3fe719060b3294396887c04055d2"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/tests/test-quantize-perf.cpp",
+      "sha256": "5ef2d3b110d274f97f365cc73f587fafaf558a94bfd0c8bfa3776cce014054e4"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/tests/test-rope.cpp",
+      "sha256": "6df8fee1ef9a5d58e3ae02559a4ff254952839c74b8371cb536a48ac77323680"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/tests/test-sampling.cpp",
+      "sha256": "018199805d793a6c8b15648f61c0065fdf1ad4e572ad8e7871d512157aac6f62"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/tests/test-tokenizer-0.cpp",
+      "sha256": "0eb770d8dfff4d8d801cf7a2781c246b147ee5ca2c6b86d033f0ac13db1fb63a"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/tests/test-tokenizer-0.py",
+      "sha256": "098d9e20d0cb589c163f11b94a0d71fecfe6d1fcaa9b28f785bdb39807c893e3"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/tests/test-tokenizer-0.sh",
+      "sha256": "0f11bea6d28cf7e939c1d68fde0035f0970999e244dc11ee694069e64fea0747"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/tests/test-tokenizer-1-bpe.cpp",
+      "sha256": "2770c2e46d6d6fc8414406f82f4377b97ac57719a6db5e6951be9e9fe0268c52"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/tests/test-tokenizer-1-spm.cpp",
+      "sha256": "ea821ce25672fb06e52588cf7fdc7f8e8b1e0b662289847dd5aa5d3d7a243abd"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/tests/test-tokenizer-random.py",
+      "sha256": "886a3ceab28509d2575cf28df8eb2361e4140b4c6e3700ef18f0ffaf3d9c5eb5"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/unicode-data.cpp",
+      "sha256": "0dc25715b2418cac2d050aa903234a403a85d89109a3e9b20eac78363043af93"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/unicode-data.h",
+      "sha256": "06faf509b3521f9ded5ecf944ada261e40134fd2ae09bfff49ba168ce1da981f"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/unicode.cpp",
+      "sha256": "ff9a232f006ad0006744924fed75653c43d86861bb8aa74e7c63ee9ed369bec3"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llama.cpp/unicode.h",
+      "sha256": "c0c20a49be1525adca884ca9b1cc6d5fa0120e9465e3af4dbc7df7a07a41d89d"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llamafile/bench.h",
+      "sha256": "77c5c5314086b236493dc07aaff019ff8f6884366e4e913c35a6798fe418d852"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llamafile/flags.cpp",
+      "sha256": "d72bf46dbb844fc54e14a33925c9e6e3b77a845df412585595aa743138a1bf62"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llamafile/flags.h",
+      "sha256": "8b21c61162c088ddeafb3c8d739de77bb94a179f1471d6e7db75f6d4d55ca304"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llamafile/iqk_mul_mat.inc",
+      "sha256": "3b533575a923e7ed994abbb4c0d78529c35b6388eb76326e77cd392dbe7a2b92"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llamafile/iqk_mul_mat_amd_avx2.cpp",
+      "sha256": "d21bace821708f2d972681820bfe6c1802ebf57f70cbb4cc07d9baf312edd7fc"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llamafile/iqk_mul_mat_amd_zen4.cpp",
+      "sha256": "5fa7e30e67e63019e38d524f0cf3b7cdf12e90df4cb6e74d608ef28964c184d9"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llamafile/iqk_mul_mat_arm.inc",
+      "sha256": "943751aacf8d9fe1ff82a82cdc6aac9d732cb1187203280db17e4da1c45e9393"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llamafile/iqk_mul_mat_arm82.cpp",
+      "sha256": "34e7ab43ad004a512ce48d8ad488042b8e7e892323f8434264b88c8353840823"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llamafile/macros.h",
+      "sha256": "c8a1db9521e2161e9f64bd6468595d0dee06140857e9bdd1fcfae727a942215a"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llamafile/micros.h",
+      "sha256": "586bbfc1cc43d5d74d9058bb27dfc026f6248211af22545e7029b32c393ac557"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llamafile/numba.h",
+      "sha256": "26a1ad1b429658bd520917cc2d68d64d103732e43433cb0f1762c4ca1945ba58"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llamafile/sgemm.cpp",
+      "sha256": "288bd69f5cb9a5986bb8a503e3edb56fbb715fc09d00ae7ef882d510021fa25e"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llamafile/sgemm.h",
+      "sha256": "d17ae1dcad699c2e58ba3188b79ff6b6e3f2be542b043cd66ddfc946130b5f75"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llamafile/tinyblas_cpu.h",
+      "sha256": "d39d1275f23b387de6ba930ba403e31835e72fd527f803b1349396f2426dc736"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llamafile/tinyblas_cpu_mixmul.inc",
+      "sha256": "3df3299ccfa71eb8adc2a2a39bf09a28417fd93226b24abdacd09e093d0cc253"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llamafile/tinyblas_cpu_mixmul_amd_avx.cpp",
+      "sha256": "14e61305e0ac623dd34e70dd049754526178593bb80a85640275770fa1d9cc30"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llamafile/tinyblas_cpu_mixmul_amd_avx2.cpp",
+      "sha256": "82d046558a0ce5dc4b2acd5aac8d3527abb09ec08a717a070680afd90ec7e370"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llamafile/tinyblas_cpu_mixmul_amd_avx512f.cpp",
+      "sha256": "92fb28d014469014fa09826db600c13725d14fb8f2366c0276beddd39d055fb2"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llamafile/tinyblas_cpu_mixmul_amd_avxvnni.cpp",
+      "sha256": "fe8077838aea27c82ea132a6ce436c27eb4adcbaab2baf2e788806f9eb4d8a97"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llamafile/tinyblas_cpu_mixmul_amd_fma.cpp",
+      "sha256": "cf3ce72e7f6be9ec5083396622be88ff2a3e905b3f3850b008440ebe8aa24f55"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llamafile/tinyblas_cpu_mixmul_amd_zen4.cpp",
+      "sha256": "d09bfe2f5ffd590a1fec0cff691e896a38d6b186bdd15ef7863242aaa80ff93d"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llamafile/tinyblas_cpu_mixmul_arm80.cpp",
+      "sha256": "8c1fc74906ae79af320a4f096cc75fb8a335bdac6a5c5d0475725ff4127841b7"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llamafile/tinyblas_cpu_mixmul_arm82.cpp",
+      "sha256": "7fac6c67de40da7caea81fe130672b0144dfb7961731f1d47bbb6c621c289588"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llamafile/tinyblas_cpu_sgemm.inc",
+      "sha256": "a7295c2cec46ea89325433b38926c363e872d8ff743264bffd24d6eaafc3806d"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llamafile/tinyblas_cpu_sgemm_amd_avx.cpp",
+      "sha256": "7a1aed2774a1ea480a17cc715d195ef4df47628aeebe4b70a62b200c32105793"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llamafile/tinyblas_cpu_sgemm_amd_avx2.cpp",
+      "sha256": "b79e72a56be4380cc9411dfa6b41073f1383fa8a2973d43fd7dd37cfcf480c3a"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llamafile/tinyblas_cpu_sgemm_amd_avx512f.cpp",
+      "sha256": "f34e52b8552d6048819f8a950d6ff68b470479576d152949fe01ff989b8d4690"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llamafile/tinyblas_cpu_sgemm_amd_avxvnni.cpp",
+      "sha256": "aa86f703ae90261f308f88ba3e74261a6abff6662ab3a67ece4a3a97ecc6fe7b"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llamafile/tinyblas_cpu_sgemm_amd_fma.cpp",
+      "sha256": "28615bb636658c0c129008832a545ed5242b024c983a23c4ccb3eda4ca8c9c70"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llamafile/tinyblas_cpu_sgemm_amd_zen4.cpp",
+      "sha256": "49ec971d47b36b4818495a0628f6bd6c15317ceaa98433097d15ae52ad126416"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llamafile/tinyblas_cpu_sgemm_arm80.cpp",
+      "sha256": "a415b5249c195287054b6e2b56a80a9793c800842c70810747deeb7f8bb7b3a0"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llamafile/tinyblas_cpu_sgemm_arm82.cpp",
+      "sha256": "c3d3de4d3db34323ceacc791984d70d204b7341d829a247f074e3d3a2c2a468a"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/llamafile/tinyblas_cpu_unsupported.cpp",
+      "sha256": "a1b05a307117d6eb22e3963881a00696911728ec7c73fa8d3b53d9470dfae884"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/.github/matchers/pylint.json",
+      "sha256": "3d2fac15cc40237cfc4014902a5062787f35213994faf1cdacedcb282c96da6e"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/CMakeLists.txt",
+      "sha256": "63c1252a769446c921090273b51282638e4a109d688f9f8fd18318e1d81d375f"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/LICENSE",
+      "sha256": "83965b843b98f670d3a85bd041ed4b372c8ec50d7b4a5995a83ac697ba675dcb"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/MANIFEST.in",
+      "sha256": "0c59958b857440033cf7e4c22d07da28ccca40f596e4dfe319c6151636e9243e"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/docs/Makefile",
+      "sha256": "36e33deeebeda7d752af352ea2e87e427cf5c72eba1a3d54e11d2f8f8ccc2737"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/docs/benchmark.py",
+      "sha256": "95d180fa1b58f2c4b26e58c54417769ee8bb596cdd6832c7f30998072e07eac2"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/docs/conf.py",
+      "sha256": "a59205ee21513042a230f2344967df8598f5e938800c5fd37315db663e6a79a5"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/docs/requirements.in",
+      "sha256": "f9cea77b9274bffe96611dbecb9ef2e5a1a506ec5f4b6399205b23fb37f5dccf"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/docs/requirements.txt",
+      "sha256": "e833ef46639e31a89b9b3439b7a16dca7fc29aa59460156674971cb20dd5319b"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/include/pybind11/attr.h",
+      "sha256": "40f8c7ec17e12fc405c071e4ac36a4f2034e2cc95bd62b403b97e86e37682e9f"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/include/pybind11/buffer_info.h",
+      "sha256": "fc57108aca9da6985f59729e08636fdc6ab98afcb5cfea85dddd4da1eb5e6a89"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/include/pybind11/cast.h",
+      "sha256": "3ace015feaa7cba5006824b013cc1ac2ec059ad14016de1048f44f26335f37c5"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/include/pybind11/chrono.h",
+      "sha256": "036de769e968aa7fb534a5400013ac26d1d4f55cfc95fbeb0080ae2e4fbba813"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/include/pybind11/common.h",
+      "sha256": "01383d06dd69c05f2a9cdb88d3ce9fa6b3380944ddad9764fe0d875c4d527fa0"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/include/pybind11/complex.h",
+      "sha256": "01a0d9fab1262b8b456ae7be2bd3f9cb74f1c6769017a27067fe8b03391d2d02"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/include/pybind11/detail/class.h",
+      "sha256": "10e01d43a3f8897c866e395a6e6b72ba9646d7687b3dbaee4eb70a1b070ac746"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/include/pybind11/detail/common.h",
+      "sha256": "689c6c501aef345ffb0078a692054877205481c98b52b06d0bc2a728dd578a8e"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/include/pybind11/detail/descr.h",
+      "sha256": "0fade9207b05de5b8efe0e750a36c953c5a5f553a285c8845d0857bdf460f919"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/include/pybind11/detail/init.h",
+      "sha256": "c49fe7c8dc198758ff6b477c2bd7c2968674f8c21f8785ffbc78dae02170545d"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/include/pybind11/detail/internals.h",
+      "sha256": "15dc7245f56398e972ffcc0b8fcd22d17c4012f8c41dacbe1966dc441ffa69e2"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/include/pybind11/detail/type_caster_base.h",
+      "sha256": "8666b24f56e8f77b486b3625ebe26de36b23afce1f245374382a466778acafe2"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/include/pybind11/detail/typeid.h",
+      "sha256": "8f0e69afd9bbdaf903b25a13f2fc65f708f5ed52467047570f2ce2065b7cf49b"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/include/pybind11/eigen/common.h",
+      "sha256": "7487aa98aec8cd6e4ae24da56ab3e703503ceb7ac3a77f14f586cd230888c989"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/include/pybind11/eigen/matrix.h",
+      "sha256": "092f0da64648f18f2dcb4345402ec665c525339a3cff501bbf519b1a5b6c6e40"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/include/pybind11/eigen/tensor.h",
+      "sha256": "53bc0ce2f0a5683030582280ab09ac08f880d81deb02ccc84f7b55ff242eb14c"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/include/pybind11/eigen.h",
+      "sha256": "f87992035920c0243e18752decf1ed4c473ebf1ab0f71011a45f0f1d6262a76f"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/include/pybind11/embed.h",
+      "sha256": "17725088e5a72c64ae67436e1320561611f255d7330fc0ffebb92b894e107ec6"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/include/pybind11/eval.h",
+      "sha256": "eeb7be3b6128af5c83d10fca805907223283d7b7a3cc823af3b62cce5f7f29f1"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/include/pybind11/functional.h",
+      "sha256": "5d8d518f9ff1da76fd013d0ecc1f6c92de8e30e9fa925352913d2e06b44890ba"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/include/pybind11/gil.h",
+      "sha256": "86c263eb3d625ea968e5cedf3c2804bcaffe79e0e82999bb3ca3f03cd09d555a"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/include/pybind11/gil_safe_call_once.h",
+      "sha256": "b4fa09202ba60e309c7c5b05925b4318b8fb738d8d6e07614add04464ad218a4"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/include/pybind11/iostream.h",
+      "sha256": "2b9acf5e8098377db9af53e9b5c2422213e182d46d4c942332bedbbd420ec319"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/include/pybind11/numpy.h",
+      "sha256": "c1ae0b0a137e470b5be57cb40c0d377cdbf8943d844a2a946ad9b0401d4136e8"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/include/pybind11/operators.h",
+      "sha256": "db6e11a005dcbf595ae0d358f6b437683fc0782f12f592b1dc754ad4ef01e0c5"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/include/pybind11/options.h",
+      "sha256": "a97be69e3fbef5f652a79e8d61e7e70775b9575ee9a47958d52ae0a370cd069c"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/include/pybind11/pybind11.h",
+      "sha256": "5a05b3d0328dd569d099ea8cd5ce496e8506b746e58ad602c643f5a3215dab8d"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/include/pybind11/pytypes.h",
+      "sha256": "af01e40df6f51858a3ee18f87a7e192dac8a258662821bd82d3e3bee63f07867"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/include/pybind11/stl/filesystem.h",
+      "sha256": "d8d1f17f0369743fb63629ec8542093284abb9f6d18f815b7b9b1de3ddd0c518"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/include/pybind11/stl.h",
+      "sha256": "68c8b53820b0d996fe2112d2940b50109247b56b112622d3f5d283307493d487"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/include/pybind11/stl_bind.h",
+      "sha256": "6b53b6b6bf5fdf1fbcdb2b6cb7e315fac739c41df93094bc73b042b2cb6dd128"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/include/pybind11/type_caster_pyobject_ptr.h",
+      "sha256": "1fba4a0584ef52589b88940470a99e024ca0490c280a4b88cae90d483995abe5"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/include/pybind11/typing.h",
+      "sha256": "d4f83021022fb3edf4f8ce257d9e8e78567ea133c8ae96442345b2a3e5419b80"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/noxfile.py",
+      "sha256": "8b0b57e73e18a36b9bcc5ae8fb25275b1ffb74ac0be4db209769eaf18bdbb997"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/pybind11/__init__.py",
+      "sha256": "f6fb74ea9beec2f74a5b463061028e4f104482643491be5950e26b82d1a174ab"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/pybind11/__main__.py",
+      "sha256": "5daf090ba43a59473167144e486f4051a1c2ff55d51d9719caf5500837f039e9"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/pybind11/_version.py",
+      "sha256": "fb6ab8393bb9eceb4531db1da8a6cb58d6c1c879cfd5e0b0ee2e98107300382b"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/pybind11/commands.py",
+      "sha256": "578de129bed513f69b619bda3be4e924b394eb99fa5b766b7581c61771b7a94b"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/pybind11/setup_helpers.py",
+      "sha256": "0300ff0a37d5cd7eb9de75b8fe2d14e1b9053021b86482e83198b1c8bf02678a"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/pyproject.toml",
+      "sha256": "c8b8f8257f1af680fd9a1059081206f7ca81e46c705badfa2428b91057647f75"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/setup.cfg",
+      "sha256": "26fcfe39cbb6f91cabe4db81b1585ae1b09fdf35c8c24ca1afeeb47d109cd4ab"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/setup.py",
+      "sha256": "5a1dfe5bbdc0db2324ad0ae631ddcd50aa9cc657147d3b06c92d6a8d2dac3d8a"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/CMakeLists.txt",
+      "sha256": "e56fc43c72bdd94fcce54164423c1ca50009b0dbc478751ad067ac18f61ffa49"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/conftest.py",
+      "sha256": "615813923f49e47043185e5d85cc019c8a045c86a4dba90c4d2ad504c03fd1f8"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/constructor_stats.h",
+      "sha256": "c74f271f35fcf5a55ef5aeea15832bc24bb00dc20fdd796ed6d5b004c31a875b"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/cross_module_gil_utils.cpp",
+      "sha256": "1a26edda648778ee11437fc4a3e57afd2d0d552694520d5fa0e3dbfdcb91c282"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/cross_module_interleaved_error_already_set.cpp",
+      "sha256": "7d54e817898ad1fca3fde4d66d879364a13e04429a141aaa47a0f6e348ffbcba"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/eigen_tensor_avoid_stl_array.cpp",
+      "sha256": "1130485fb11050529c4e4fb166c7a118167bcc6b1ee1a800c849ef6800fbf7fa"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/env.py",
+      "sha256": "330bb3831c85f2ab64ee99588a81a3b5673010ec15abef98cd28b3f9cf6936a7"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/extra_python_package/test_files.py",
+      "sha256": "58ef5a7640edb757494b57169af8bbb2251d09c048d739edc48533ae0ba028f4"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/extra_setuptools/test_setuphelper.py",
+      "sha256": "7ff91b7c452093d2d313ce37cae65ce2325e0d93d7be4bfe699372825e3629d2"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/local_bindings.h",
+      "sha256": "01d7510bd7b816eaea18db308ab4aef431345c37b40d206739ecfc31624a1ce3"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/object.h",
+      "sha256": "29872aad3041fee0b468f8709f890a9bc0b5b77af9cec18cc0ffacc225353d1d"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/pybind11_cross_module_tests.cpp",
+      "sha256": "eba1c270fd1a355977697cc385b1f36f100fd069e86407f2bb5470766d2a8930"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/pybind11_tests.cpp",
+      "sha256": "986c00fc96ccc6e518127a98085f11a95d43c5b4f5f34ef75ccac71dfd44535f"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/pybind11_tests.h",
+      "sha256": "877e81a58b8f4345666bca003d949114ad151cc60ee874bed54decc29d09e9f3"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/requirements.txt",
+      "sha256": "60eb696f17843bb6dd3c75ba667b623d6e276d209ec2b83d5953e3466a9c8893"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_async.cpp",
+      "sha256": "10a392a7ea512da34049d98c7d3a584848abec8b6a28bfbdb37126dc1f24b50d"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_async.py",
+      "sha256": "6b927a6a20149e00ce7ee2e2628bcdae08f6168df360d0dd8bd6a46b4d3cc375"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_buffers.cpp",
+      "sha256": "b53ad7972b5e4d4a7dda0fbe89cf5061bf400417cd83242e2b3fc650d0e99957"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_buffers.py",
+      "sha256": "87510f9030e7bd4521c2b7dc2953d1b6b15a7aeb32d6a9e134206c4b8efa5688"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_builtin_casters.cpp",
+      "sha256": "8cf814f4ced4260d3d52cd42c0130fa4bd11e7d906813f6d6b1b9ec7195139fe"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_builtin_casters.py",
+      "sha256": "72fafb076a086ba271f693d0e8b9a8c804612d7083517fc4ef6938a613552102"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_call_policies.cpp",
+      "sha256": "735ce1c6035f1d9d7fa95044fdf45d5bd3c3242bd954b15132c48fa0ccd257cd"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_call_policies.py",
+      "sha256": "f655871979377de4af87e40b0e545bf926f7c3ad59b071783034b4f6a805e101"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_callbacks.cpp",
+      "sha256": "f074342bb29af1202f604bed1316b180cbacb48e03a8557e01f20a0abf78551a"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_callbacks.py",
+      "sha256": "9fd389617c4304f27ff88520226c0db6257efb7d689cbbda6d97cea41a6d9d06"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_chrono.cpp",
+      "sha256": "67dc2ca42a136021cc64248f73179b3c4082ab2a7c71679dc412837569ef16e5"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_chrono.py",
+      "sha256": "44cc71790ca52c6500503a080926717594d9e8cda3627912bce14e75cdbfcdb3"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_class.cpp",
+      "sha256": "63367a5a587e486ebca6b49622217bf163f5aea2686f512d609c445833bc5419"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_class.py",
+      "sha256": "ff5e0fbf0af96433f8c41b2ac3ef8c5f3958662a5a1182974afabbd7d9084fe8"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_cmake_build/CMakeLists.txt",
+      "sha256": "44b0b025d938eb6f2371306fec39557fd490b22ad4c54bda6c5e4697dd59920b"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_cmake_build/embed.cpp",
+      "sha256": "de11a2b64b4a4bd6aa611e773e0f521940bd873536df54b2e97048ccf226d877"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_cmake_build/installed_embed/CMakeLists.txt",
+      "sha256": "8f4a025ab151dfc154ab0d7fc622759dcfd1152d86b2ff5385c0719635c47860"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_cmake_build/installed_function/CMakeLists.txt",
+      "sha256": "b9215f4c8a585cfbc3df152b0643c13a003d086659535a8ec546608a963523ac"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_cmake_build/installed_target/CMakeLists.txt",
+      "sha256": "0be2d4b07836c64c87e8f575470ab5d60b31b9d167b49633539d47ea083eb621"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_cmake_build/main.cpp",
+      "sha256": "1b5af44672d1c436831f4e52ff197449f99db2857a2efcffc9c79c72b4ed13ee"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_cmake_build/subdirectory_embed/CMakeLists.txt",
+      "sha256": "df5920e788969dbb08bbb8363eb18233fb7d45b598aee13382e767ffca0d00f0"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_cmake_build/subdirectory_function/CMakeLists.txt",
+      "sha256": "585cc54b0388632d2500ac85a24187efde2e99f1bd09074a242f828e8017499f"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_cmake_build/subdirectory_target/CMakeLists.txt",
+      "sha256": "2cd3880eb76aee0a484f48e140cc6d171f325a733b4405dd70fea3b64b2123d1"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_cmake_build/test.py",
+      "sha256": "1d028cb31c2c7ebbc8cbf433c42bda19a63af1bf36923c8755774ba718fe4be8"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_const_name.cpp",
+      "sha256": "cd20f248cf6c9acd6cce640f9c3c318eed9249539ec11dd4d67602b9546c1f7f"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_const_name.py",
+      "sha256": "506c7d90549246581bccd1c837aa12e358f29ddce984c72a9db3d9c42acc4cfa"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_constants_and_functions.cpp",
+      "sha256": "752774f77413d79f90405c4fa788e5769d873c171d62bbcf761d626a400a0ffe"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_constants_and_functions.py",
+      "sha256": "7debfcbf0dc47effd87e786a3b0f5014cebb56111b336fcc3967dd1f910b88e7"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_copy_move.cpp",
+      "sha256": "bd460c4ddc798790f8b210d2621d7ea79b8116cef4842a9ae7ec31da6252f105"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_copy_move.py",
+      "sha256": "d27a947542893d031e6bd0f38b9669756c63d77e18348aed64be24f71a3fcc83"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_custom_type_casters.cpp",
+      "sha256": "fbbf00f988a753758abec53ffe30f6b35c0f1ded0485ae0f2f56cb99e208371a"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_custom_type_casters.py",
+      "sha256": "c3b95bd5a19c02c2ed16aa809c40a65bd20c0110fde26ad8bf85ee1afaa4ab71"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_custom_type_setup.cpp",
+      "sha256": "101a4c25379ed4f1244e21a2b21028fe6f8a29794cec4eda2b0696e93bc93e16"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_custom_type_setup.py",
+      "sha256": "fb70b073bd1538f5621e3047515408e15ea1d3444b0d93a848571b0e799b0536"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_docstring_options.cpp",
+      "sha256": "2a6025af281bc18bab3d98e00a603a2dcb979ee0a48fe0161891d4b320a9ffdf"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_docstring_options.py",
+      "sha256": "c2ea7b173653cab4e434aac769d89ada4c21eecd282d01f0210afd47f635ab7f"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_eigen_matrix.cpp",
+      "sha256": "27c1276d49546c982231be96c4dde295a1dc2d68e3a591b99801adb979e7fda0"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_eigen_matrix.py",
+      "sha256": "5beda8c57ac506fce5c47b844d292eecbbb240f53ef25a983390ae38814e54d1"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_eigen_tensor.cpp",
+      "sha256": "8600113fe0de4d9c13c3e8db583d942a6b9e8bca13a313a2d07bc5ad01c7658a"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_eigen_tensor.py",
+      "sha256": "82be70ef15510062137ac0a62b6cee6c6b626f8b5d0d27c90b00c3632ceb173d"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_embed/CMakeLists.txt",
+      "sha256": "b9eb65ee4ec8c0be87f577e031b9565460625a6126378f990490a22a501f17f1"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_embed/catch.cpp",
+      "sha256": "03cafe446b4c6c3481a202b9a590fcca9811f130a38c1810e0f591e9c7f6fbe8"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_embed/external_module.cpp",
+      "sha256": "26d0936a14e1c71bd71340799dd235b0ea5dcd969469b55ca16e887ef939c48d"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_embed/test_interpreter.cpp",
+      "sha256": "8b8461d0c4cab57d12cdc58998e18060e3d7d04d02c9a7780c83eabc6c725b0c"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_embed/test_interpreter.py",
+      "sha256": "c9b291f7b5dc85254c3b2199496f9d04d444555bf54fe92cf72c42e6dd0eebdb"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_embed/test_trampoline.py",
+      "sha256": "819d811c56fef40d55683536290cca46894cee96a6f1cbc3ca39b1361414f696"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_enum.cpp",
+      "sha256": "1878e326266d0ec56fc9ee3ee5b49136dbabd6c95b058dc67323e1952623f4ce"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_enum.py",
+      "sha256": "9284d379964788e2a33112effe9866c2fc5476cf750992dd94f03850d65ce283"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_eval.cpp",
+      "sha256": "1ffcef687ec679f95fb93cd513780df3924bc4a2d15bdab563ccd67e7caeaeb4"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_eval.py",
+      "sha256": "ec905f98eabc249d9780f8559a1f809314b70ad40867a6eb9e6fede24e8ad108"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_eval_call.py",
+      "sha256": "0cdfbf7af1e139df4ca3b002142e2e6e3a2291288df4c654cf0511e79eb083e2"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_exceptions.cpp",
+      "sha256": "a64d7acac9c7aa902f35b78bde7c03fa2c4a4be809db37a7b7429367b8ee2204"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_exceptions.h",
+      "sha256": "b91aa61603d5a72955d59e018b557821aac0f97944a2d10423b5e411149490c3"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_exceptions.py",
+      "sha256": "e617cb21275b1b8fbfd5f9c122855b0beac478b795c72b2c554d939f938432cf"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_factory_constructors.cpp",
+      "sha256": "e10a2b3cb4968599e57aa492f22c8df30292fc27ffe238681862ba2f75af937d"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_factory_constructors.py",
+      "sha256": "b4964abb287df0549a1e2c44f558bc5d34cc1b5e6dc528b2c34e0a68db0fc3ef"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_gil_scoped.cpp",
+      "sha256": "1111256cce4221dfb8c10a399c477f94833b9350cac0bafa0b05410f75d2f47b"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_gil_scoped.py",
+      "sha256": "77ddfac9a584cfa9ecb9c9d4e08435ed28c56ce08ca2f95a5a3eda7f97fa3b09"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_iostream.cpp",
+      "sha256": "a3920d2ba61240ec066cffed49930d967887c944e82cc37c8f3e3f5bd53a22ec"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_iostream.py",
+      "sha256": "c6b370d265b55247947d509253d7a06e690bf48d599281bfbc3f270873db6ff2"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_kwargs_and_defaults.cpp",
+      "sha256": "de92e17f14b27822691fad904c9b8994daef41f87f06c9d63fce4de18f22c8e2"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_kwargs_and_defaults.py",
+      "sha256": "8acb2b18705c4282061ff2003b7f23a6db4864abf066f4b055a800b8cdb15f0c"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_local_bindings.cpp",
+      "sha256": "b4c1da514e64d9c57af7540c01a57ef849110d5dc77b72533f8e261c2fa658d5"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_local_bindings.py",
+      "sha256": "8eb6961e7e32b58bcc9e35f225e3d950f6144ebd8ad9946f8a4d5355c284d6d8"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_methods_and_attributes.cpp",
+      "sha256": "00c47b7efa2e3e5558569088f389479f9a2992186c8d17dd8118a7568ad89f6a"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_methods_and_attributes.py",
+      "sha256": "d2b2294b1b108301d21666023f7259d6e633272e629e9d5f5bf5cbebf4c02b54"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_modules.cpp",
+      "sha256": "3348df6548d1f11c18ae59521ebe215123dbfe71e62a1dfaab1e1830f72db9fb"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_modules.py",
+      "sha256": "3fa3977bf4c50d463bf21949b1d65af1b67cb19799a50155878c541cf29c5e61"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_multiple_inheritance.cpp",
+      "sha256": "3ae206a6779aff43b24ab209a741b2787a0fdecedecb40475f5cefb8353307f5"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_multiple_inheritance.py",
+      "sha256": "8934c9636b92f67ec79a423281da4c45707d2efd58fe2cc3ecab568fe52bee64"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_numpy_array.cpp",
+      "sha256": "aded683ec5b2fdb82f4527b98f4662208679191ecc1c0e8d478c24d8c96d4f80"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_numpy_array.py",
+      "sha256": "7662567a645cfd59a6c0bf5448ae7fb31f95536dca37549004d387cf316d57c8"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_numpy_dtypes.cpp",
+      "sha256": "a805e6d396f04ff5f749aebcfc8cd01f37f34e7095530bc3c4ff6ddd179d63c1"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_numpy_dtypes.py",
+      "sha256": "65a4e8e6d2fff604e897e65dc0fc14c10abeefd5e5d03b31c53f125ae72c4562"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_numpy_vectorize.cpp",
+      "sha256": "37270d69227341ee99588ab7e9b5521aebdd1a589ef99b12a6881fb3a0828e39"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_numpy_vectorize.py",
+      "sha256": "040fa73e911cb091183ffe167e264e273f46d869ef721604633fff8a951e77d8"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_opaque_types.cpp",
+      "sha256": "af034d3a00d482013162de8c6f1c1f44e298aaf1ca78a11b02effbf1ab58b54b"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_opaque_types.py",
+      "sha256": "3352fed92ebee729e8300a404248d317a3d46ab435781773d519c1addaccb9b0"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_operator_overloading.cpp",
+      "sha256": "0fc5af6b84976fc23a535e1df43d9a61f1576f7a5cd8f6f577900939a6bb76d4"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_operator_overloading.py",
+      "sha256": "ad7270797efb78ff9809958426bde162d330a8ba13dcde3187a971ba5e2da84d"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_pickling.cpp",
+      "sha256": "c4aba513276b24749338528c0742ea344c388f145fc6de6b2e25c017494da659"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_pickling.py",
+      "sha256": "5c6b934dbcb26e81088ca40b95e005275944ea97583e2015a28555d4ec79d31d"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_python_multiple_inheritance.cpp",
+      "sha256": "15e78bb524683484dc431f967727513123e87e945ba7fb12315e73d2473e0807"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_python_multiple_inheritance.py",
+      "sha256": "1cebb9b13320bd886ae0d055973df181c3afded48d813cf134724ba9d279c065"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_pytypes.cpp",
+      "sha256": "1fe5fcf36d52c14cf348d62c672d2061eb949df82526c6172beecb0fb202834a"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_pytypes.py",
+      "sha256": "f98b96132775b1d6b1be5762ef1be7ba7ec64c41e2bb174067bb84a112c7005f"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_sequences_and_iterators.cpp",
+      "sha256": "fe63095ff1f88fff50145a92d3354004a539126aae5257d3d46372ad16fe0bed"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_sequences_and_iterators.py",
+      "sha256": "f608b3643659feb5a6a0c0b22670ed65f6bc3f1c563d7a0fc28b10fe03f290b3"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_smart_ptr.cpp",
+      "sha256": "d2649e8c5dcc3337bcc66bfe3cc4061d05c7382c1a2c4cd10466e95905644bb9"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_smart_ptr.py",
+      "sha256": "72932cf99b738c8775488c96da6172420355b4ff375c0cef1d460163736f4b76"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_stl.cpp",
+      "sha256": "0c84e2c73619e11c98759a28c95a43f0c843912b5f05104cd49db78940419121"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_stl.py",
+      "sha256": "b159c3fd6803a7a02683cc628e4d43790dda0e7e44f42df1505cc9313e4ab472"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_stl_binders.cpp",
+      "sha256": "18183b707a585687d8e92111c2226ce0ec7b588bddf0349c621aaffa1dcece38"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_stl_binders.py",
+      "sha256": "b84ef7a84ecc6787b235c493111c58ce506222b002dd23f2e5303c5924297195"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_tagbased_polymorphic.cpp",
+      "sha256": "de72a493c8ddadf5cd7d2cb49f87bc5d077d659fcef155a69fe54331257132e9"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_tagbased_polymorphic.py",
+      "sha256": "08150b235084c7138a2aa514ad9349efe84fcce97f524d16dc8b9a0dce020b9f"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_thread.cpp",
+      "sha256": "29f04ca50b4673c51d580aedc5b5b0bc9d0e0773cc8dddf52006afa9ecf07743"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_thread.py",
+      "sha256": "4b49482e2aa84467f75f7eae290a0e4fa220d83c1e5c8a215e0c5a3d49279d85"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_type_caster_pyobject_ptr.cpp",
+      "sha256": "0af8b360399eb8fc3961e96f7abde5a6cc0e8c4c19427b06bb136b6f84582a73"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_type_caster_pyobject_ptr.py",
+      "sha256": "387f8f842b298757016a22992654d0c4451bd7dd6989b767a8822f23c66a91d7"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_union.cpp",
+      "sha256": "38e90294f06a6e17677bb352ba097029d97311d9c3df644c1a0006e44d40aced"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_union.py",
+      "sha256": "22d1efd4368f7b7f66e4c382fd560846e4175d159fcb32f0a0ed0ad8f6934bb1"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_unnamed_namespace_a.cpp",
+      "sha256": "823b732ff9bfb193c9c6c9ac6c546c3379a91664b2e6fc10e978fe33e18ea94e"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_unnamed_namespace_a.py",
+      "sha256": "59e907b1c9cbf2536217a451b986fe0e23f287faf294f3c6906e103ade7c10be"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_unnamed_namespace_b.cpp",
+      "sha256": "a1f557ed74ca008a40ad4ef2d9325e436b0c2eb6d6b5f33471b1d8e48bd7e92e"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_unnamed_namespace_b.py",
+      "sha256": "390db051abac5b0a67c5d72fe4fc73cb86c50f8af1f9fc150a4eb7c7965092e3"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_vector_unique_ptr_member.cpp",
+      "sha256": "37ef7a4d7e2aafa66b28a1881af3f03315f752b51849a7f8ea3833e3aef65d8f"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_vector_unique_ptr_member.py",
+      "sha256": "e0b9e3de1d46559bd2761b64c05d7cb879535ef43ad1ddb0bb5c2ca5b70c7251"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_virtual_functions.cpp",
+      "sha256": "b626522f98a23db6176fc0de67faacabb2f0e4524b603dfde77b2469bcbf5dfe"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tests/test_virtual_functions.py",
+      "sha256": "6874d76198cb1cda19c1f69fc9d721321e8263ce04f0ff95d8611d6e65e0680a"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tools/FindCatch.cmake",
+      "sha256": "ec3e06c04de5830ff4cbe34c1aa9064bd69311716d7866e3dd9817957af78360"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tools/FindEigen3.cmake",
+      "sha256": "9624a761c330d6003123e0191954b408926c390d9b19c0dc1b72db091e6cb5af"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tools/FindPythonLibsNew.cmake",
+      "sha256": "fd9573815a7a19048412ff9bda2b9abaa4e0a22d64da31e2349969976e4c37ee"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tools/JoinPaths.cmake",
+      "sha256": "794b0d8fa62a3b798c7df12d50114580d1a47a234bfb6b4d83092eb646a6ecc4"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tools/check-style.sh",
+      "sha256": "4e282e95a44295a59c47e7e364bb743ed1fda2771476fb039cec45ca9f428d7f"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tools/cmake_uninstall.cmake.in",
+      "sha256": "dfdc294572479be844cc61a48a5d476c114f213bbd24ecd5e7156de3a24b7011"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tools/codespell_ignore_lines_from_errors.py",
+      "sha256": "ce604dd9938424bcf0cc05eb40f5cd2ffb80d0941cd25fcbafafa3084a0ca00a"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tools/libsize.py",
+      "sha256": "0b4ca6eb9ad3d8d0b2d498deeb73d5b26624406ba7ada49374f302866166bc7f"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tools/make_changelog.py",
+      "sha256": "ff7862e347683241855bf2e8eb4cc610a16365b68754f23c23072c92180d0648"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tools/pybind11.pc.in",
+      "sha256": "3bfaab59e8306730b859a489e690a7a1e4c246debecf5291adbd201255a8058a"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tools/pybind11Common.cmake",
+      "sha256": "3a20ef38eaa4092fa898214db4d5c5bfa8c9cbeef5831f095a1830a903e262c9"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tools/pybind11Config.cmake.in",
+      "sha256": "d6b53c08237b99468799855e8107041fd35d8bced9e69d64abec899015679349"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tools/pybind11GuessPythonExtSuffix.cmake",
+      "sha256": "5af84ad84faf5a2f40ad8d162595c42b8904147a4342397e6aef7ade1a87d2bd"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tools/pybind11NewTools.cmake",
+      "sha256": "cc62cd8cbdbc8338bcb6fc2269bb9d2ecc9eee277fb19239a2861f88106596f3"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tools/pybind11Tools.cmake",
+      "sha256": "e4ae846a1a12ef021a408863ac34b8a788d3a58af46ff32ba275ca79ef330807"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tools/pyproject.toml",
+      "sha256": "24f00b18b227124ec18a89ab889f7108a416eafccef36ac0bc54a7d75db918c0"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tools/setup_global.py.in",
+      "sha256": "d35b7a8d38692a53f20f74891963e3d5a89e8c60331adce59bf5e3458e1fb073"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tools/setup_main.py.in",
+      "sha256": "5cd07ed2e873bcfe8c3f499e3e4334a167083e98c177081509eb1e1214ef5f7e"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/third_party/pybind11/tools/test-pybind11GuessPythonExtSuffix.cmake",
+      "sha256": "3f3aefa830a427d3465c07123845e7026a6dc76e05112dfce097ad320e6ce238"
     }
   ]
 }

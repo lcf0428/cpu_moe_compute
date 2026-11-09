@@ -20,7 +20,7 @@ if ! python -c 'import acl' >/dev/null 2>&1; then
     set -u
 fi
 export ASCEND_RT_VISIBLE_DEVICES="$NPU"
-export PYTHONPATH="$KT_BUILD:$ASCEND_REPO/csrc/lrc_policy:${PYTHONPATH:-}"
+export PYTHONPATH="$KT_BUILD:$ASCEND_REPO/csrc/lrc_policy:$ASCEND_REPO:${PYTHONPATH:-}"
 export ASCEND_CUSTOM_OPP_PATH="$ASCEND_REPO/vllm_ascend/_cann_ops_custom/vendors/custom_transformer:${ASCEND_CUSTOM_OPP_PATH:-}"
 export LD_LIBRARY_PATH="$ASCEND_REPO/vllm_ascend/_cann_ops_custom/vendors/custom_transformer/op_api/lib:${LD_LIBRARY_PATH:-}"
 export KT_MOE_MATCH_NPU_MXFP8=1 KT_MOE_MXFP4_TOKEN_REUSE=0 KT_GROUP_MIN_LEN=10
@@ -62,6 +62,15 @@ for name in ('native_dispatch_api','native_cpu_handle'):
 if os.environ.get('CPU_MOE_PROFILE', '1') == '1':
     for name in ('set_lifecycle_enabled','lifecycle_enabled'):
         if not hasattr(kt_kernel_ext,name): raise SystemExit(f'kt-kernel lacks profiling export {name}; select the matching profile package')
+import vllm_ascend
+if Path(vllm_ascend.__file__).resolve().parent != Path(os.environ['ASCEND_REPO']).resolve()/'vllm_ascend':
+    raise SystemExit(f'Loaded unexpected Ascend source: {vllm_ascend.__file__}')
+for relative in ('vllm_ascend/vllm_ascend_C',):
+    if not list(Path(os.environ['ASCEND_REPO']).glob(relative+'*.so')):
+        raise SystemExit('Ascend native extension missing; install/build the matching Ascend checkout first')
+combine = Path(os.environ['ASCEND_REPO'])/'vllm_ascend/expert_offload/cpu_backend/lib/libcpu_moe_mapped_combine_dispatch.so'
+if not combine.is_file():
+    raise SystemExit('Missing mapped combine library; run csrc/cpu_moe_mapped_combine/build.sh first')
 import _vllm_ascend_lrc
 if os.environ['PREFETCH'] == '1':
     import _vllm_ascend_prefetch_wait

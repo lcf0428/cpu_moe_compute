@@ -8,6 +8,8 @@
 | [部署指南及参考脚本/](部署指南及参考脚本/) | 仅保留[参考启动脚本](部署指南及参考脚本/参考启动脚本.sh)、[脚本设定指南](部署指南及参考脚本/脚本设定指南.md)、[权重准备指南](部署指南及参考脚本/权重准备指南.md)。 |
 | [profile合成指南/](profile合成指南/) | CPU/NPU日志采集、时钟对齐、合成脚本和样例。需要分析profile时使用；[复制agent合成指令](profile合成指南/如何让agent合成profile.md)，默认只下载最终JSON到本地桌面。 |
 
+普通CPU计算入口：[cpu_moe/普通CPU计算.sh](cpu_moe/普通CPU计算.sh)，单卡BS1，**不开DSpark、不开下一层专家预取**；参数沿用153此前跑通的配置。
+
 ## 下载什么
 
 **准备CPU计算后端，下载完整的 [`cpu_moe/`](cpu_moe/) 目录即可。** 不要只取其中的 `kt-kernel/`，它还需要同级依赖与运行时文件。另从 [部署指南及参考脚本](部署指南及参考脚本/) 取使用说明、启动脚本；日志合成工具在独立的 [profile合成指南](profile合成指南/) 中。无需为了准备后端下载其他说明或日志样例。
@@ -20,7 +22,7 @@
 | --- | --- |
 | vLLM | **0.30.0**，实装 `0.30.0+empty`，使用同一实验构建。 |
 | vllm-ascend | 固定提交 [`7cf63ca`](https://github.com/yxk-fdu/vllm-ascend/commit/7cf63ca477bf6045ad5a262ff6d59b66ace463bd)。 |
-| CPU计算后端 | 固定标签 [`cpu-moe-153-20261109`](https://github.com/yxk-fdu/cpu_moe_compute/tree/cpu-moe-153-20261109/cpu_moe)，校验清单见 [cpu_moe/version.json](cpu_moe/version.json)。 |
+| CPU计算后端 | 固定标签 [`cpu-moe-153-20261109-r2`](https://github.com/yxk-fdu/cpu_moe_compute/tree/cpu-moe-153-20261109-r2/cpu_moe)，校验清单见 [cpu_moe/version.json](cpu_moe/version.json)。 |
 
 这套配对已在 **153服务器完成整模型启动、推理和性能测试**：单卡、BS1、CPU计算开启，覆盖DSpark关闭/7及下一层预取关闭/开启。CPU参考成本为 **93.16 μs / expert-token，约90 μs**；同一专家处理两个token按两份计算量估计。
 
