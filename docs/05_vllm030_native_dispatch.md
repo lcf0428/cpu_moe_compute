@@ -2,7 +2,7 @@
 
 本次实验固定 **vLLM 0.30.0**，153 容器实际版本字符串是 `0.30.0+empty`。`+empty` 是当前构建的本地版本后缀。本次使用包含 DeepSeek V4/DSpark 支持的实验构建，保留这套已验证环境，不在复现时升级 vLLM，也不将同名上游安装包视为完全相同的构建。
 
-vLLM Ascend 使用 [yxk-fdu/vllm-ascend 的 CPU 分支](https://github.com/yxk-fdu/vllm-ascend/tree/moe_cpu_compute_v1-on-0928)，本次提交固定为 [61afe18c](https://github.com/yxk-fdu/vllm-ascend/commit/61afe18c467110387fa7038725d96067e1be6e4c)。运行环境为 torch `2.10.0+cpu`、torch-npu `2.10.0.post4`、CANN 9.2.0。torch 的版本不改变 vLLM 0.30 这个实验基线。
+vLLM Ascend 使用 [yxk-fdu/vllm-ascend 的 CPU 分支](https://github.com/yxk-fdu/vllm-ascend/tree/moe_cpu_compute_v1-on-0928)，本次提交固定为 [7cf63ca](https://github.com/yxk-fdu/vllm-ascend/commit/7cf63ca477bf6045ad5a262ff6d59b66ace463bd)。运行环境为 torch `2.10.0+cpu`、torch-npu `2.10.0.post4`、CANN 9.2.0。torch 的版本不改变 vLLM 0.30 这个实验基线。
 
 ## 这次主要改动
 
@@ -12,11 +12,33 @@ vLLM Ascend 使用 [yxk-fdu/vllm-ascend 的 CPU 分支](https://github.com/yxk-f
 
 当前估计为 `max(剩余CPU路由数×93.16μs, 搬运专家数×275.828μs + 200μs)`，200μs 是每层一次的 NPU 计算估计，不是每专家加一次。参数默认值与当前实验显式取值不同，复现以启动脚本为准。
 
+## 组件与执行路径
+
+完整组件关系见 [首页](../README.md#组件各自负责什么)。本仓库负责使用说明、脚本和后端参考源码；Ascend 的调度/通信实现由上面的 CPU 分支维护。kt-kernel 负责计算，GGUF 负责存储 CPU 权重，两者不是同一种东西。
+
+一层 MoE 的主要路径为：NPU 写共享序列信号 → C++ 监测线程读取实际路由、更新本层 LRC 并决定分工 → 直接提交 CPUInfer 任务，同时独立 DMA 线程提交本层缺失专家 → 本层 NPU 权重就绪后触发下一层预取 → 使用对应就绪标志同步消费结果。CPU 计算提交和预取唤醒不用 Python host callback；DMA 仍有 Python/Torch 调用，不应描述成“全部搬运都在 C++ 内完成”。
+
+CPU 计算、信号监测、完成通知和 DMA 分开分配线程。预取最多一个专家，只读下一层已有 LRC；实际执行那一层时再更新其 LRC。预取权重尚未就绪时仍需等待。
+
 ## 准备已有环境
 
 先进入已验证的 `cpu_moe` 容器，保留其中的 vLLM 0.30 构建。需要模型原始 NPU 权重和现有逐层 GGUF 两份数据。路径通过环境变量传入，计算和调度默认值保留本次取值。启动前设置 `WORKSPACE`、`ASCEND_REPO`、`KT_BUILD`、`MODEL_PATH` 和 `GGUF_PATH`。
 
-vLLM Ascend 安装本次源码，并构建两个小扩展：
+先确认 vLLM 的源码位置及版本；版本号相同并不代表具备同样的模型和 DSpark 支持：
+
+```bash
+python -c 'import vllm, importlib.metadata as m; print(m.version("vllm")); print(vllm.__file__)'
+```
+
+对新建的 Ascend 源码目录使用下面的固定提交；已有且有本地修改的目录先保存修改，不直接覆盖：
+
+```bash
+git clone --branch moe_cpu_compute_v1-on-0928 https://github.com/yxk-fdu/vllm-ascend.git /workspace/vllm-ascend
+cd /workspace/vllm-ascend
+git checkout 7cf63ca477bf6045ad5a262ff6d59b66ace463bd
+```
+
+在原有 CANN 环境中安装 vLLM Ascend 本次源码，并构建两个小扩展：
 
 ```bash
 export ASCEND_REPO=/workspace/vllm-ascend
@@ -27,7 +49,7 @@ python -m pip install -e ./csrc/lrc_policy --no-build-isolation --no-deps
 (cd csrc/lrc_policy && python setup_npu_wait.py build_ext --inplace)
 ```
 
-kt-kernel 必须导出 `native_dispatch_api()` 和 `native_cpu_handle()`，并保留 `libkt_ready_poll.so`。153 当前运行包已经具备这些接口。若使用本仓库原始 kt 源码快照，先应用 [原生接口补丁](../patches/kt_native_dispatch_api.patch)，再沿用原有 Ascend 构建配置重编译 `kt_kernel_ext`，不要改变已有数学内核或量化配置：
+kt-kernel 必须导出 `native_dispatch_api()` 和 `native_cpu_handle()`，并保留 `libkt_ready_poll.so`。profile 配套包还应导出 `set_lifecycle_enabled()` 和 `lifecycle_enabled()`，供 profiler 开关 CPU 事件。153 当前运行包已经具备这些接口。若使用本仓库原始 kt 源码快照，先应用 [原生接口补丁](../patches/kt_native_dispatch_api.patch)，再沿用原有 Ascend 构建配置重编译 `kt_kernel_ext`，不要改变已有数学内核或量化配置：
 
 ```bash
 # 在 cpu_moe_compute 仓库根目录执行，仅对尚未打过补丁的源码使用。
@@ -38,12 +60,15 @@ cmake --build "$KT_BUILD_DIR" --target kt_kernel_ext -j2
 # 将新扩展安装到 KT_BUILD 指向的运行包；动态库依赖须与当前环境匹配。
 ```
 
+这里的 `KT_BUILD` 是可被 Python 导入的**运行包根目录**，内部应有 `kt_kernel/` 和匹配的编译扩展；`KT_BUILD_DIR` 才是 CMake 构建目录。不要将两者互换。原生接口补丁只补充任务派发接口，不是全套 CPU 后端安装器；它要求已有 CPUInfer、计时接口及 Ascend 数学内核配置。仅应用这个补丁不能证明历史源码备份与153运行包完全一致。
+
 ## 启动
 
-使用 [run_cpu_moe_vllm030.sh](../scripts/run_cpu_moe_vllm030.sh)。这是按本次实际运行参数整理的单卡入口，脚本不安装或升级依赖，启动前会检查 vLLM 版本和原生接口。默认 BS1、DSpark7、CPU 计算开启、预取关闭。
+使用 [run_cpu_moe_vllm030.sh](../scripts/run_cpu_moe_vllm030.sh)。这是按153已完成整模型推理和性能测试的参数整理的单卡入口，保留其计算/通信/调度配置；不是原始逐轮 run.sh 的字节备份，脚本不安装或升级依赖，启动前会检查 vLLM 版本和原生接口。默认 BS1、DSpark7、CPU 计算开启、预取关闭。
 
 ```bash
 # 路径是示例，替换为当前容器已经可用的目录；不移动或复制权重。
+# 也可先复制 scripts/cpu_moe.env.example，填写路径后 source。
 export WORKSPACE=/workspace
 export ASCEND_REPO="$WORKSPACE/vllm-ascend"
 export KT_BUILD=/workspace/cpu_moe/kt-native-profile-package
@@ -51,11 +76,18 @@ export MODEL_PATH=/models/DeepSeek-V4-Flash-0731
 export GGUF_PATH='/models/gguf/dsv4_layer{layer_idx}_mxfp4.gguf'
 export LOG_ROOT=/workspace/logs/cpu_moe
 # 以下命令在容器内执行；一次只保留一个配置的服务。
+# 检查环境与配置，不加载模型：
+CPU_MOE_CHECK_ONLY=1 bash scripts/run_cpu_moe_vllm030.sh
+# 下面四行是四种独立启动选择，每次只执行其中一行。
 BS=1 DSPARK=7 PREFETCH=0 bash scripts/run_cpu_moe_vllm030.sh
 BS=1 DSPARK=7 PREFETCH=1 bash scripts/run_cpu_moe_vllm030.sh
 BS=1 DSPARK=0 PREFETCH=0 bash scripts/run_cpu_moe_vllm030.sh
 BS=1 DSPARK=0 PREFETCH=1 bash scripts/run_cpu_moe_vllm030.sh
 ```
+
+启动前用 `npu-smi info` 确认目标卡空闲；用 `lscpu -e=CPU,NODE,CORE,SOCKET`、`numactl --hardware` 核对拓扑及 NUMA 空闲内存。153 的物理卡4映射为容器内逻辑卡0；其他机器需重新选择。GGUF 和计算线程绑定同一 NUMA，不能只改其中之一。默认 `--preferred` 允许内存不足时回退，因此启动后还要用对应 EngineCore 的 `numastat -p <PID>` 及线程亲和性确认实际放置。
+
+入口会记录 `additional_config.json`、`launch-config.json` 和前台日志 `server.log`，便于确认真正启用的开关。预取开关由 `PREFETCH` 控制，CPU 计算始终开启。
 
 切换配置前先正常停止上一进程，确认 API 和 EngineCore 均退出。不要用宽泛 `pkill` 或停止别人的容器。脚本前台运行，Ctrl+C 正常退出；需要后台运行时自行保留对应 PID 与日志。日志和采集目录由 `LOG_ROOT` 指定，容器保留。
 
@@ -64,7 +96,7 @@ BS=1 DSPARK=0 PREFETCH=1 bash scripts/run_cpu_moe_vllm030.sh
 | 参数 | 本次取值 | 含义 |
 | --- | --- | --- |
 | `DSPARK` | `0` / `7` | 0 不传 speculative-config；7 使用 DSpark、每次草拟 7 个 token。 |
-| `BS` | `1` | 服务 `max_num_seqs`，AISBench 并发也必须相同。BS4 的旧结果另列，不混入本次 BS1。 |
+| `BS` | `1` | 服务 `max_num_seqs`，AISBench 并发也必须相同。本次验证入口默认 BS1，其他并发需另行确认容量和性能。 |
 | `PREFETCH` / `expert_prefetch_num` | 0 或 1 / `1` | 开关下一层预取；开启时最多预取一个专家。 |
 | `native_dispatch` | `true` | 使用共享信号与 C++ 原生监测、CPU 提交和完成路径。 |
 | `transfer_policy` | `load_balance` | 按实际路由计算量与搬运/NPU 时间估计分配缺失专家。 |
@@ -80,8 +112,34 @@ BS=1 DSPARK=0 PREFETCH=1 bash scripts/run_cpu_moe_vllm030.sh
 
 其余模型长度、KV 格式、超时等参数按已验证启动配置保留，不作为这次对比变量。预取就绪使用独立设备标志，不能与 CPU 结果就绪混用；不要把同步等待删除来换吞吐。
 
+## 验证与短 profile
+
+服务启动完成后，在容器内检查接口并发送短请求：
+
+```bash
+unset https_proxy http_proxy HTTPS_PROXY HTTP_PROXY
+curl --fail --noproxy '*' http://127.0.0.1:8144/health
+curl --fail --noproxy '*' http://127.0.0.1:8144/v1/completions \
+  -H 'Content-Type: application/json' \
+  -d '{"model":"deepseek_v4","prompt":"What is 16 minus 3 minus 4?","max_tokens":20,"temperature":0}'
+```
+
+需要采集时先等待模型和图预热完成；通过以下顺序启动采集、让请求自然结束、再停止采集。DSpark7 的一个 step 包含最多8个 token，因此短采集用 `max_tokens=20`。
+
+```bash
+curl --fail --noproxy '*' -X POST http://127.0.0.1:8144/start_profile
+curl --fail --noproxy '*' http://127.0.0.1:8144/v1/completions \
+  -H 'Content-Type: application/json' \
+  -d '{"model":"deepseek_v4","prompt":"Explain why 16 minus 3 minus 4 equals 9, step by step.","max_tokens":20,"temperature":0,"ignore_eos":true}'
+curl --fail --noproxy '*' -X POST http://127.0.0.1:8144/stop_profile
+```
+
+`ignore_eos=true` 用于这条短采集请求达到20 token上限后正常结束，不提前取消请求。API端口如有修改需同步替换。合成时使用同次采集的 CPU 事件、时钟锚点和 NPU trace，不能拼接不同运行的数据。详细步骤见 [合成说明](01_profile_merge_guide.md)。
+
+性能测试与 profile 分开；AISBench 使用 perf 模式、BS与并发一致，每轮5条成功预热后再统计20条请求，每种配置重复3次求平均。关闭采集再测性能，保持请求集、输出上限及服务配置一致。这里不附性能统计表。
+
 ## CPU 耗时采集
 
-需要单独采集CPU侧耗时时，用 `CPU_MOE_PROFILE=1` 启动，再按现有 [日志合成说明](01_profile_merge_guide.md) 操作。当前profiler配置delay=2、max_iterations=200；DSpark7短采集请求使用max_tokens=20并自然结束。服务启动不自动开始采集。
+需要单独采集CPU侧耗时时，入口默认 `CPU_MOE_PROFILE=1` 保留CPU事件输出路径，并由 profiler 在采集窗口内开启详细事件；也可显式使用 `CPU_MOE_PROFILE=1` 启动，再按现有 [日志合成说明](01_profile_merge_guide.md) 操作。当前profiler配置delay=2、max_iterations=200；DSpark7短采集请求使用max_tokens=20并自然结束。服务启动不自动开始采集。
 
 本仓库只保存CPU计算的代码依赖、启动入口和使用说明，性能统计结果保存在本地结果目录。

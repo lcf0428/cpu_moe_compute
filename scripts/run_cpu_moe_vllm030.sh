@@ -37,7 +37,7 @@ export VLLM_ENGINE_READY_TIMEOUT_S=10000 VLLM_RPC_TIMEOUT=3600000 VLLM_EXECUTE_M
 unset KT_MOE_RT_PRIORITY KT_MOE_POLL_TRACE KT_MOE_LIFECYCLE_TRACE KT_MOE_LIFECYCLE_WORKERS
 unset KT_MOE_PHASE_TIMING CPU_MOE_CLOCK_CALIBRATION CPU_MOE_ASYNC_RESULT CPU_MOE_ASYNC_VALIDATE_OUTPUTS
 unset KT_MOE_TASK_TRACE KT_MOE_PAGE_TRACE VLLM_ASCEND_CPU_MOE_TRACE VLLM_ASCEND_PROFILE_DIAG_LOG
-if [[ ${CPU_MOE_PROFILE:-0} == 1 ]]; then
+if [[ ${CPU_MOE_PROFILE:-1} == 1 ]]; then
     export KT_MOE_CPU_TRACE="$RUN_DIR/cpu_compute_%p.jsonl"
 else
     unset KT_MOE_CPU_TRACE
@@ -59,6 +59,12 @@ if int(os.environ['BS'])*(int(os.environ['DSPARK'])+1)>48:
 from kt_kernel import kt_kernel_ext
 for name in ('native_dispatch_api','native_cpu_handle'):
     if not hasattr(kt_kernel_ext,name): raise SystemExit(f'kt-kernel lacks {name}; rebuild the matching native interface')
+if os.environ.get('CPU_MOE_PROFILE', '1') == '1':
+    for name in ('set_lifecycle_enabled','lifecycle_enabled'):
+        if not hasattr(kt_kernel_ext,name): raise SystemExit(f'kt-kernel lacks profiling export {name}; select the matching profile package')
+import _vllm_ascend_lrc
+if os.environ['PREFETCH'] == '1':
+    import _vllm_ascend_prefetch_wait
 if not Path(os.environ['KT_MOE_POLL_LIBRARY']).is_file(): raise SystemExit('Missing KT_MOE_POLL_LIBRARY')
 print(f'[experiment] vLLM={version}, NPU={os.environ["NPU"]}, BS={os.environ["BS"]}, DSpark={os.environ["DSPARK"]}, prefetch={os.environ["PREFETCH"]}')
 PYCODE
@@ -89,6 +95,22 @@ print(json.dumps(dict(profiler='torch',torch_profiler_dir=os.environ['RUN_DIR'],
                      ignore_frontend=True,delay_iterations=2,max_iterations=200)))
 PYCODE
 )
+export ADDITIONAL_CONFIG COMPILATION_CONFIG PROFILER_CONFIG
+python - <<'PYCODE'
+import json, os
+from pathlib import Path
+run = Path(os.environ['RUN_DIR'])
+(run/'additional_config.json').write_text(os.environ['ADDITIONAL_CONFIG']+'\n')
+(run/'launch-config.json').write_text(json.dumps({
+    'selection': {k: os.environ[k] for k in ('NPU','PORT','BS','DSPARK','PREFETCH','NUMA_NODE','CPU_THREADS','POLL_CPU','COMPLETION_CPU','DMA_CPU')},
+    'compilation': json.loads(os.environ['COMPILATION_CONFIG']),
+    'profiler': json.loads(os.environ['PROFILER_CONFIG'])}, indent=2)+'\n')
+PYCODE
+if [[ ${CPU_MOE_CHECK_ONLY:-0} == 1 ]]; then
+    echo "Environment imports and configuration checked; model not loaded. Config: $RUN_DIR"
+    exit 0
+fi
+exec > >(tee -a "$RUN_DIR/server.log") 2>&1
 speculative_args=()
 if [[ $DSPARK == 7 ]]; then
     speculative_args=(--speculative-config '{"method":"dspark","num_speculative_tokens":7}')

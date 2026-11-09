@@ -1,22 +1,38 @@
-# CPU MoE Compute
+# CPU MoE 使用说明
 
-CPU MoE 核心源码、运行脚本与配置备份，以及 profiler 合成参考。核心备份位于 [cpu_moe](cpu_moe/)，共 1626 个文件，22,377,131 字节。核心源码备份排除权重、动态库、构建产物和运行日志；另按用户要求在 `examples/` 保留一份完整 trace 参考。
+本仓库是 **CPU MoE 的使用入口**：说明组件关系、依赖、安装、启动、NUMA 配置和 profiler 采集，并保留 CPU 计算后端参考源码。
 
-- [GGUF 权重生成：给 agent 原始权重和输出路径](docs/04_gguf_generation.md)
-- [日志合成流程：给 agent 本次文件路径](docs/01_profile_merge_guide.md#日志合成直接交给-agent)
-- [可下载的 NPU memcpy trace 样例](examples/traces/first_miss_npu_memcopy/README.md)
-- [脚本设计与 NUMA 绑核](docs/02_script_design.md)
-- [参数设置建议](docs/03_parameters.md)
+**实际运行的 Ascend 插件源码在 [yxk-fdu/vllm-ascend · moe_cpu_compute_v1-on-0928](https://github.com/yxk-fdu/vllm-ascend/tree/moe_cpu_compute_v1-on-0928)。** 本次对应的固定源码版本为 [7cf63ca](https://github.com/yxk-fdu/vllm-ascend/commit/7cf63ca477bf6045ad5a262ff6d59b66ace463bd)，提交文件已与保存的实测源码快照逐文件核对。后续跟进开发看分支，复现本次配置使用固定提交。
 
-## 当前实验：vLLM 0.30
+## 组件各自负责什么
 
-当前单卡 CPU MoE 实验固定 **vLLM 0.30.0**，153 实际安装包版本为 `0.30.0+empty`。运行入口与下面的原始服务器备份分开维护：
+| 组件 | 作用与来源 |
+| --- | --- |
+| vLLM 0.30.0 实验构建 | API 服务、请求调度、模型执行框架及 DSpark 集成。153 使用 `0.30.0+empty`，需保留包含 DeepSeek V4/DSpark 支持的实验源码与构建。 |
+| 上面的 vllm-ascend 分支 | Ascend/NPU 适配、专家驻留与搬运、CPU/NPU 负载分配、C++ LRC、原生信号监测及预取同步。真实执行逻辑以该仓库为准。 |
+| kt-kernel / CPUInfer | CPU 专家数学计算、GGUF 加载、计算线程池；通过原生 API 接收 Ascend 调度器提交的任务。本仓库 `cpu_moe/` 保留后端参考源码，`patches/` 提供原生接口补丁。 |
+| 本仓库的 scripts / docs | 运行脚本和使用说明，连接以上组件；不替代完整的 vLLM 或 vllm-ascend。 |
+| NPU 模型权重与 CPU GGUF | 分别供 NPU 和 CPU 专家计算使用。GGUF 是 CPU 权重数据格式，kt-kernel 才是 CPU 计算后端。两份权重均需另行准备。 |
 
-- [启动与使用说明、重要参数](docs/05_vllm030_native_dispatch.md)
-- [单卡启动脚本](scripts/run_cpu_moe_vllm030.sh)：BS、DSpark、预取开关可切换，默认保留153的NUMA/CPU线程配置。
-- [vLLM Ascend CPU分支的本次代码提交](https://github.com/yxk-fdu/vllm-ascend/commit/61afe18c467110387fa7038725d96067e1be6e4c)
+## 按 153 跑通的配置使用
 
-主要变化是共享信号与C++原生任务派发、按需优先的逐专家搬运流水线、按实际expert-token计算量做CPU/NPU负载均衡。实际DMA仍由独立Python/Torch线程提交，详见使用说明。
+1. 阅读 [vLLM 0.30 使用流程与重要参数](docs/05_vllm030_native_dispatch.md)。
+2. 将 [环境变量模板](scripts/cpu_moe.env.example) 复制到本机并填写已有路径。
+3. 在已验证容器中执行 [单卡启动入口](scripts/run_cpu_moe_vllm030.sh)，选择 DSpark 和预取开关。
+4. 按 [验证与短 profile](docs/05_vllm030_native_dispatch.md#验证与短-profile) 确认接口、生成和采集。
+
+本次验证对象为单卡、CPU 计算开启、BS1，DSpark 0/7 × 下一层预取关/开。vLLM 固定 0.30.0，Torch `2.10.0+cpu`、Torch NPU `2.10.0.post4`、CANN 9.2.0。当前入口按实测参数整理；原始逐轮 `run.sh` 尚未重新从服务器下载核对，不标为原件，也不声称已完成全新容器从零重建验证。优先复用153已验证容器中的 vLLM 和 kt 运行包。
+
+性能统计表和本次测试日志保存在本地结果目录，使用说明仓库不收录这些统计结果。
+
+## 参考资料与历史备份
+
+- [GGUF 转换](docs/04_gguf_generation.md)
+- [CPU / NPU 日志合成](docs/01_profile_merge_guide.md)
+- [NUMA 与线程设计](docs/02_script_design.md)
+- [原生接口补丁](patches/kt_native_dispatch_api.patch)
+
+以下目录说明属于历史源码备份。当前启动入口以前面的 vLLM 0.30 使用流程为准；旧脚本中的参数和 callback 实现不能直接当作当前配置。
 
 ## 路径约定
 
