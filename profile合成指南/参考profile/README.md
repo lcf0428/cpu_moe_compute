@@ -1,4 +1,6 @@
-# 参考profile
+# 参考profile：17:41 pipeline版本
+
+**当前参考为17:41的逐专家提交pipeline版本**：CPU计算和预取采用共享内存flag+C++轮询，LRC使用C++；搬运按“准备一个专家、提交一个专家”的次序执行。
 
 本样例来自 `dspark7_pipeline_on_20261108-174134`，用于参考CPU计算、专家搬运与预取在合成时间线中的展示方式。原始文件名为 `trace_view_cpu_compute.json`，内容保持原样，没有重新合成或修改时间戳。
 
