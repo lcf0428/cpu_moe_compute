@@ -1,4 +1,4 @@
-#include "mxfp8_match.h"
+#include "mxfp4_reuse.h"
 #ifndef LLAMAFILE_MOE_HPP
 #define LLAMAFILE_MOE_HPP
 #ifdef FORWARD_TIME_PROFILE
@@ -273,33 +273,8 @@ static inline bool kt_llamafile_sgemm(long m, long n, long k, const void* A, lon
   // ~half the DDR traffic. Activation is Q8_0 (MXFP4 vec_dot_type).
   // ggml selects NEON on ARM and the scalar fallback on x86.
   if (Atype == GGML_TYPE_MXFP4 && Btype == GGML_TYPE_Q8_0 && Ctype == GGML_TYPE_F32 && ith == 0 && nth == 1) {
-    const int ne = static_cast<int>(k * ggml_blck_size(GGML_TYPE_MXFP4));
-    const size_t bx = static_cast<size_t>(lda) * sizeof(block_mxfp4);
-    const size_t by = static_cast<size_t>(ldb) * sizeof(block_q8_0);
-    auto* c = static_cast<float*>(C);
-    const auto* a = static_cast<const block_mxfp4*>(A);
-    const auto* b = static_cast<const block_q8_0*>(B);
-    // Note: an nrc=2 row-pair variant (shared activation, dual weight
-    // streams) was tried and measured NEUTRAL at 128 threads (0.402→0.421ms median,
-    // min identical): the in-row +512B prefetch inside ggml_vec_dot_mxfp4_q8_0
-    // already streams across contiguous short rows (down rows are 136B), so the
-    // short-row penalty it targeted is gone. Reverted to keep the kernel simple.
-    for (long j = 0; j < n; ++j) {
-      const auto* b_col = b + ldb * j;
-      for (long i = 0; i < m; ++i) {
-        if (i + 1 < m) {
-          const char* nxt = reinterpret_cast<const char*>(a + lda * (i + 1));
-          __builtin_prefetch(nxt, 0, 1);
-          __builtin_prefetch(nxt + 64, 0, 1);
-        }
-        float sum = 0.f;
-        ggml_vec_dot_mxfp4_q8_0(ne, &sum, 0, a + lda * i, bx, b_col, by, 1);
-        if (!std::isfinite(sum)) {
-          sum = 0.f;  // defensive; should not happen with valid weights/activations
-        }
-        c[ldc * j + i] = sum;
-      }
-    }
+    kt_mxfp4_reuse::q8_matmul(m, n, k, static_cast<const block_mxfp4*>(A), lda,
+                              static_cast<const block_q8_0*>(B), ldb, static_cast<float*>(C), ldc);
     (void)task;
     (void)precision;
     return true;
@@ -319,11 +294,8 @@ class LLAMA_MOE_TP {
               void* C, long ldc, int ith, int nth, int task, ggml_type at, ggml_type bt,
               ggml_type ct, int precision) {
     if (!config_.native_mxfp4 && kt_match_npu::enabled() && at == GGML_TYPE_MXFP4 && bt == GGML_TYPE_F32) {
-      const auto* w = static_cast<const uint8_t*>(A);
-      const auto* x = static_cast<const float*>(B);
-      auto* out = static_cast<float*>(C);
-      for (long col=0;col<n;++col) for(long row=0;row<m;++row)
-        out[col*ldc+row]=kt_match_npu::dot_gguf_mxfp4_mxfp8(w+row*lda*17,x+col*k*32,k);
+      kt_mxfp4_reuse::match_matmul(m, n, k, static_cast<const uint8_t*>(A), lda,
+                                   static_cast<const float*>(B), ldb, static_cast<float*>(C), ldc);
       return true;
     }
     if (!config_.native_mxfp4) return kt_llamafile_sgemm(m,n,k,A,lda,B,ldb,C,ldc,ith,nth,task,at,bt,ct,precision);
@@ -1363,7 +1335,8 @@ class TP_MOE<LLAMA_MOE_TP> : public TP_MOE_Common<LLAMA_MOE_TP> {
       if (num_chunks > 32) num_chunks = 32;
     }
     const int chunk = (H + num_chunks - 1) / num_chunks;
-    auto merge_chunk =
+    pool->do_work_stealing_job(
+        qlen * num_chunks, nullptr,
         [this, output, incremental, H, htype, hsz, hblck, num_chunks, chunk](int task_id) {
           const int token_nth = task_id / num_chunks;
           const int c = task_id % num_chunks;
@@ -1381,25 +1354,8 @@ class TP_MOE<LLAMA_MOE_TP> : public TP_MOE_Common<LLAMA_MOE_TP> {
             for (int e = e0; e < e1; e++) base0[e] += basei[e];
           }
           from_float(base0 + e0, (uint8_t*)output + (size_t)(token_nth * H + e0) * hsz / hblck, e1 - e0, htype);
-        };
-    // For one NUMA shard there is no cross-shard reduction. A small output
-    // can use the same per-chunk conversion without a second pool dispatch.
-    // CPU crossover bench (tests/bench_llamafile_merge.cpp, 32 hot workers):
-    // BF16/F16 stay faster through 65536 elements; F32 crosses near 32768,
-    // so retain a conservative 16384-element F32 limit. Larger/incremental,
-    // blocked formats and multi-NUMA outputs keep the existing pool path.
-    const bool serial_type = htype == GGML_TYPE_BF16 || htype == GGML_TYPE_F16 || htype == GGML_TYPE_F32;
-    constexpr size_t kSingleNumaF32SerialMaxElements = 16384;
-    constexpr size_t kSingleNumaBf16F16SerialMaxElements = 65536;
-    const size_t serial_elements = htype == GGML_TYPE_F32
-        ? kSingleNumaF32SerialMaxElements : kSingleNumaBf16F16SerialMaxElements;
-    const bool serial_merge = this->tp_count == 1 && !incremental && hblck == 1 && serial_type
-        && qlen > 0 && H > 0 && static_cast<size_t>(qlen) <= serial_elements / static_cast<size_t>(H);
-    if (serial_merge) {
-      for (int task_id = 0; task_id < qlen * num_chunks; ++task_id) merge_chunk(task_id);
-    } else {
-      pool->do_work_stealing_job(qlen * num_chunks, nullptr, merge_chunk, nullptr);
-    }
+        },
+        nullptr);
     if (kt_pt) {
       auto kt_m1 = std::chrono::high_resolution_clock::now();
       // Slot 15 is reserved for the merge; forward_one only uses tp 0..7

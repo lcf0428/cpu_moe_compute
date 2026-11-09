@@ -117,7 +117,12 @@ class Writer {
 inline Writer& writer() { static Writer instance; return instance; }
 struct Context { uint64_t id=0; int layer=-1; };
 inline thread_local Context context;
-inline bool lifecycle_enabled() { static bool value = std::getenv("KT_MOE_LIFECYCLE_TRACE") != nullptr; return value; }
+inline std::atomic<bool>& lifecycle_switch() {
+  static std::atomic<bool> value{std::getenv("KT_MOE_LIFECYCLE_TRACE") != nullptr};
+  return value;
+}
+inline bool lifecycle_enabled() { return lifecycle_switch().load(std::memory_order_relaxed); }
+inline void set_lifecycle_enabled(bool enabled) { lifecycle_switch().store(enabled, std::memory_order_relaxed); }
 class ContextScope { Context old_; public: ContextScope(Context c): old_(context) {context=c;} ~ContextScope(){context=old_;} };
 inline void mark(const char* phase, int part=0) {
   if (!lifecycle_enabled() || !context.id) return;
@@ -133,7 +138,7 @@ inline void mark(const char* phase, int part=0) {
   if(getrusage(RUSAGE_THREAD,&usage)==0){r.nvcsw=usage.ru_nvcsw;r.nivcsw=usage.ru_nivcsw;r.minflt=usage.ru_minflt;r.majflt=usage.ru_majflt;}
   w.push(r);
 }
-inline uint64_t begin(int layer) { static std::atomic<uint64_t> seq{0}; if(!lifecycle_enabled())return 0; context={++seq,layer};mark("callback_enter");return context.id; }
+inline uint64_t begin(int layer) { static std::atomic<uint64_t> seq{0}; if(!lifecycle_enabled()){context={0,layer};return 0;} context={++seq,layer};mark("callback_enter");return context.id; }
 class Span {
   Writer* writer_ = nullptr;
   Record record_{};

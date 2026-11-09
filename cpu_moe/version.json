@@ -1,0 +1,1115 @@
+{
+  "version": "cpu-moe-153-20261109",
+  "ascend_repository": "https://github.com/yxk-fdu/vllm-ascend",
+  "ascend_branch": "moe_cpu_compute_v1-on-0928",
+  "ascend_commit": "7cf63ca477bf6045ad5a262ff6d59b66ace463bd",
+  "vllm_version": "0.30.0+empty",
+  "source": "153 verified CPU backend source and profile runtime Python/C files",
+  "scope": "kt-kernel and runtime source; excludes binaries, weights, logs, tests, benchmarks and bundled Markdown documentation; existing third-party sources retained",
+  "files": [
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/CMakeLists.txt",
+      "sha256": "cf011213c846c584abfad611e76438262f9eb84a2570457f97699d38808bf191"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/CMakePresets.json",
+      "sha256": "38f4976c4fd49f8b2702fa2f17a58b901c0a6383d26b60c46c036ecc5f353632"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/MANIFEST.in",
+      "sha256": "1e442b6a2ab816e2386b1e70996fa5c9ae6742e446ced0f046292fb997d03c95"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/autosetup.sh",
+      "sha256": "20d02e33e1ef11a8f7f39855fd86134aeefcfe7c07eafdd940dd811b91630b22"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/build_ascend_cpu_moe.sh",
+      "sha256": "cd8c99fa49dff9098c0b7292f9715b9bd5fcb7c28c003d933b5b4d64b2ecced6"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/cmake/DetectCPU.cmake",
+      "sha256": "686e65c46de0c6174dca8eb496b79248bf43c0a5fa1b17582a1ae91bdbfa2ede"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/cmake/FindSIMD.cmake",
+      "sha256": "8b2075f590918b9ad556136f77e2fcdf7d7981f067bb2503ce2c7cb740791487"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/cpu_backend/ascend_callback_worker.cpp",
+      "sha256": "1f348bf9ddca8638d884047f28fd243cf13eea95253fa8374a95e962708df959"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/cpu_backend/ascend_callback_worker.h",
+      "sha256": "0451cd3594793d9b46907efe42269d438a49723b7fbb56ff772c9e14df204b5d"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/cpu_backend/cpu_compute_trace.h",
+      "sha256": "1fa85b1657d0d053cc4004354780294370ff41c1290c325ef0586f43249c7db4"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/cpu_backend/cpuinfer.h",
+      "sha256": "cf9d7ae2328ef0095925cfc6baafd2b43ae66a13ba02a52d38f5a68dc4328e94"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/cpu_backend/shared_mem_buffer.cpp",
+      "sha256": "fee9a06ba0399c13189d606c07b4c17bb14d40bb74a13a15180fcae2d8acecc1"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/cpu_backend/shared_mem_buffer.h",
+      "sha256": "2e4a206708a8627beb7dfd6bb59b436a20c625022db4b699bf19cc0ba5082c45"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/cpu_backend/task_queue.cpp",
+      "sha256": "4af9a97e9b86b5e9b14443be350f1e6a7c424555f672a87a915e0750a066ec75"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/cpu_backend/task_queue.h",
+      "sha256": "8f23baa1da803708ca7d3ff8f30f1fac1f16cde45181553e0927fa1a490a708d"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/cpu_backend/vendors/ascend_npu.h",
+      "sha256": "6dcddc2607d95594a87a61b94c57fe012d7e9200080ab543b7fbaabe1c3ffffc"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/cpu_backend/vendors/cuda.h",
+      "sha256": "33a3e9e2bc99a904e6c3775a9795784a9732e4f21959c01c1b637bc0c22a846e"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/cpu_backend/vendors/hip.h",
+      "sha256": "9c84f0287d8a431d125b3d0e9ef9bbdb3d9539a17064bbb2f129040e105e1ee1"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/cpu_backend/vendors/musa.h",
+      "sha256": "0d47412d9afadcb98c3171589611d5f3375167006939ae8c73c08f20ebb6ccf0"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/cpu_backend/vendors/vendor.h",
+      "sha256": "face4487cd4439940de6f2ce9cf9d3cc47b699ba1d3186d6fc016ae8657e7b21"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/cpu_backend/worker_pool.cpp",
+      "sha256": "158a3246b32e5babb1671fe9f48edd282701c975ce40a0aae1c42157653d20c0"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/cpu_backend/worker_pool.h",
+      "sha256": "0a299f1db7542474d2a9395c5dde51012fb5e49d1cdc4116ef3e1d32ddd4decb"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/cuda/binding.cpp",
+      "sha256": "47f687a7899c9f9117a017d670c06bd652cf32876f0d35b503e85bb90ffa0ae0"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/cuda/custom_gguf/ops.h",
+      "sha256": "1b25f244b70b53745a6a4264aa1475114c1a7f4bf149e3646cb31fe06d453c56"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/cuda/gptq_marlin/ops.h",
+      "sha256": "abfdeefe3d7b20833b00bf1208a397525655a2c71e5b3f34c930a53b13c26c83"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/cuda/moe/ops.h",
+      "sha256": "62588cb68d454a4054d08b7154abd1af14087a75b8ac0eb29689b9d2f0403805"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/cuda/moe/utils.h",
+      "sha256": "f76737b703d0fc7731b2abf006a4eb0167fb59417e20385f8a6f0780d0386574"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/cuda/setup.py",
+      "sha256": "2736ada478116f69d6e2704493b008bb067fbd5752f6fc98e21fdcb45be4cb76"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/cuda/test_dequant.py",
+      "sha256": "e15b87807868019693153fd767b09accfbc1b0b04e79319d570e8558f0ced871"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/demo/bench_reorder_bandwidth.cpp",
+      "sha256": "7fab0024c13d2d6bc16b38d84c7c6c80a99be36529666bef9c834cd4a5fbe15a"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/demo/bf16-test.cpp",
+      "sha256": "8bdaa30afebdf2e7df726b914a09c4aa3dfd583a881e87eea211119218a2f3b8"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/demo/fp16-test.cpp",
+      "sha256": "d70a6fa23b0dab014450ee983b63a2145243814548ebccd7dbf3703bc9b4e03d"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/demo/plot.py",
+      "sha256": "82300db0432a950f7020270b341d0b4adc846ceec408e45e17f9c375fd92acbe"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/demo/simple_test.cpp",
+      "sha256": "35cb0c3c33185b9aab1450106e3b711ece7cb7732111bd8edd8f81e5c3d3bc14"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/demo/simple_test_aocl.cpp",
+      "sha256": "72c69eea7b7233c925839efb831c1490585eb2e063823eb172d131e9df631ee6"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/demo/tflops.py",
+      "sha256": "554e9524e77ab1852700d05f34a8aafa01661477ab294e401022974fde4ef85f"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/examples/bench_moe_amx_int8.py",
+      "sha256": "b8e16363138fe396a8c87e52eb5cfb8cf1d918cbadb22ba11202923bcc86d956"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/examples/configuration_deepseek_v3.py",
+      "sha256": "dad04d13f9def8797d29ef2f87d5c172a02214d398fa43c615c00ea682947a53"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/examples/modeling_deepseek_v3.py",
+      "sha256": "c7e478946f830ee864f4385418d9c269bfa5b5e433c3b6510d42b0d14ddd5cf7"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/examples/repro_llamafile_re.py",
+      "sha256": "12a2d3856e7ed58bac87a82ad4f196a4971f839f54a7986d821dbdca3d715186"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/examples/test-debug.py",
+      "sha256": "d6c9cb6a3d1d6786c5d013d5465be719177b87924fa2a73b41d09b516366ddf9"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/examples/test_apply_rope.py",
+      "sha256": "c66a38427c11ff4f196506eb820797c7317f5773bdb6c26e811687080de5642d"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/examples/test_attention.py",
+      "sha256": "e8ce5a91f0af7d3163a48addbd8b6b9f8cc0d5af052d0281b05c8e1d80ea6c86"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/examples/test_awq_moe_amx.py",
+      "sha256": "b853ce461b5e32f14c0c29fbdd1f407d181c29ae0c7aa7b351166fd662185478"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/examples/test_bf16_moe.py",
+      "sha256": "8033651702c137b8e1a738b8ed0d11989bb207d9e4861197c0fdc20252e13c7d"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/examples/test_deepseekv3.py",
+      "sha256": "e70a992acaca64c7e889839e06d881d7a5c913b38a85e95b83bc884bd01f2f42"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/examples/test_deepseekv3_prefill.py",
+      "sha256": "7499db4a2b5e50cbb2ca13f2e3d4beb9f8aadc40fd810b8ada3ad09d4ac3a80b"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/examples/test_deepseekv3_prefill_speed.py",
+      "sha256": "ce3bac2d0a59efaceb4da7d2bb58df9efb133ef5d87da2fb5c2bdaec3fb87f58"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/examples/test_fp4_moe_amx.py",
+      "sha256": "f940c045db4ab3f89509e89d797a785f08099f0c333041488929520163dbd8e7"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/examples/test_fp4_moe_v4.py",
+      "sha256": "1ba7b32a1271044176d0ff79b1b7ccb298e826de93c56d90ab27a6734e23be40"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/examples/test_fp8_moe.py",
+      "sha256": "9a79c7c705bd4fbc1a52a90a16c7bdc4dd78911bed45b23be4ddcd48810b01f3"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/examples/test_fp8_perchannel_moe.py",
+      "sha256": "6480c93709c7809a2174a3f0f843d1240dc5ccf578471b89478de9399246543e"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/examples/test_gate.py",
+      "sha256": "f48e95f8c99149e2ea14202c5bfb174ed216b31131d5465940c7cdd7dc99b98e"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/examples/test_k2_moe_amx.py",
+      "sha256": "82855a6bc599f6f0fb6c0c2d38bb2d8cbd28a40a84ce5f1172a03618271acaab"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/examples/test_k2_write_buffer.py",
+      "sha256": "d2b6cd8d447e54fd75bce67eacaac988c661f9ad62dc3821e2e947ae723d6fbd"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/examples/test_linear.py",
+      "sha256": "6612d4b3a19ed88cf8915eef10b95314d90c4978236e1e57df82b45f8f05111a"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/examples/test_mla.py",
+      "sha256": "181804a7d6ad65510a4eb9ebd0d991a6444c94a6d4f7d8a8e1d0abfed9685ab7"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/examples/test_mla_qlen.py",
+      "sha256": "b8486b77ca8170e1a8bcf0deac5920cdc8e6d53bd9f0cd276f0f9d6021f100ef"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/examples/test_mla_quant.py",
+      "sha256": "347f34bb9d732fa8ca7a9fd9fcfd4a10ce2263e3c4bbaa14050d206af286d9a5"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/examples/test_mla_simple.py",
+      "sha256": "9d1cf94b155cda6e11e9d4c6d8123950c2433d660cbee48207ed34864cde4d4e"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/examples/test_mla_torch.py",
+      "sha256": "4c02d90116799e992dfbe323c2783131f3e2903955c406edc5dd2e320c2cb583"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/examples/test_mlp.py",
+      "sha256": "590d62de1903947ab6f06b1aa4c18ba51043d34d5f1adce184ade95a366fdaa1"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/examples/test_moe.py",
+      "sha256": "2bb6d5baafd03c95a6681a0f353cd53d96893d52109a06ffff69192fc8451a87"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/examples/test_moe_amx.py",
+      "sha256": "23a96528b2721a99857c11fc782b9921d369fc50472812f753f780ccacc4447d"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/examples/test_moe_kernel.py",
+      "sha256": "e7cbd48d079eb60ab56e243aa8202cd8716b245bcf766a89ed431dc8f6e40b5a"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/examples/test_moe_kml.py",
+      "sha256": "f22b943df58837a81d61c286427f83074ce3ed5f3a08b7d32b584091a8018d21"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/examples/test_rope.cpp",
+      "sha256": "81c5d2df495d3c81bbf67ed73702c53f4c7cd17c9f7f0a370d67a48da70be8ba"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/examples/test_rope.py",
+      "sha256": "3c1476bbbda09e83be307bc815ad92cf7daffebda06a0502ca7d898788cd9c83"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/examples/test_softmax.py",
+      "sha256": "fdb5b8a82f63a2a9992b275db0c2e68ee6e59d307aefaf6a9acdb37fd2fb0b59"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/examples/test_write_buffer.py",
+      "sha256": "488872596853f297bb8ed92ea801ad0b464bd850c243c7fdf5d6f9cfd08fdd01"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/examples/torch_attention.py",
+      "sha256": "6570627292d0b9a9e57ed9c5ce864021a137cf528a80a335d460209dcedd9f53"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/ext_bindings.cpp",
+      "sha256": "ce81d735f3eff0de731ca77ab35a43c4c6165d89c32c08c5cdf2f7c1cc95b495"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/install.sh",
+      "sha256": "4588861934a87eea76afd9e88e5198c7dd7fcb61e7fd15a30a007195e2c3fe39"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/kt_dispatch_api.h",
+      "sha256": "8e73b2c44402a179626640a7f59603ad51f9be6eaf14dec840c3356ffc19b9da"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/no_block_torch.cpp",
+      "sha256": "e4df1d5c5ca06ca13817899b664254ec97ca3d827a7af0b17e68721c33067c7d"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/amx/awq-moe.hpp",
+      "sha256": "3d65d128d9c9240cf546bde6365dc293cab02cbf44719c1800b29d7a8bf109e1"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/amx/bf16-moe.hpp",
+      "sha256": "68ad9cc9a3e638198088a10aa606abf1506a24bb3ea724ec9b00bd024ad59623"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/amx/fp4-moe.hpp",
+      "sha256": "fd2a2ad35fa20af8517e7406254bd02e73024d05b5940de1076f249f58219599"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/amx/fp8-moe.hpp",
+      "sha256": "0003a4eaf453ea13bd9ddcbaa15dcc9011dc13177f7abc2df637c03c29a3bf7a"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/amx/fp8-perchannel-moe.hpp",
+      "sha256": "2ff7c980ef3958e49b9d5b05b37e8ade0710001a999b623236e784f7aedd1ada"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/amx/k2-moe.hpp",
+      "sha256": "ffcf0c5ef438df35decb146a60156ef185ebaf2fbddf5dbbb355cc455c697f37"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/amx/la/amx-example.cpp",
+      "sha256": "eafffb7ba35f9ccab5ae21c61237d730ec8b90dd7d0d8f7cb8d40df9b8b6d1a7"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/amx/la/amx.hpp",
+      "sha256": "6ece01f003c51d12ee045e5f7b64ff36ce1ae5560e00e80b7bb5d6ddc3c4852e"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/amx/la/amx_buffers.hpp",
+      "sha256": "a08828c9bd83cd15fe86067307d27faec6ec5bf6a3d9e51ac86b165c2a30444b"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/amx/la/amx_config.hpp",
+      "sha256": "2686a274392f70ae53f0045b6919af06ddf6c77f161fe42ee5a37a1da1945c8f"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/amx/la/amx_kernels.hpp",
+      "sha256": "9dfb651897eb5b8e83ac1d1ab9ec7f189d7c719c21bb81c3c3051284924322e8"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/amx/la/amx_quantization.hpp",
+      "sha256": "fe82971c76784ee11c8f9137b39e4cdfb5062d1a84f1660c1e3da678a642ac0f"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/amx/la/amx_raw_buffers.hpp",
+      "sha256": "c77e4f2759498328569c52c8b13d5d8e5714cfeff3b97ee2d347315b0bb46d4f"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/amx/la/amx_raw_kernels.hpp",
+      "sha256": "8c162fe35c78622823495e35db61b2913273bfeb58168a83dc469e8701bf0b82"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/amx/la/amx_utils.hpp",
+      "sha256": "0536cd42eebe89d00a3c046cd8284d469acf0344ba246001edd8453f113b61f9"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/amx/la/avx_kernels.hpp",
+      "sha256": "231d6adefbc9155352a1ea5fd591fc45f57baaf32466c694dd3d5a85c57721de"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/amx/la/pack.hpp",
+      "sha256": "311f376f3b13f83e90a23d94a656caa9af881bf28ed984880e87abafee7e2505"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/amx/la/utils.hpp",
+      "sha256": "96f96ebde92fb0d7af41edf476e5aa48a36dbc52c5d6bc1842765c356f542d7c"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/amx/moe.hpp",
+      "sha256": "1b37b831c6297e7f9d6ba67d59d6d77765daec5015d2fd354b59d8f482f38e7f"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/amx/moe_base.hpp",
+      "sha256": "d06690483f35ef0a8946ba04bb2f868b52e4e142bfdfafbee9d3495df858aec3"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/amx/sft_moe.hpp",
+      "sha256": "9750c410ff6209adcec40d2a96911ec4673302a769bb58d4795c088bb62bc733"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/amx/utils.hpp",
+      "sha256": "96f96ebde92fb0d7af41edf476e5aa48a36dbc52c5d6bc1842765c356f542d7c"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/avx2/avx2_bf16_gemm.hpp",
+      "sha256": "e942932d429a89701a637a4f07c3c9dbb51e38bc3e7bd218a9dd3e426d910b4e"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/avx2/avx2_bf16_utils.hpp",
+      "sha256": "4efc7bf58dfd4da416c45da11a2b89ff82fe2cc8b8bb8e7ebf4e8aa2c59389cf"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/avx2/bf16-moe.hpp",
+      "sha256": "fe3afad53202b6a69fa224d2cd568a84d230aca206add8d458e5d6f5968f1e61"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/avx2/fp8-moe.hpp",
+      "sha256": "6aac0b94e3b2ea5351f2f32772a4f3f4aa2c68de5431d953c25b97679a656a25"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/avx2/fp8_dequant.hpp",
+      "sha256": "9e0fc6b7f1f6862e5e73142cdc743807cace12dfd642001d0d0305356755db4d"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/avx2/gptq_int4-moe.hpp",
+      "sha256": "9d07d7aa01c06bf2979cc0bbdc973f271ae8742abb3504fcd7d24d9aba4506f3"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/avx2/gptq_int4_avxvnni-moe.hpp",
+      "sha256": "56ea28cf36a85412c274873da6a7420947c498567abf457eae20cfa18fe9d6ac"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/avx2/gptq_int4_dequant.hpp",
+      "sha256": "cf0f3e373cad6c4de145c30e68f0d6a9623f73f1c0d0f3f7e2dc721ad20833fb"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/avx2/moe_base.hpp",
+      "sha256": "c8d684f101d01c26ac8883ffb45fd7e956102b25b883b09c0ccfc727cbdbe25b"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/avx2/rawint4-moe.hpp",
+      "sha256": "f5113555d770d3d7734900808bc43c8078e1288c9203ec9a3f7abe8cf128bb3a"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/avx2/rawint4_avxvnni-moe.hpp",
+      "sha256": "6913afda34448b9a2bd8c189c614554ee0787d0a7cd1cabd6e93fbd339dd5c8b"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/common.hpp",
+      "sha256": "5e7115b66c4e6694821067f37ad62ec96360a7136fafed320efc2750788fc1b0"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/kvcache/kvcache.h",
+      "sha256": "e18c6f8e12c9a5674884152ceef535ad5d52eb32a7a681e8a47b94a03b4eb1e0"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/kvcache/kvcache_attn.cpp",
+      "sha256": "6ff05b19647a7f4be0e30bdcf253aa01b7e61e78f9619786555a3d80f6841587"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/kvcache/kvcache_load_dump.cpp",
+      "sha256": "dc802eb5b34d962d61e7cfa914a046d6a31401245db56aed87038e1e759eb05c"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/kvcache/kvcache_read_write.cpp",
+      "sha256": "c497e1f0e1ff2ee9fec76d1e67ab2c6c02fd2d004406e83887dff2f3204d7bfe"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/kvcache/kvcache_utils.cpp",
+      "sha256": "1ef616da98ce8de99ba65c3343f5c02f45aac3f8c2d5622f890b1ecdab4aeabe"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/llamafile/conversion.h",
+      "sha256": "409b6aa27cab318a203d0674908932a23eebeaa92ff7f17c71c88bad922bac16"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/llamafile/linear.cpp",
+      "sha256": "a32227818bab878a7ac48207f73e5cc66b4b9a4f7f16fd30bdc83d2baa4dea3e"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/llamafile/linear.h",
+      "sha256": "a94ba8fa4b4f9fb52fcc6188f7d507bbaae786b3f7da2e54ef3b85586c61351f"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/llamafile/mla.hpp",
+      "sha256": "4df5acb1521f77079e77e6a5bb85b7963be568607b7cdde824ca8334910fcede"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/llamafile/mlp.cpp",
+      "sha256": "697203e11a05f91f159c305b5dd38574302c23f6b89f3c0064615ef203b71f3c"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/llamafile/mlp.h",
+      "sha256": "ef5e6610d74d487e307ee871236195f23666b421e243ef6ee8215605c24c5deb"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/llamafile/moe.hpp",
+      "sha256": "c7c52a2a0958a99dfca8d4e652cda08dc8981910544e067907e5c78c081cb5f7"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/llamafile/mxfp4_reuse.h",
+      "sha256": "302800fe1c81ed9ec44aaedab4159c8abfffeb290366bbcfbe4c7137c35513cc"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/llamafile/mxfp8_match.h",
+      "sha256": "904de185092c65daad8394a91e321f30dd8c14f0ade8072b4f893aa6f5c1db3e"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/llamafile/native_mxfp4.h",
+      "sha256": "ba6fe0f6cb6a7756ffe2b77e4b855e8dd4333f9e3592498d2471ce0e5165e326"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/mla-tp.hpp",
+      "sha256": "59cba50f394f35a1f29be1556fdd3b925701161641a4e5fae0b869d65cac1269"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/moe-sft-tp.hpp",
+      "sha256": "d0ff0e4dce8ac99c1e13657db4575871ae6b431048ba68406362dd9bb752ee64"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/moe-tp.hpp",
+      "sha256": "98808ef8082d4709884037e6b4b6c7a313ba1ccd900343a382c0f9b1a97eb350"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/moe_kernel/api/common.h",
+      "sha256": "0e79ac773a7bc8cd5d9f352d98997ee5a9247b437741a77a17605a8c53262937"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/moe_kernel/api/mat_kernel.h",
+      "sha256": "7446ff89788b950b5d9eb9e770d4c16fe300cd85f6156e0c7b8dbc46134cb79d"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/moe_kernel/la/kernel.hpp",
+      "sha256": "78cc80aa9b7eacba0f1f72cc1bc56e66869f26ac500a13a7903b9863eba69dab"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/moe_kernel/la/mat_kernel.cpp",
+      "sha256": "86eef6ad6fa15d245dd494b13047e2853a903edc7fc1e502516b5037fdddad01"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/moe_kernel/la/utils.hpp",
+      "sha256": "a3d2d9621f1585b23f80cbe9de411a158e630336d40383c2e9afeb376352c94c"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/moe_kernel/mat_kernel/aocl_kernel/kernel.cpp",
+      "sha256": "48e3608ed2dc0fa7be08d67bb3464d68f09daa7daf89ba222a90ec8fc524c42c"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/moe_kernel/mat_kernel/batch_gemm_api.hpp",
+      "sha256": "e0e24b9f010d6d9e40294de34b02d0320026f2b17fa851119c80450da409accc"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/moe_kernel/moe.hpp",
+      "sha256": "6522eb1c55cdb74104f2ae4917990168598a9ce4634bdfcb7ef30742b2036ec8"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/reduce.hpp",
+      "sha256": "0fcb384992b211cfd3b0c194783672f5d849af7d32a7874f9a3af64716dc5793"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/rms-norm.hpp",
+      "sha256": "77d470e4b098d37cf7035b607ccd64122fea53afd19fae6d8df27cd198e53ff6"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/rope.hpp",
+      "sha256": "c30db09242cc2463ff8251654f2545bd25a3059080f8347fab20faefb488b1b0"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/softmax.hpp",
+      "sha256": "0c2b47a75137d023f7bdc7f9ca66e1a6404457ca722a75b119b858a778cd9adc"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/operators/tp.hpp",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/pyproject.toml",
+      "sha256": "b0a94d1095306147ece7334b6c520302174d1e4bfa635dbd7f5ce488918ffb94"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/__init__.py",
+      "sha256": "bdbddee7331ebb90aa38c8528191fe599ca9644ce4abadd41f67fc26ab51f912"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/_cpu_detect.py",
+      "sha256": "251d5af1a241c02eb0a34347e0ac504e3823676e7adc3e329046a381741eeebe"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/cli/__init__.py",
+      "sha256": "9cf36f76a5a3afd89a55f3b403d1d1ecf80491e2e152e9059e10d088660988d2"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/cli/commands/__init__.py",
+      "sha256": "f8a9580cb9fe57bee9f6ff0a431c962b483ad9edd99af3f4b875f22c2be7247f"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/cli/commands/bench.py",
+      "sha256": "e593035b5818c2eef03d18ab4b145bbb6ac585a64d263dd0f85f17fbe4de3a95"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/cli/commands/chat.py",
+      "sha256": "98c9cad8ad00def8d5cd0d10378ee1372d11c7412bfed86a1e51372c901aa71b"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/cli/commands/config.py",
+      "sha256": "2127fa56226f14f6fff97a9d4d71b7eaa05ce711225392d57051df31b913dc4a"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/cli/commands/doctor.py",
+      "sha256": "193d95e9c794a0ad70e5bddfdc5730d36850d5a9dade2e95adc63a3b564c7cf3"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/cli/commands/model.py",
+      "sha256": "a8e8b2348423bf20aed33021e73e21cb39caac4ba515a1b965f3a97573b76c97"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/cli/commands/quant.py",
+      "sha256": "abfe1036861bc6370ae71e88552f26aaf58712e941ed733809404a389927093b"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/cli/commands/run.py",
+      "sha256": "53fc7f97bc629b3c83c9705d0dd323867280dbca86e6bb4cde760c8c9eef3a41"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/cli/commands/sft.py",
+      "sha256": "9e5e99e53144392fa88d9fd5f17121cc84630bee73806f48b78d72912dd510b3"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/cli/commands/version.py",
+      "sha256": "41598173bdb50d387d900ceb0d5962b5cdb7a695e15b41114ff52f9d36753e8a"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/cli/completions/__init__.py",
+      "sha256": "1a1f89ac8a58ba2882b358fab976c6e328a350a24862408c738bd8e792f9ba25"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/cli/config/__init__.py",
+      "sha256": "3263fca1609ca04cff61cd23d0725234fb7cdfbc514c31ddcee7f0e13fa61c83"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/cli/config/settings.py",
+      "sha256": "797e22ad5199c04c7dd0b0b64fe80919e18ce3ae5f97e5e979b8a90ea0aabbdc"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/cli/i18n.py",
+      "sha256": "ad41ab13b0b46e30f3532694d256451923f439b517ea376917fcd7418ffcc46e"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/cli/main.py",
+      "sha256": "0c5adf4aada9e9502eede6c299696234a98afa759eef2445b60b4a9e6e7fbcc4"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/cli/requirements/inference.txt",
+      "sha256": "6b5dfe8db8c9d53b04094ea3dd0867ea721a77bdc6de500a5dfea997c06a31d3"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/cli/requirements/sft.txt",
+      "sha256": "3e54cc1b110cd86b9def6af818ca210b2cb056fb8011ee9c1e2f4faa76847919"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/cli/utils/__init__.py",
+      "sha256": "8f3c9644347471470b88301697454ce80f72d966f37be4ae30c3654274fb299e"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/cli/utils/analyze_moe_model.py",
+      "sha256": "aee9fcb7268602302b7f21a5f2da2b832e8d2fcef09d0f3ffbeef5ce2744a942"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/cli/utils/console.py",
+      "sha256": "048b0b463d71c9da6ccaacaf1bd7596fa43fe3267e6ba29ca53c986ce18443aa"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/cli/utils/debug_configs.py",
+      "sha256": "f98f50046270c89adec6c397b4da5b5e7b354408986066c888ce83ac9a886ac8"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/cli/utils/download_helper.py",
+      "sha256": "ce31135d582e3f705f0cbf64ee73333ad68ca689742f88f5baf1cd17b9b40aac"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/cli/utils/environment.py",
+      "sha256": "c755dade67f8b1641616b819ef1e95d2e955fe26cdca80f6e4d79349d51b6ac0"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/cli/utils/input_validators.py",
+      "sha256": "0fb5eec8e2d4370fbbc32f4eb3969cade6c5ff87c919902ea20bbe6a700e6faf"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/cli/utils/kv_cache_calculator.py",
+      "sha256": "589fe52991f78c9e5f4d8e144ba0c6b86440b8fb4dc0046222be842c4148d733"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/cli/utils/model_discovery.py",
+      "sha256": "5a048a9313e0d0fccf5bf9f204b239dbcb96f09afa7728b24b934e64f376f815"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/cli/utils/model_registry.py",
+      "sha256": "c919a4c775f332fbce8f6757eb5322f873424ee753c6f09237b7b180af64f091"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/cli/utils/model_scanner.py",
+      "sha256": "8dc31ee7b77374f89c3d2e6be00c54e5430ea146158bcdb20fb29c1737c11ee1"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/cli/utils/model_table_builder.py",
+      "sha256": "fe5d6a61d67f4ae27a855ef0d4a91edd17cabc11b50004ce4d5781efd6e80113"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/cli/utils/model_verifier.py",
+      "sha256": "efd1e7c303a064042988331c224a6080869ef9ea4a9710435f4949d14a80c3dc"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/cli/utils/port_checker.py",
+      "sha256": "bc30720ba84f63e0d5b072fc99556b96b2fac592d9a40b83651037107d63fd98"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/cli/utils/quant_interactive.py",
+      "sha256": "abaa53d655a2ed9888cc76be5448df6dfedc832a98c60ff0608db8ea394463e3"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/cli/utils/repo_detector.py",
+      "sha256": "b6a82745ca13aa6502185efb865a8fc6a81636b60b1176951b2ccacfd9335fb0"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/cli/utils/run_configs.py",
+      "sha256": "18bc5b5c0fa092c53a392e8c59d8f89b1dd5a6b93880631ad84ffd9e60eef5a2"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/cli/utils/run_interactive.py",
+      "sha256": "59664cbb29bae0ce6315a7f5050bd43abf181f88cedd6f62aeb1d471a425c3d9"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/cli/utils/sglang_checker.py",
+      "sha256": "47df2704db47ec1538e6a5ee7333a63ce02830e9066044cf2e73fc91579d8e22"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/cli/utils/tuna_engine.py",
+      "sha256": "5f238e8fa6bbf780391f12093100d394517511661368b6aed47ee109952bb61c"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/cli/utils/user_model_registry.py",
+      "sha256": "85fb0f1ae995b8d286f18eb43b8a75e9114fb6df734e6bfb63358e181eba1e71"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/experts.py",
+      "sha256": "4686996b73128b121a9494495c0be4e299e78278ef944c884294b126c1d57a51"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/experts_base.py",
+      "sha256": "143bebc06693d6fcac54c655c003b301c63d37503bc730d1d32b2016d5e6b74d"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/native_ready_poll.c",
+      "sha256": "db3aa4be2fb0e77ad3d2f1def0e2b6104539908d6191d225d6972c503ae48fb5"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/sft/__init__.py",
+      "sha256": "a4f55be0adc1826a17f1fbc626a1574986eb1ccf9c2b48279ba9dc1ca22caa9d"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/sft/amx.py",
+      "sha256": "c353706871a47c611eca9ee10cd8d8b704788106fd92375870acfca6326db9c6"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/sft/arch.py",
+      "sha256": "0cb2c0ba1756003520694ca74c6b5b7256f3249b7d4790acba5bcb6f45f8e8d4"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/sft/autograd.py",
+      "sha256": "0c6615d30a8014ffed92bac8c99d0db746cf3fc7a1ed7c4af3672f4ead85b117"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/sft/base.py",
+      "sha256": "b8549163d264d22f255f86983aa73501c94074217b15ff570afaab4b440cdf0f"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/sft/config.py",
+      "sha256": "18767108842efc1762f76e78e943ce24fd934e0e2f083f1a7b253f4fee95c517"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/sft/dist_utils.py",
+      "sha256": "15574762c4e90db228008aaa11643e2c917fa5ba85e7d5b49daf0e6afaa4c505"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/sft/layer.py",
+      "sha256": "1f54ada2962798fe01ee794a6a522045a33f1126d8dab9d5bc898ae892b74394"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/sft/lora.py",
+      "sha256": "8f0f8b39fcce41afad8e81f7f77ac1eb52b03d55722980aeb23fdb8d7bba4dd5"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/sft/weights.py",
+      "sha256": "fe323dfdc506ed8a7b00fb72d6655ae39f6fb3d1283aa6239580ab0262e83853"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/sft/wrapper.py",
+      "sha256": "f7a1788e019851064cce27be8454334987d41a9b7ed07a987a05e7e76fd234b5"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/utils/__init__.py",
+      "sha256": "1882f9b8a49b200b33544d7ad93a6098023a92833c19b398a4f44a4e80054310"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/utils/amx.py",
+      "sha256": "7716e947ae3253c6159f2194125837b2ce767d81bf31bfe8c0c4b5195e344e4b"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/utils/llamafile.py",
+      "sha256": "077e0b10955f0903446b216fbfad25b4d38b3a819cf53917c8c850296a6b5ba1"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/utils/loader.py",
+      "sha256": "9fe7b3db8a86ce67ebca7ed58e2e83fe212081cc86004c96445a27d31dfddd2d"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/utils/moe_kernel.py",
+      "sha256": "824181b2fea11962ec6dc309352064e5cc783cb47e0c05aea2601b00989dbfd9"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/utils/mxfp4_reuse.py",
+      "sha256": "78946ae2c9482afda77b113e89bcd5788783314a360082d67bb80c2d117079a0"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/python/utils/native_mxfp4.py",
+      "sha256": "a6edb34dc6130898fd58e0cae610eb36208f14021d74401bb3ede003c7cd9335"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/requirements.txt",
+      "sha256": "21a0dcacd4f2afd85da296419ce5da338bf0c48c92cc5ef0277da475d3bd2ac9"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/scripts/check.py",
+      "sha256": "beb86e0646b56137fe416de7f70c8c517f5458927e095b599ea28519aeedfac9"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/scripts/check_cpu_features.py",
+      "sha256": "358cf4de495ce3c318a066e1d1e7a90ea5bbe1d96528922c730172c37def1eb0"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/scripts/compare_weights.py",
+      "sha256": "cd3afeb8dcfc2d797527dddecc54a7d400118d2dd9268104b6227aff624c550c"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/scripts/convert_cpu_weights.py",
+      "sha256": "38d3a399d219d571e7ca5b0c7f8cb2aac00ac5440adc85151ec59ca32f0a35da"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/scripts/convert_gpu_weights.py",
+      "sha256": "eb0fbdb8a5e8ebb9f26bc3222a8ac96d5bfd745baadba5471129605c82b50a4a"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/scripts/convert_kimi_k2_fp8_to_bf16_cpu.py",
+      "sha256": "1c76706fbb93a35b7752e05bde27ff421fcd7356e8ac052a962b711db38e7336"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/scripts/convert_moe_to_bf16.py",
+      "sha256": "12221146f51b122d0f6266101eca283b43615a48a4a5417493a2671ee6b8cc36"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/scripts/install-git-hooks.sh",
+      "sha256": "65961b67a46d3977ae27169bc616e2a594622d484d894ab0342484b8067080d4"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/scripts/merge_cpu_weights.py",
+      "sha256": "cb1df87e7f3b8818a2f9cd701cced1d7b9b7fe3dd0f953d6dedd413650df9589"
+    },
+    {
+      "path": "cpu_moe/dependencies/ktransformers-AK/kt-kernel/setup.py",
+      "sha256": "67cd1cfafab70fd109ed1f624f5dea2c7c66718d0e1a4868881a2f2b7dbcc98a"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/__init__.py",
+      "sha256": "bdbddee7331ebb90aa38c8528191fe599ca9644ce4abadd41f67fc26ab51f912"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/_cpu_detect.py",
+      "sha256": "251d5af1a241c02eb0a34347e0ac504e3823676e7adc3e329046a381741eeebe"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/cli/__init__.py",
+      "sha256": "9cf36f76a5a3afd89a55f3b403d1d1ecf80491e2e152e9059e10d088660988d2"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/cli/commands/__init__.py",
+      "sha256": "f8a9580cb9fe57bee9f6ff0a431c962b483ad9edd99af3f4b875f22c2be7247f"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/cli/commands/bench.py",
+      "sha256": "e593035b5818c2eef03d18ab4b145bbb6ac585a64d263dd0f85f17fbe4de3a95"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/cli/commands/chat.py",
+      "sha256": "98c9cad8ad00def8d5cd0d10378ee1372d11c7412bfed86a1e51372c901aa71b"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/cli/commands/config.py",
+      "sha256": "2127fa56226f14f6fff97a9d4d71b7eaa05ce711225392d57051df31b913dc4a"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/cli/commands/doctor.py",
+      "sha256": "193d95e9c794a0ad70e5bddfdc5730d36850d5a9dade2e95adc63a3b564c7cf3"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/cli/commands/model.py",
+      "sha256": "a8e8b2348423bf20aed33021e73e21cb39caac4ba515a1b965f3a97573b76c97"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/cli/commands/quant.py",
+      "sha256": "abfe1036861bc6370ae71e88552f26aaf58712e941ed733809404a389927093b"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/cli/commands/run.py",
+      "sha256": "53fc7f97bc629b3c83c9705d0dd323867280dbca86e6bb4cde760c8c9eef3a41"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/cli/commands/sft.py",
+      "sha256": "9e5e99e53144392fa88d9fd5f17121cc84630bee73806f48b78d72912dd510b3"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/cli/commands/version.py",
+      "sha256": "41598173bdb50d387d900ceb0d5962b5cdb7a695e15b41114ff52f9d36753e8a"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/cli/completions/__init__.py",
+      "sha256": "1a1f89ac8a58ba2882b358fab976c6e328a350a24862408c738bd8e792f9ba25"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/cli/config/__init__.py",
+      "sha256": "3263fca1609ca04cff61cd23d0725234fb7cdfbc514c31ddcee7f0e13fa61c83"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/cli/config/settings.py",
+      "sha256": "797e22ad5199c04c7dd0b0b64fe80919e18ce3ae5f97e5e979b8a90ea0aabbdc"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/cli/i18n.py",
+      "sha256": "ad41ab13b0b46e30f3532694d256451923f439b517ea376917fcd7418ffcc46e"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/cli/main.py",
+      "sha256": "0c5adf4aada9e9502eede6c299696234a98afa759eef2445b60b4a9e6e7fbcc4"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/cli/requirements/inference.txt",
+      "sha256": "6b5dfe8db8c9d53b04094ea3dd0867ea721a77bdc6de500a5dfea997c06a31d3"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/cli/requirements/sft.txt",
+      "sha256": "3e54cc1b110cd86b9def6af818ca210b2cb056fb8011ee9c1e2f4faa76847919"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/cli/utils/__init__.py",
+      "sha256": "8f3c9644347471470b88301697454ce80f72d966f37be4ae30c3654274fb299e"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/cli/utils/analyze_moe_model.py",
+      "sha256": "aee9fcb7268602302b7f21a5f2da2b832e8d2fcef09d0f3ffbeef5ce2744a942"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/cli/utils/console.py",
+      "sha256": "048b0b463d71c9da6ccaacaf1bd7596fa43fe3267e6ba29ca53c986ce18443aa"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/cli/utils/debug_configs.py",
+      "sha256": "f98f50046270c89adec6c397b4da5b5e7b354408986066c888ce83ac9a886ac8"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/cli/utils/download_helper.py",
+      "sha256": "ce31135d582e3f705f0cbf64ee73333ad68ca689742f88f5baf1cd17b9b40aac"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/cli/utils/environment.py",
+      "sha256": "c755dade67f8b1641616b819ef1e95d2e955fe26cdca80f6e4d79349d51b6ac0"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/cli/utils/input_validators.py",
+      "sha256": "0fb5eec8e2d4370fbbc32f4eb3969cade6c5ff87c919902ea20bbe6a700e6faf"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/cli/utils/kv_cache_calculator.py",
+      "sha256": "589fe52991f78c9e5f4d8e144ba0c6b86440b8fb4dc0046222be842c4148d733"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/cli/utils/model_discovery.py",
+      "sha256": "5a048a9313e0d0fccf5bf9f204b239dbcb96f09afa7728b24b934e64f376f815"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/cli/utils/model_registry.py",
+      "sha256": "c919a4c775f332fbce8f6757eb5322f873424ee753c6f09237b7b180af64f091"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/cli/utils/model_scanner.py",
+      "sha256": "8dc31ee7b77374f89c3d2e6be00c54e5430ea146158bcdb20fb29c1737c11ee1"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/cli/utils/model_table_builder.py",
+      "sha256": "fe5d6a61d67f4ae27a855ef0d4a91edd17cabc11b50004ce4d5781efd6e80113"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/cli/utils/model_verifier.py",
+      "sha256": "efd1e7c303a064042988331c224a6080869ef9ea4a9710435f4949d14a80c3dc"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/cli/utils/port_checker.py",
+      "sha256": "bc30720ba84f63e0d5b072fc99556b96b2fac592d9a40b83651037107d63fd98"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/cli/utils/quant_interactive.py",
+      "sha256": "abaa53d655a2ed9888cc76be5448df6dfedc832a98c60ff0608db8ea394463e3"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/cli/utils/repo_detector.py",
+      "sha256": "b6a82745ca13aa6502185efb865a8fc6a81636b60b1176951b2ccacfd9335fb0"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/cli/utils/run_configs.py",
+      "sha256": "18bc5b5c0fa092c53a392e8c59d8f89b1dd5a6b93880631ad84ffd9e60eef5a2"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/cli/utils/run_interactive.py",
+      "sha256": "59664cbb29bae0ce6315a7f5050bd43abf181f88cedd6f62aeb1d471a425c3d9"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/cli/utils/sglang_checker.py",
+      "sha256": "47df2704db47ec1538e6a5ee7333a63ce02830e9066044cf2e73fc91579d8e22"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/cli/utils/tuna_engine.py",
+      "sha256": "5f238e8fa6bbf780391f12093100d394517511661368b6aed47ee109952bb61c"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/cli/utils/user_model_registry.py",
+      "sha256": "85fb0f1ae995b8d286f18eb43b8a75e9114fb6df734e6bfb63358e181eba1e71"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/experts.py",
+      "sha256": "4686996b73128b121a9494495c0be4e299e78278ef944c884294b126c1d57a51"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/experts_base.py",
+      "sha256": "143bebc06693d6fcac54c655c003b301c63d37503bc730d1d32b2016d5e6b74d"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/native_ready_poll.c",
+      "sha256": "db3aa4be2fb0e77ad3d2f1def0e2b6104539908d6191d225d6972c503ae48fb5"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/sft/__init__.py",
+      "sha256": "a4f55be0adc1826a17f1fbc626a1574986eb1ccf9c2b48279ba9dc1ca22caa9d"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/sft/amx.py",
+      "sha256": "c353706871a47c611eca9ee10cd8d8b704788106fd92375870acfca6326db9c6"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/sft/arch.py",
+      "sha256": "0cb2c0ba1756003520694ca74c6b5b7256f3249b7d4790acba5bcb6f45f8e8d4"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/sft/autograd.py",
+      "sha256": "0c6615d30a8014ffed92bac8c99d0db746cf3fc7a1ed7c4af3672f4ead85b117"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/sft/base.py",
+      "sha256": "b8549163d264d22f255f86983aa73501c94074217b15ff570afaab4b440cdf0f"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/sft/config.py",
+      "sha256": "18767108842efc1762f76e78e943ce24fd934e0e2f083f1a7b253f4fee95c517"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/sft/dist_utils.py",
+      "sha256": "15574762c4e90db228008aaa11643e2c917fa5ba85e7d5b49daf0e6afaa4c505"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/sft/layer.py",
+      "sha256": "1f54ada2962798fe01ee794a6a522045a33f1126d8dab9d5bc898ae892b74394"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/sft/lora.py",
+      "sha256": "8f0f8b39fcce41afad8e81f7f77ac1eb52b03d55722980aeb23fdb8d7bba4dd5"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/sft/weights.py",
+      "sha256": "fe323dfdc506ed8a7b00fb72d6655ae39f6fb3d1283aa6239580ab0262e83853"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/sft/wrapper.py",
+      "sha256": "f7a1788e019851064cce27be8454334987d41a9b7ed07a987a05e7e76fd234b5"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/utils/__init__.py",
+      "sha256": "1882f9b8a49b200b33544d7ad93a6098023a92833c19b398a4f44a4e80054310"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/utils/amx.py",
+      "sha256": "7716e947ae3253c6159f2194125837b2ce767d81bf31bfe8c0c4b5195e344e4b"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/utils/llamafile.py",
+      "sha256": "077e0b10955f0903446b216fbfad25b4d38b3a819cf53917c8c850296a6b5ba1"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/utils/loader.py",
+      "sha256": "9fe7b3db8a86ce67ebca7ed58e2e83fe212081cc86004c96445a27d31dfddd2d"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/utils/moe_kernel.py",
+      "sha256": "824181b2fea11962ec6dc309352064e5cc783cb47e0c05aea2601b00989dbfd9"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/utils/mxfp4_reuse.py",
+      "sha256": "78946ae2c9482afda77b113e89bcd5788783314a360082d67bb80c2d117079a0"
+    },
+    {
+      "path": "cpu_moe/kt_async_runtime/kt_kernel/utils/native_mxfp4.py",
+      "sha256": "a6edb34dc6130898fd58e0cae610eb36208f14021d74401bb3ede003c7cd9335"
+    }
+  ]
+}

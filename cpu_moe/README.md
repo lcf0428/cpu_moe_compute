@@ -14,6 +14,8 @@
 
 153已完成整模型启动、推理和性能测试；CPU运行包为 `kt-native-profile-package`，计算采用GGUF，参考成本 **93.16 μs / expert-token（约90 μs）**。
 
-本目录核心备份尚未完整同步该运行包：当前 `ext_bindings.cpp` 不含 `native_dispatch_api`、`native_cpu_handle` 及动态profile开关；根目录 [原生接口补丁](../patches/kt_native_dispatch_api.patch) 补充派发接口，不能替代整个已验证运行包，也不包含全部profile改动。当前复现优先使用该运行包，不应将本目录直接标为153最新源码副本。
+本目录kt-kernel和Python/C运行时源码已从153实测工作区直接同步，包含原生派发接口、动态profile开关、MXFP4复用及MXFP8匹配相关实现。源码文件保持服务器字节内容；276个纳入范围的文件校验值保存在 [version.json](version.json)，运行库、权重、日志、测试/benchmark及依赖自带Markdown不在该校验范围，第三方依赖沿用仓库已有源码。
+
+固定配对：本仓库标签 [`cpu-moe-153-20261109`](https://github.com/yxk-fdu/cpu_moe_compute/tree/cpu-moe-153-20261109/cpu_moe) ↔ Ascend提交 [`7cf63ca`](https://github.com/yxk-fdu/vllm-ascend/commit/7cf63ca477bf6045ad5a262ff6d59b66ace463bd)，vLLM `0.30.0+empty`。**两边都要准备，缺一不可。** 根目录接口补丁只为旧源码保留，本版本已集成，不重复应用。
 
 `.so`、GGUF和NPU模型权重不在本目录中。历史脚本保留作参考，实际启动使用 [脚本设定指南](../docs/脚本设定指南.md)，日志与权重准备分别见 [日志合成指南](../docs/日志合成指南.md) 和 [权重准备指南](../docs/权重准备指南.md)。

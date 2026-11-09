@@ -12,6 +12,16 @@
 
 Ascend 分支决定**哪些专家在 CPU 算、何时提交计算/搬运、何时同步**；本仓库的 CPU 后端执行**GGUF 专家计算**。运行时需要两边配套，不是只安装本仓库就能启动完整模型。GGUF 是 CPU 权重格式，不是计算后端。
 
+## 配套版本（两边缺一不可）
+
+| 项目 | 本次固定版本 |
+| --- | --- |
+| vLLM | `0.30.0`，153实际安装 `0.30.0+empty`。 |
+| vllm-ascend | [`moe_cpu_compute_v1-on-0928` 分支](https://github.com/yxk-fdu/vllm-ascend/tree/moe_cpu_compute_v1-on-0928)，固定提交 [`7cf63ca477bf6045ad5a262ff6d59b66ace463bd`](https://github.com/yxk-fdu/vllm-ascend/commit/7cf63ca477bf6045ad5a262ff6d59b66ace463bd)。 |
+| CPU MoE 后端 | 本仓库固定标签 [`cpu-moe-153-20261109`](https://github.com/yxk-fdu/cpu_moe_compute/tree/cpu-moe-153-20261109/cpu_moe)，源码对应关系及SHA256见 [`cpu_moe/version.json`](cpu_moe/version.json)。 |
+
+这是一组配套版本：准备对应 Ascend 源码，并构建/加载这里的 CPU 后端，才能使用本次 CPU 计算路径。单独更新一边可能产生接口或同步不兼容。
+
 ## 使用指南
 
 - [脚本设定指南](docs/脚本设定指南.md)：安装、启动、NUMA/线程配置、DSpark 与预取开关、重要参数。
@@ -27,6 +37,10 @@ Ascend 分支决定**哪些专家在 CPU 算、何时提交计算/搬运、何�
 - CPU 参考计算成本：**93.16 μs / expert-token，约90 μs**。一个专家处理两个 token 按两份计算量估计，不是按一个唯一专家只算一次。
 - 权重搬运参考成本：275.828 μs / 专家；NPU 计算固定估计：200 μs / 层。以上是调度校准值，不是每次执行的固定耗时。
 
-`cpu_moe/` 当前仍是后端源码备份，近期提交主要补充了使用说明和根目录工具；其中的 `ext_bindings.cpp` 尚未内置本次原生派发接口，接口补丁见 [patches/kt_native_dispatch_api.patch](patches/kt_native_dispatch_api.patch)。153实测使用的是已构建的 `kt-native-profile-package`，不能把备份目录直接当作该运行包的完整同步副本。源码与运行包状态见 [cpu_moe/README.md](cpu_moe/README.md)。
+`cpu_moe/` 的kt-kernel及运行时源码已直接从153实测工作区同步，276个纳入范围的源码文件逐文件核对SHA256；同步范围排除二进制、权重、日志、测试/benchmark及依赖自带Markdown。原生派发接口和动态profile开关已在源码中，不需再打根目录历史接口补丁。运行包需要使用匹配环境编译，详细入口见 [后端目录说明](cpu_moe/README.md)。
 
 模型权重、编译产物、运行日志和本次性能统计不随使用指南上传。后端依赖及其许可证保留在 `cpu_moe/`，历史实现参考在 `reference/`。
+
+## 后续更新约定
+
+更新GitHub时同时检查Ascend源码、CPU后端与实际运行包的Python/C源码。哪边有变化就同步哪边，不能只上传Ascend改动或把后端改动长期留在补丁里。以实际验证过的源码为准，不在发布前重新格式化；同步后更新配套提交/标签和源码校验清单。没有改动的一边保留原版本引用。

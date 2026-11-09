@@ -1,3 +1,4 @@
+#include "kt_dispatch_api.h"
 /**
  * @Description  :
  * @Author       : chenht2022, Jianwei Dong
@@ -20,7 +21,6 @@
 #include <cstring>
 
 #include "cpu_backend/cpuinfer.h"
-#include "cpu_backend/python_cpuinfer_bindings.h"
 #include "cpu_backend/cpu_compute_trace.h"
 #include "cpu_backend/worker_pool.h"
 #if defined(KTRANSFORMERS_USE_ASCEND_NPU)
@@ -490,9 +490,25 @@ void bind_moe_module(py::module_& moe_module, const char* name) {
 
 extern "C" void launch_no_block_torch(uintptr_t,uintptr_t,uintptr_t);
 PYBIND11_MODULE(kt_kernel_ext, m) {
-  kt::python_bindings::bind_completion_notifier(m);
   m.def("launch_no_block_callback", &launch_no_block_torch);
   m.def("lifecycle_begin", &kt::cpu_trace::begin);
+  m.def("set_lifecycle_enabled", &kt::cpu_trace::set_lifecycle_enabled);
+  m.def("lifecycle_enabled", &kt::cpu_trace::lifecycle_enabled);
+  m.def("native_cpu_handle", [](CPUInfer& cpu) { return reinterpret_cast<uintptr_t>(&cpu); });
+  m.def("native_dispatch_api", []() {
+    static const KtDispatchApi api{
+      1,
+      [](uintptr_t cpu, uintptr_t entry, uintptr_t args) {
+        reinterpret_cast<CPUInfer*>(cpu)->submit({intptr_t(entry), intptr_t(args)});
+      },
+      [](uintptr_t cpu) { reinterpret_cast<CPUInfer*>(cpu)->task_queue_->sync(0); },
+      &kt::cpu_trace::begin,
+      [](uint64_t task, int layer) { kt::cpu_trace::context = {task, layer}; },
+      [](const char* phase) { kt::cpu_trace::mark(phase); }
+    };
+    return py::capsule(const_cast<KtDispatchApi*>(&api), "kt.native_dispatch_api.v1");
+  });
+
   m.def("lifecycle_set_context", [](uint64_t id,int layer){kt::cpu_trace::context={id,layer};});
   m.def("lifecycle_mark", [](const std::string& phase) {
     // Only literal names are retained by the asynchronous writer.
@@ -530,16 +546,18 @@ PYBIND11_MODULE(kt_kernel_ext, m) {
       .def_readwrite("subpool_numa_map", &WorkerPoolConfig::subpool_numa_map)
       .def_readwrite("subpool_thread_count", &WorkerPoolConfig::subpool_thread_count);
 
-  auto cpuinfer = py::class_<CPUInfer>(m, "CPUInfer");
-  cpuinfer.def(py::init<int>())
+  py::class_<CPUInfer>(m, "CPUInfer")
+      .def(py::init<int>())
       .def(py::init<WorkerPoolConfig>())
-      .def_readwrite("backend_", &CPUInfer::backend_);
-  kt::python_bindings::bind_cpuinfer_native_calls(cpuinfer);
+      .def("submit", &CPUInfer::submit)
+      .def("sync", &CPUInfer::sync, py::arg("allow_n_pending") = 0)
+      .def_readwrite("backend_", &CPUInfer::backend_)
 #ifndef KTRANSFORMERS_CPU_ONLY
-  cpuinfer.def("sync_with_cuda_stream", &CPUInfer::sync_with_cuda_stream, py::arg("user_cuda_stream"),
+      .def("sync_with_cuda_stream", &CPUInfer::sync_with_cuda_stream, py::arg("user_cuda_stream"),
            py::arg("allow_n_pending") = 0)
-      .def("submit_with_cuda_stream", &CPUInfer::submit_with_cuda_stream);
+      .def("submit_with_cuda_stream", &CPUInfer::submit_with_cuda_stream)
 #endif
+      ;
 
   auto linear_module = m.def_submodule("linear");
   py::class_<LinearConfig>(linear_module, "LinearConfig")
