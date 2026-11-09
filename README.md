@@ -8,6 +8,16 @@ CPU MoE 核心源码、运行脚本与配置备份，以及 profiler 合成参�
 - [脚本设计与 NUMA 绑核](docs/02_script_design.md)
 - [参数设置建议](docs/03_parameters.md)
 
+## 当前实验：vLLM 0.30
+
+当前单卡 CPU MoE 实验固定 **vLLM 0.30.0**，153 实际安装包版本为 `0.30.0+empty`。运行入口与下面的原始服务器备份分开维护：
+
+- [启动与使用说明、重要参数](docs/05_vllm030_native_dispatch.md)
+- [单卡启动脚本](scripts/run_cpu_moe_vllm030.sh)：BS、DSpark、预取开关可切换，默认保留153的NUMA/CPU线程配置。
+- [vLLM Ascend CPU分支的本次代码提交](https://github.com/yxk-fdu/vllm-ascend/commit/61afe18c467110387fa7038725d96067e1be6e4c)
+
+主要变化是共享信号与C++原生任务派发、按需优先的逐专家搬运流水线、按实际expert-token计算量做CPU/NPU负载均衡。实际DMA仍由独立Python/Torch线程提交，详见使用说明。
+
 ## 路径约定
 
 **操作说明中的核心工具路径以 `cpu_moe/` 目录为基准。目录内部相对位置固定，`cpu_moe` 的绝对路径根据实际服务器或本地工作区确定，不绑定某台服务器。**
@@ -41,4 +51,4 @@ CPU MoE 核心源码、运行脚本与配置备份，以及 profiler 合成参�
 
 vLLM 与 vLLM Ascend 主工作区仍需另行准备；本仓库中的适配器片段不是完整 vLLM Ascend。`.so` 和 kt 后端扩展必须按目标机器架构、CANN、torch/torch_npu 等环境准备或重新编译。首次复现建议关闭专家预取，并显式设置 `enable_cpu_binding=false`，由 kt 后端完成绑核。
 
-此次仅备份和更新 GitHub，不修改服务器源码或正在运行的服务。
+以上 `cpu_moe/` 是原始备份说明；2026-11-09 的当前CPU计算运行入口和使用说明见前面的 vLLM 0.30 章节。
